@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests;
+namespace BaerSoftware\LaraBeacon\Tests;
 
 use Orchestra\Testbench\Foundation\Console\Kernel as OrchestraKernel;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Enlightn\Enlightn\PHPStan;
+namespace BaerSoftware\LaraBeacon\PHPStan;
 
 use PHPStan\Analyser\NameScope;
 use PHPStan\PhpDoc\TypeNodeResolverExtension;

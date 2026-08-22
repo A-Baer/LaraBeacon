@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\InvalidReturnTypeAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\InvalidReturnTypeStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\InvalidReturnTypeAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\InvalidReturnTypeStub;
 
 class InvalidReturnTypeAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,14 +16,12 @@ class InvalidReturnTypeAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(InvalidReturnTypeAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_invalid_offset()
     {
         $this->setBasePathFrom(InvalidReturnTypeStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(InvalidReturnTypeAnalyzer::class, $this->getClassStubPath(InvalidReturnTypeStub::class), 14);
         $this->assertFailedAt(InvalidReturnTypeAnalyzer::class, $this->getClassStubPath(InvalidReturnTypeStub::class), 28);
@@ -34,14 +32,12 @@ class InvalidReturnTypeAnalyzerTest extends AnalyzerTestCase
         $this->assertHasErrors(InvalidReturnTypeAnalyzer::class, 6);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_offset()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(InvalidReturnTypeAnalyzer::class);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Inspection\NodeVisitors;
+namespace BaerSoftware\LaraBeacon\Inspection\NodeVisitors;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\UseUse;

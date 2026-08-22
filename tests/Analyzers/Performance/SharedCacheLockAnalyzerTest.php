@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Performance\SharedCacheLockAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\SharedCacheLockStub;
+use BaerSoftware\LaraBeacon\Analyzers\Performance\SharedCacheLockAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\SharedCacheLockStub;
 
 class SharedCacheLockAnalyzerTest extends AnalyzerTestCase
 {
@@ -19,41 +19,35 @@ class SharedCacheLockAnalyzerTest extends AnalyzerTestCase
         $app->config->set('cache.stores.redis.lock_connection', null);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_cache_lock_method()
     {
         $this->setBasePathFrom(SharedCacheLockStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(SharedCacheLockAnalyzer::class, $this->getClassStubPath(SharedCacheLockStub::class), 11);
         $this->assertFailedAt(SharedCacheLockAnalyzer::class, $this->getClassStubPath(SharedCacheLockStub::class), 16);
         $this->assertHasErrors(SharedCacheLockAnalyzer::class, 2);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_separate_lock_connection()
     {
         $this->app->config->set('cache.stores.redis.lock_connection', 'default');
         $this->setBasePathFrom(SharedCacheLockStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(SharedCacheLockAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_cache_lock_method()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(SharedCacheLockAnalyzer::class);
     }

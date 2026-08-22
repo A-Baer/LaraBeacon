@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Enlightn\Enlightn\PHPStan;
+namespace BaerSoftware\LaraBeacon\PHPStan;
 
-use PHPStan\TrinaryLogic;
 use PHPStan\Type\CompoundType;
+use PHPStan\Type\IsSuperTypeOfResult;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
 
 class RequestDataType extends StringType
 {
@@ -21,27 +20,15 @@ class RequestDataType extends StringType
         return new self();
     }
 
-    public function isSuperTypeOf(Type $type) : TrinaryLogic
+    public function isSuperTypeOf(Type $type): IsSuperTypeOfResult
     {
         if ($type instanceof self) {
-            return TrinaryLogic::createYes();
+            return IsSuperTypeOfResult::createYes();
         }
         if ($type instanceof CompoundType) {
             return $type->isSubTypeOf($this);
         }
 
-        return TrinaryLogic::createNo();
-    }
-
-    public function canBeSuperTypeOf(Type $type): TrinaryLogic
-    {
-        if ($type instanceof self) {
-            return TrinaryLogic::createYes();
-        }
-        if ($type instanceof UnionType) {
-            return $type->isSubTypeOf($this);
-        }
-
-        return TrinaryLogic::createNo();
+        return IsSuperTypeOfResult::createNo();
     }
 }

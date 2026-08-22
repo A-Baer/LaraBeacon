@@ -1,13 +1,14 @@
 <?php
 
-namespace Enlightn\Enlightn\PHPStan;
+namespace BaerSoftware\LaraBeacon\PHPStan;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use PhpParser\Node;
-use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\PropertyItem;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
+use PHPStan\Rules\RuleErrorBuilder;
 
 class FillableForeignKeyModelRule implements Rule
 {
@@ -18,7 +19,7 @@ class FillableForeignKeyModelRule implements Rule
      */
     public function getNodeType(): string
     {
-        return PropertyProperty::class;
+        return PropertyItem::class;
     }
 
     /**
@@ -51,10 +52,10 @@ class FillableForeignKeyModelRule implements Rule
             if ($item->value instanceof Node\Scalar\String_
                 && Str::contains($key = $item->value->value, '_id', true)) {
                 return [
-                    sprintf(
+                    RuleErrorBuilder::message(sprintf(
                         'Potential foreign key %s declared as fillable and available for mass assignment.',
                         $key
-                    ),
+                    ))->identifier('larabeacon.fillableForeignKey')->build(),
                 ];
             }
         }

@@ -4,4 +4,4 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability within Enlightn, please send an email to Paras Malhotra at paras@laravel-enlightn.com. All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within LaraBeacon, email anthony.baer@baer-software.com. Please include reproduction details and do not open a public issue before a fix is available.

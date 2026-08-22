@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\InvalidMethodCallAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\InvalidMethodCallStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\InvalidMethodCallAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\InvalidMethodCallStub;
 
 class InvalidMethodCallAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,14 +16,12 @@ class InvalidMethodCallAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(InvalidMethodCallAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_invalid_method_calls()
     {
         $this->setBasePathFrom(InvalidMethodCallStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(InvalidMethodCallAnalyzer::class, $this->getClassStubPath(InvalidMethodCallStub::class), 9);
         $this->assertFailedAt(InvalidMethodCallAnalyzer::class, $this->getClassStubPath(InvalidMethodCallStub::class), 10);
@@ -36,38 +34,34 @@ class InvalidMethodCallAnalyzerTest extends AnalyzerTestCase
         $this->assertHasErrors(InvalidMethodCallAnalyzer::class, 8);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function ignores_errors()
     {
         $this->setBasePathFrom(InvalidMethodCallStub::class);
-        $this->app->config->set('enlightn.ignore_errors', [InvalidMethodCallAnalyzer::class => [
+        $this->app->config->set('larabeacon.ignore_errors', [InvalidMethodCallAnalyzer::class => [
             [
                 'path' => $this->getClassStubPath(InvalidMethodCallStub::class),
-                'details' => 'Call to an undefined method Enlightn\Enlightn\Tests\Stubs\InvalidMethodCallStub::protectedMethodFromChild().',
+                'details' => 'Call to an undefined method BaerSoftware\LaraBeacon\Tests\Stubs\InvalidMethodCallStub::protectedMethodFromChild().',
             ],
             [
                 'path' => $this->getClassStubPath(InvalidMethodCallStub::class),
-                'details' => '*undefined method Enlightn\Enlightn\Tests\Stubs\InvalidMethodCallStub::lorem*',
+                'details' => '*undefined method BaerSoftware\LaraBeacon\Tests\Stubs\InvalidMethodCallStub::lorem*',
             ],
         ]]);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertNotFailedAt(InvalidMethodCallAnalyzer::class, $this->getClassStubPath(InvalidMethodCallStub::class), 9);
         $this->assertNotFailedAt(InvalidMethodCallAnalyzer::class, $this->getClassStubPath(InvalidMethodCallStub::class), 10);
         $this->assertHasErrors(InvalidMethodCallAnalyzer::class, 6);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_invalid_method_calls()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(InvalidMethodCallAnalyzer::class);
     }

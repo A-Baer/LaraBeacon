@@ -1,16 +1,15 @@
 <?php
 
-namespace Enlightn\Enlightn\CodeCorrection;
+namespace BaerSoftware\LaraBeacon\CodeCorrection;
 
 use Illuminate\Filesystem\Filesystem;
-use PhpParser\Lexer\Emulative;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
-use PhpParser\Parser\Php7;
+use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 
 class ConfigManipulator
@@ -48,17 +47,9 @@ class ConfigManipulator
      */
     public function replace(string $configFilePath, $configValues = [])
     {
-        $lexer = new Emulative([
-            'usedAttributes' => [
-                'comments',
-                'startLine', 'endLine',
-                'startTokenPos', 'endTokenPos',
-            ],
-        ]);
-        $parser = new Php7($lexer);
-
+        $parser = (new ParserFactory)->createForNewestSupportedVersion();
         $ast = $parser->parse((new Filesystem)->get($configFilePath));
-        $oldTokens = $lexer->getTokens();
+        $oldTokens = $parser->getTokens();
 
         $traverser = new NodeTraverser;
         $traverser->addVisitor(new CloningVisitor);

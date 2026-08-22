@@ -1,6 +1,21 @@
 # Release Notes
 
-## [Unreleased](https://github.com/enlightn/enlightn/compare/v1.22.1...master)
+## Unreleased
+
+### Added
+- Fork Enlightn as LaraBeacon under the `BaerSoftware\\LaraBeacon` namespace.
+- Add Laravel 12 and Laravel 13 compatibility with Larastan 3 and PHPStan 2.
+- Prepare extension boundaries for LaraBeacon Pro and LaraBeacon Cloud.
+
+### Fixed
+- Use the PHP-Parser 5 API when generating baselines.
+- Use `npm audit --omit=dev --json` and parse stdout without npm warnings.
+- Recognize multiline minified Vite bundles without trusting manifests blindly.
+- Resolve PHPStan dependencies through Composer in installed packages and custom vendor directories.
+- Keep published analyzer paths bound to the package instead of the host application's source tree.
+- Support Laravel 13 queue connection defaults and PHPStan 2 custom rule APIs.
+
+## Enlightn release history
 
 ## [v1.22.1 (2021-05-03)](https://github.com/enlightn/enlightn/compare/v1.22.0...v1.22.1)
 

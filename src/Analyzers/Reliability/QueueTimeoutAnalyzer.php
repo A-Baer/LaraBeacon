@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Concerns\ParsesConfigurationFiles;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\ParsesConfigurationFiles;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class QueueTimeoutAnalyzer extends ReliabilityAnalyzer
@@ -74,9 +74,12 @@ class QueueTimeoutAnalyzer extends ReliabilityAnalyzer
     public function handle(ConfigRepository $config)
     {
         $connections = collect($config->get('queue.connections', []))
-            ->filter(function ($conf, $queue) {
-                // skip sqs and sync drivers as they don't have retry after values
-                return ! in_array($conf['driver'], ['sqs', 'sync']);
+            ->filter(function ($conf) {
+                // Only worker-backed connections with an explicit retry_after
+                // value can be evaluated. Laravel 13 also ships deferred and
+                // failover connections, which do not process jobs themselves.
+                return isset($conf['retry_after'])
+                    && ! in_array($conf['driver'] ?? null, ['sqs', 'sync'], true);
             })->map(function ($conf, $queue) {
                 return $this->getTimeoutAndRetryAfter($conf);
             })->filter(function ($conf) {

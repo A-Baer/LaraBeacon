@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Inspection\Inspector;
+use BaerSoftware\LaraBeacon\Inspection\Inspector;
 
 class SyntaxErrorAnalyzer extends ReliabilityAnalyzer
 {
@@ -40,7 +40,7 @@ class SyntaxErrorAnalyzer extends ReliabilityAnalyzer
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\Inspection\Inspector $inspector
+     * @param \BaerSoftware\LaraBeacon\Inspection\Inspector $inspector
      * @return void
      */
     public function handle(Inspector $inspector)

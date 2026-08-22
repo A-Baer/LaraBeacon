@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Inspection\NodeVisitors;
+namespace BaerSoftware\LaraBeacon\Inspection\NodeVisitors;
 
-use Enlightn\Enlightn\Inspection\Concerns\GathersClassAliases;
+use BaerSoftware\LaraBeacon\Inspection\Concerns\GathersClassAliases;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\UpToDateMigrationsAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Kernel;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\UpToDateMigrationsAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Kernel;
 use Illuminate\Support\Facades\Artisan;
 
 class UpToDateMigrationsAnalyzerTest extends AnalyzerTestCase
@@ -27,28 +27,24 @@ class UpToDateMigrationsAnalyzerTest extends AnalyzerTestCase
         $app->singleton('Illuminate\Contracts\Console\Kernel', Kernel::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_remaining_migrations()
     {
         Artisan::shouldReceive('call');
         Artisan::shouldReceive('output')->andReturn('Nothing to migrate.');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(UpToDateMigrationsAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_pending_migrations()
     {
         Artisan::shouldReceive('call');
         Artisan::shouldReceive('output')->andReturn('create some table');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(UpToDateMigrationsAnalyzer::class);
     }

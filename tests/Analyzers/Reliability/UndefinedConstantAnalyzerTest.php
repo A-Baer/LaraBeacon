@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\UndefinedConstantAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\UndefinedConstantStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\UndefinedConstantAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\UndefinedConstantStub;
 
 class UndefinedConstantAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,27 +16,23 @@ class UndefinedConstantAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(UndefinedConstantAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_missing_return_statements()
     {
         $this->setBasePathFrom(UndefinedConstantStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(UndefinedConstantAnalyzer::class, $this->getClassStubPath(UndefinedConstantStub::class), 9);
         $this->assertHasErrors(UndefinedConstantAnalyzer::class, 1);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_return_statements()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(UndefinedConstantAnalyzer::class);
     }

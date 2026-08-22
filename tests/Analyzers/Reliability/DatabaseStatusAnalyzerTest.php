@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\DatabaseStatusAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\DatabaseStatusAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;
 use Mockery as m;
@@ -17,9 +17,7 @@ class DatabaseStatusAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(DatabaseStatusAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function checks_db_access()
     {
         $this->app->config->set('database.default', 'mysql');
@@ -29,7 +27,7 @@ class DatabaseStatusAnalyzerTest extends AnalyzerTestCase
 
         DB::shouldReceive('connection')->andReturn($connection);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(DatabaseStatusAnalyzer::class);
     }

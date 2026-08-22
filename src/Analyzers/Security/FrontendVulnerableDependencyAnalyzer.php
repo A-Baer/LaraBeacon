@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\NPM;
+use BaerSoftware\LaraBeacon\NPM;
 
 class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
 {
@@ -30,7 +30,7 @@ class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
     /**
      * The NPM instance.
      *
-     * @var \Enlightn\Enlightn\NPM
+     * @var \BaerSoftware\LaraBeacon\NPM
      */
     private $NPM;
 
@@ -44,7 +44,7 @@ class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
     /**
      * Create a new analyzer instance.
      *
-     * @param \Enlightn\Enlightn\NPM $NPM
+     * @param \BaerSoftware\LaraBeacon\NPM $NPM
      */
     public function __construct(NPM $NPM)
     {

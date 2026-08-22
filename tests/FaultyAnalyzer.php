@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests;
+namespace BaerSoftware\LaraBeacon\Tests;
 
-use Enlightn\Enlightn\Analyzers\Performance\PerformanceAnalyzer;
+use BaerSoftware\LaraBeacon\Analyzers\Performance\PerformanceAnalyzer;
 use RuntimeException;
 
 class FaultyAnalyzer extends PerformanceAnalyzer

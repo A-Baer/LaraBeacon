@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\EncryptedCookiesAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Security\EncryptedCookiesAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithMiddleware;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Support\Facades\Route;
 
@@ -19,38 +19,32 @@ class EncryptedCookiesAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(EncryptedCookiesAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skips_for_stateless_apps()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(EncryptedCookiesAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_encrypt_cookies_middleware()
     {
         $this->registerStatefulGlobalMiddleware();
         $this->registerProtectedRoute();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(EncryptedCookiesAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_missing_encrypt_cookies_middleware()
     {
         $this->registerStatefulGlobalMiddleware();
         $this->registerUnprotectedRoute();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(EncryptedCookiesAnalyzer::class);
     }

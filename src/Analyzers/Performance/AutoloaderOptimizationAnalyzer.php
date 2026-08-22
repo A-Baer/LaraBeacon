@@ -1,8 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Analyzers\Performance;
 
+use Composer\Autoload\ClassLoader;
 use Illuminate\Database\Query\Builder;
+use ReflectionClass;
 
 class AutoloaderOptimizationAnalyzer extends PerformanceAnalyzer
 {
@@ -53,7 +55,8 @@ class AutoloaderOptimizationAnalyzer extends PerformanceAnalyzer
     public function handle()
     {
         /** @var \Composer\Autoload\ClassLoader $loader */
-        $loader = require base_path('vendor/autoload.php');
+        $composerDirectory = dirname((new ReflectionClass(ClassLoader::class))->getFileName());
+        $loader = require dirname($composerDirectory).'/autoload.php';
 
         if (! $loader->isClassMapAuthoritative() && ! isset($loader->getClassMap()[Builder::class])) {
             // We assume here that if composer autoloader isn't optimized using the --classmap-authoritative flag

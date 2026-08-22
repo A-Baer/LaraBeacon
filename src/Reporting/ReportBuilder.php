@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Reporting;
+namespace BaerSoftware\LaraBeacon\Reporting;
 
 interface ReportBuilder
 {

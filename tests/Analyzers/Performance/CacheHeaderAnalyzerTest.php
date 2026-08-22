@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Performance\CacheHeaderAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Performance\CacheHeaderAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
@@ -18,19 +18,15 @@ class CacheHeaderAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(CacheHeaderAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skips_without_mix_manifest()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(CacheHeaderAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_missing_cache_headers()
     {
         $this->app->config->set('app.env', 'production');
@@ -49,7 +45,7 @@ class CacheHeaderAnalyzerTest extends AnalyzerTestCase
             ])]
         ));
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(CacheHeaderAnalyzer::class);
         $this->assertErrorMessageContains(CacheHeaderAnalyzer::class, 'app.js');
@@ -58,9 +54,7 @@ class CacheHeaderAnalyzerTest extends AnalyzerTestCase
         (new Filesystem())->delete(public_path('mix-manifest.json'));
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_cache_headers()
     {
         $this->app->config->set('app.env', 'production');
@@ -77,7 +71,7 @@ class CacheHeaderAnalyzerTest extends AnalyzerTestCase
             ])]
         ));
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(CacheHeaderAnalyzer::class);
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\DeprecatedCodeAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DeprecatedCodeStub;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\DeprecatedCodeAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DeprecatedCodeStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
 
 class DeprecatedCodeAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,14 +16,12 @@ class DeprecatedCodeAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(DeprecatedCodeAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_deprecated_code()
     {
         $this->setBasePathFrom(DeprecatedCodeStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(DeprecatedCodeAnalyzer::class, $this->getClassStubPath(DeprecatedCodeStub::class), 9);
         $this->assertFailedAt(DeprecatedCodeAnalyzer::class, $this->getClassStubPath(DeprecatedCodeStub::class), 10);
@@ -37,14 +35,12 @@ class DeprecatedCodeAnalyzerTest extends AnalyzerTestCase
         $this->assertHasErrors(DeprecatedCodeAnalyzer::class, 9);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_deprecated_code()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(DeprecatedCodeAnalyzer::class);
     }

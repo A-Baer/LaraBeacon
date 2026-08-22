@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\XSSAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Security\XSSAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithMiddleware;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
@@ -21,33 +21,27 @@ class XSSAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(XSSAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skips_for_stateless_apps()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(XSSAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skips_for_local()
     {
         $this->app->config->set('app.env', 'local');
 
         $this->registerStatefulGlobalMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(XSSAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_missing_csp_header()
     {
         $this->registerStatefulGlobalMiddleware();
@@ -62,14 +56,12 @@ class XSSAnalyzerTest extends AnalyzerTestCase
             //
         })->name('login');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(XSSAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_unsafe_csp_header()
     {
         $this->registerStatefulGlobalMiddleware();
@@ -84,14 +76,12 @@ class XSSAnalyzerTest extends AnalyzerTestCase
             //
         })->name('login');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(XSSAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_default_csp_header()
     {
         $this->registerStatefulGlobalMiddleware();
@@ -106,14 +96,12 @@ class XSSAnalyzerTest extends AnalyzerTestCase
             //
         })->name('login');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(XSSAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_script_csp_header()
     {
         $this->registerStatefulGlobalMiddleware();
@@ -128,7 +116,7 @@ class XSSAnalyzerTest extends AnalyzerTestCase
             //
         })->name('login');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(XSSAnalyzer::class);
     }

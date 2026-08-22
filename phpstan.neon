@@ -1,116 +1,19 @@
-includes:
-	- %rootDir%/../../larastan/larastan/extension.neon
-	- %rootDir%/../../phpstan/phpstan-deprecation-rules/rules.neon
-
 parameters:
-	customRulesetUsed: true
-	noUnnecessaryCollectionCall: true
-	noUnnecessaryCollectionCallOnly: []
-	noUnnecessaryCollectionCallExcept: []
-	checkModelProperties: false
-	reportMagicMethods: false
-	reportMagicProperties: false
-	checkFunctionNameCase: false
-	checkPhpDocMethodSignatures: false
-	checkExplicitMixedMissingReturn: false
-	checkDynamicProperties: false
-	checkPhpDocMissingReturn: false
-	checkMaybeUndefinedVariables: true
-	cliArgumentsVariablesRegistered: true
-	checkNullables: false
-	checkThisOnly: false
-	checkUnionTypes: true
-	checkExplicitMixed: false
-	checkMissingOverrideMethodAttribute: false
-	featureToggles:
-		genericPrototypeMessage: true
-		logicalXor: true
-		finalByPhpDoc: false
-	stubFiles:
-		- stubs/Request.stub
-
+    level: max
+    parallel:
+        maximumNumberOfProcesses: 1
+    checkModelProperties: false
+    noUnnecessaryCollectionCall: true
+    noUnnecessaryCollectionCallOnly: []
+    noUnnecessaryCollectionCallExcept: []
 rules:
-	- Enlightn\Enlightn\PHPStan\FillableForeignKeyModelRule
-	- Enlightn\Enlightn\PHPStan\MassAssignmentModelInstanceRule
-	- Enlightn\Enlightn\PHPStan\MassAssignmentModelStaticRule
-	- Enlightn\Enlightn\PHPStan\MassAssignmentBuilderInstanceRule
-	- PHPStan\Rules\Arrays\DeadForeachRule
-	- PHPStan\Rules\Arrays\IterableInForeachRule
-	- PHPStan\Rules\Arrays\OffsetAccessAssignmentRule
-	- PHPStan\Rules\Arrays\OffsetAccessAssignOpRule
-	- PHPStan\Rules\Arrays\OffsetAccessValueAssignmentRule
-	- PHPStan\Rules\Classes\ClassConstantRule
-	- PHPStan\Rules\DeadCode\UnreachableStatementRule
-	- PHPStan\Rules\DeadCode\UnusedPrivateConstantRule
-	- PHPStan\Rules\DeadCode\UnusedPrivateMethodRule
-	- PHPStan\Rules\Functions\CallToFunctionParametersRule
-	- PHPStan\Rules\Functions\PrintfParametersRule
-	- PHPStan\Rules\Functions\ReturnTypeRule
-	- PHPStan\Rules\Methods\CallMethodsRule
-	- PHPStan\Rules\Methods\CallStaticMethodsRule
-	- PHPStan\Rules\Methods\ReturnTypeRule
-	- PHPStan\Rules\Variables\UnsetRule
+    - BaerSoftware\LaraBeacon\PHPStan\FillableForeignKeyModelRule
+    - BaerSoftware\LaraBeacon\PHPStan\MassAssignmentModelInstanceRule
+    - BaerSoftware\LaraBeacon\PHPStan\MassAssignmentModelStaticRule
+    - BaerSoftware\LaraBeacon\PHPStan\MassAssignmentBuilderInstanceRule
 
 services:
     -
-        class: PHPStan\Rules\Functions\CallToNonExistentFunctionRule
+        class: BaerSoftware\LaraBeacon\PHPStan\RequestMethodReturnTypeExtension
         tags:
-            - phpstan.rules.rule
-        arguments:
-            checkFunctionNameCase: %checkFunctionNameCase%
-    -
-        class: PHPStan\Rules\Methods\OverridingMethodRule
-        arguments:
-            checkPhpDocMethodSignatures: %checkPhpDocMethodSignatures%
-            genericPrototypeMessage: %featureToggles.genericPrototypeMessage%
-            finalByPhpDoc: %featureToggles.finalByPhpDoc%
-            checkMissingOverrideMethodAttribute: %checkMissingOverrideMethodAttribute%
-        tags:
-            - phpstan.rules.rule
-    -
-        class: PHPStan\Rules\DeadCode\NoopRule
-        arguments:
-            logicalXor: %featureToggles.logicalXor%
-        tags:
-            - phpstan.rules.rule
-    -
-        class: PHPStan\Rules\Missing\MissingReturnRule
-        arguments:
-            checkExplicitMixedMissingReturn: %checkExplicitMixedMissingReturn%
-            checkPhpDocMissingReturn: %checkPhpDocMissingReturn%
-        tags:
-            - phpstan.rules.rule
-    -
-        class: PHPStan\Rules\Namespaces\ExistingNamesInUseRule
-        tags:
-            - phpstan.rules.rule
-        arguments:
-            checkFunctionNameCase: %checkFunctionNameCase%
-    -
-        class: PHPStan\Rules\Namespaces\ExistingNamesInGroupUseRule
-        tags:
-            - phpstan.rules.rule
-        arguments:
-            checkFunctionNameCase: %checkFunctionNameCase%
-    -
-        class: PHPStan\Rules\Properties\AccessPropertiesRule
-        tags:
-            - phpstan.rules.rule
-        arguments:
-            reportMagicProperties: %reportMagicProperties%
-            checkDynamicProperties: %checkDynamicProperties%
-    -
-        class: PHPStan\Rules\Variables\DefinedVariableRule
-        arguments:
-            cliArgumentsVariablesRegistered: %cliArgumentsVariablesRegistered%
-            checkMaybeUndefinedVariables: %checkMaybeUndefinedVariables%
-        tags:
-            - phpstan.rules.rule
-    -
-        class: Enlightn\Enlightn\PHPStan\RequestDataTypeNodeResolverExtension
-        tags:
-            - phpstan.phpDoc.typeNodeResolverExtension
-    -
-        class: Enlightn\Enlightn\PHPStan\RequestArrayDataTypeNodeResolverExtension
-        tags:
-            - phpstan.phpDoc.typeNodeResolverExtension
+            - phpstan.broker.dynamicMethodReturnTypeExtension

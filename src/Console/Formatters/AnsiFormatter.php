@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Console\Formatters;
+namespace BaerSoftware\LaraBeacon\Console\Formatters;
 
-use Enlightn\Enlightn\Analyzers\Trace;
-use Enlightn\Enlightn\Enlightn;
+use BaerSoftware\LaraBeacon\Analyzers\Trace;
+use BaerSoftware\LaraBeacon\LaraBeacon;
 use Illuminate\Console\Command;
 use Illuminate\Console\OutputStyle;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -36,9 +36,9 @@ class AnsiFormatter implements Formatter
         $this->setColors($command->getOutput());
         $command->line(require __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'logo.php');
         $command->getOutput()->newLine();
-        $command->line('Please wait while Enlightn scans your code base...');
+        $command->line('Please wait while LaraBeacon scans your code base...');
 
-        $this->compactLines = config('enlightn.compact_lines', true);
+        $this->compactLines = config('larabeacon.compact_lines', true);
     }
 
     /**
@@ -77,7 +77,9 @@ class AnsiFormatter implements Formatter
                 $this->formatTraces($command, $result['traces'], $allAnalyzers);
             }
 
-            $command->line("<fg=cyan>Documentation URL: <href={$result['docsUrl']}>{$result['docsUrl']}</></fg=cyan>");
+            if ($result['status'] === 'failed') {
+                $command->line("<fg=cyan>Documentation URL: <href={$result['docsUrl']}>{$result['docsUrl']}</></fg=cyan>");
+            }
         }
 
         $this->category = $result['category'];
@@ -156,11 +158,11 @@ class AnsiFormatter implements Formatter
         $rightAlign = (new TableStyle())->setPadType(STR_PAD_LEFT);
 
         $command->table(
-            array_merge(['Status'], Enlightn::$categories, ['Total']),
+            array_merge(['Status'], LaraBeacon::$categories, ['Total']),
             collect(['passed', 'failed', 'skipped', 'error'])->map(function ($status) use ($command) {
                 return array_merge(
                     [$status === 'skipped' ? 'Not Applicable' : ucfirst($status)],
-                    collect(array_merge(Enlightn::$categories, ['Total']))->map(function ($category) use ($status, $command) {
+                    collect(array_merge(LaraBeacon::$categories, ['Total']))->map(function ($category) use ($status, $command) {
                         return $this->formatResult($status, $category, $command->result);
                     })->toArray()
                 );
@@ -198,7 +200,7 @@ class AnsiFormatter implements Formatter
     }
 
     /**
-     * Set the console colors for Enlightn's logo.
+     * Set the console colors for LaraBeacon's logo.
      *
      * @param \Illuminate\Console\OutputStyle $output
      * @return void
@@ -206,14 +208,7 @@ class AnsiFormatter implements Formatter
     protected function setColors(OutputStyle $output)
     {
         collect([
-            'e' => 'green',
-            'n' => 'green',
-            'l' => 'green',
-            'i' => 'green',
-            'g' => 'green',
-            'h' => 'green',
-            't' => 'green',
-            'ns' => 'green',
+            'lb' => 'green',
         ])->each(function ($color, $tag) use ($output) {
             $output->getFormatter()->setStyle($tag, new OutputFormatterStyle($color));
         });

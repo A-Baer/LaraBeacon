@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Concerns\ParsesPHPStanAnalysis;
-use Enlightn\Enlightn\PHPStan;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\ParsesPHPStanAnalysis;
+use BaerSoftware\LaraBeacon\PHPStan;
 
 class InvalidMethodCallAnalyzer extends ReliabilityAnalyzer
 {
@@ -44,7 +44,7 @@ class InvalidMethodCallAnalyzer extends ReliabilityAnalyzer
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\PHPStan $PHPStan
+     * @param \BaerSoftware\LaraBeacon\PHPStan $PHPStan
      * @return void
      */
     public function handle(PHPStan $PHPStan)

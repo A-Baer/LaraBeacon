@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Reporting;
+namespace BaerSoftware\LaraBeacon\Reporting;
 
-use Enlightn\Enlightn\CommitHash;
-use Enlightn\Enlightn\Composer;
+use BaerSoftware\LaraBeacon\CommitHash;
+use BaerSoftware\LaraBeacon\Composer;
 use Illuminate\Container\Container;
 use Throwable;
 
@@ -36,7 +36,7 @@ class JsonReportBuilder implements ReportBuilder
             'app_env' => config('app.env'),
             'app_url' => config('app.url'),
             'project_name' => $this->getProjectName(),
-            'github_repo' => config('enlightn.github_repo'),
+            'github_repo' => config('larabeacon.github_repo'),
             'commit_id' => CommitHash::get(),
             'trigger' => 'command',
         ];

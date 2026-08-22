@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Composer;
+use BaerSoftware\LaraBeacon\Composer;
 use Illuminate\Support\Str;
 
 class ComposerValidationAnalyzer extends ReliabilityAnalyzer

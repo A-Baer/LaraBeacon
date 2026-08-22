@@ -1,15 +1,15 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\LoginThrottlingAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithMiddleware;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\LoginThrottlingAnonymousInstanceStub;
-use Enlightn\Enlightn\Tests\Stubs\LoginThrottlingFacadeStub;
-use Enlightn\Enlightn\Tests\Stubs\LoginThrottlingInstanceStub;
-use Enlightn\Enlightn\Tests\Stubs\LoginThrottlingSubClassInstanceStub;
+use BaerSoftware\LaraBeacon\Analyzers\Security\LoginThrottlingAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithMiddleware;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\LoginThrottlingAnonymousInstanceStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\LoginThrottlingFacadeStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\LoginThrottlingInstanceStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\LoginThrottlingSubClassInstanceStub;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Router;
@@ -34,9 +34,7 @@ class LoginThrottlingAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(LoginThrottlingAnalyzer::class, $app, $analyzer);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_rate_limiter_facade_usage()
     {
         $this->setBasePathFrom(LoginThrottlingFacadeStub::class);
@@ -45,14 +43,12 @@ class LoginThrottlingAnalyzerTest extends AnalyzerTestCase
 
         $this->registerUnprotectedLoginRoute();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(LoginThrottlingAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_rate_limiter_instance_usage()
     {
         $this->setBasePathFrom(LoginThrottlingInstanceStub::class);
@@ -61,14 +57,12 @@ class LoginThrottlingAnalyzerTest extends AnalyzerTestCase
 
         $this->registerUnprotectedLoginRoute();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(LoginThrottlingAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_rate_limiter_anonymous_instance_usage()
     {
         $this->setBasePathFrom(LoginThrottlingAnonymousInstanceStub::class);
@@ -77,14 +71,12 @@ class LoginThrottlingAnalyzerTest extends AnalyzerTestCase
 
         $this->registerUnprotectedLoginRoute();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(LoginThrottlingAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_rate_limiter_subclass_instance_usage()
     {
         $this->setBasePathFrom(LoginThrottlingSubClassInstanceStub::class);
@@ -93,14 +85,12 @@ class LoginThrottlingAnalyzerTest extends AnalyzerTestCase
 
         $this->registerUnprotectedLoginRoute();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(LoginThrottlingAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_unprotected_route()
     {
         $this->setBasePathFrom(DummyStub::class);
@@ -109,14 +99,12 @@ class LoginThrottlingAnalyzerTest extends AnalyzerTestCase
 
         $this->registerUnprotectedLoginRoute();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(LoginThrottlingAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_protected_route()
     {
         $this->setBasePathFrom(DummyStub::class);
@@ -125,14 +113,12 @@ class LoginThrottlingAnalyzerTest extends AnalyzerTestCase
 
         $this->registerProtectedLoginRoute();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(LoginThrottlingAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_aliased_middleware_protected_route()
     {
         $this->setBasePathFrom(DummyStub::class);
@@ -141,7 +127,7 @@ class LoginThrottlingAnalyzerTest extends AnalyzerTestCase
 
         $this->registerProtectedLoginRouteWithNamedMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(LoginThrottlingAnalyzer::class);
     }

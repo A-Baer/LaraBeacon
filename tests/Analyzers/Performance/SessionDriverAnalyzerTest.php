@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Performance\SessionDriverAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Performance\SessionDriverAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
 
@@ -16,47 +16,39 @@ class SessionDriverAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(SessionDriverAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skipped_for_stateless_apps()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(SessionDriverAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_null_session_driver()
     {
         $this->app->config->set('session.driver', 'null');
 
         $this->registerDummyRouteWithSessionMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(SessionDriverAnalyzer::class, $this->getConfigStubPath('session'), 12);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_array_session_driver()
     {
         $this->app->config->set('session.driver', 'array');
 
         $this->registerDummyRouteWithSessionMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(SessionDriverAnalyzer::class, $this->getConfigStubPath('session'), 12);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_file_session_driver_in_production()
     {
         $this->app->config->set('session.driver', 'file');
@@ -64,14 +56,12 @@ class SessionDriverAnalyzerTest extends AnalyzerTestCase
 
         $this->registerDummyRouteWithSessionMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(SessionDriverAnalyzer::class, $this->getConfigStubPath('session'), 12);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_file_session_driver_in_local()
     {
         $this->app->config->set('session.driver', 'file');
@@ -79,14 +69,12 @@ class SessionDriverAnalyzerTest extends AnalyzerTestCase
 
         $this->registerDummyRouteWithSessionMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(SessionDriverAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_cookie_session_driver_in_production()
     {
         $this->app->config->set('session.driver', 'cookie');
@@ -94,14 +82,12 @@ class SessionDriverAnalyzerTest extends AnalyzerTestCase
 
         $this->registerDummyRouteWithSessionMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(SessionDriverAnalyzer::class, $this->getConfigStubPath('session'), 12);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_cookie_session_driver_in_local()
     {
         $this->app->config->set('session.driver', 'cookie');
@@ -109,7 +95,7 @@ class SessionDriverAnalyzerTest extends AnalyzerTestCase
 
         $this->registerDummyRouteWithSessionMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(SessionDriverAnalyzer::class);
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\UnguardedModelsAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\UnguardedModelStub;
+use BaerSoftware\LaraBeacon\Analyzers\Security\UnguardedModelsAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\UnguardedModelStub;
 
 class UnguardedModelTest extends AnalyzerTestCase
 {
@@ -16,28 +16,24 @@ class UnguardedModelTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(UnguardedModelsAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_unguarded_models()
     {
         $this->setBasePathFrom(UnguardedModelStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(UnguardedModelsAnalyzer::class, $this->getClassStubPath(UnguardedModelStub::class), 11);
         $this->assertFailedAt(UnguardedModelsAnalyzer::class, $this->getClassStubPath(UnguardedModelStub::class), 16);
         $this->assertHasErrors(UnguardedModelsAnalyzer::class, 2);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_no_unguarded_models()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(UnguardedModelsAnalyzer::class);
     }

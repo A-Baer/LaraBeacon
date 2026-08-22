@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
 use Illuminate\Contracts\Foundation\Application;
 

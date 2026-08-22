@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\PHPStan;
+namespace BaerSoftware\LaraBeacon\PHPStan;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -28,7 +28,7 @@ trait AnalyzesNodes
     protected function isRequestArrayData(Expr $expr, Scope $scope)
     {
         $logic = (new RequestArrayDataType(new UnionType([new StringType, new IntegerType]), new RequestDataType))
-            ->canBeSuperTypeOf($scope->getType($expr));
+            ->isSuperTypeOf($scope->getType($expr));
 
         return $logic->yes() || $logic->maybe();
     }
@@ -42,7 +42,7 @@ trait AnalyzesNodes
      */
     protected function isRequestData(Expr $expr, Scope $scope)
     {
-        $logic = (new RequestDataType)->canBeSuperTypeOf($scope->getType($expr));
+        $logic = (new RequestDataType)->isSuperTypeOf($scope->getType($expr));
 
         return $logic->yes() || $logic->maybe();
     }

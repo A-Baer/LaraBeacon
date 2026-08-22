@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\StableDependencyAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithComposer;
+use BaerSoftware\LaraBeacon\Analyzers\Security\StableDependencyAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithComposer;
 
 class StableDependencyAnalyzerTest extends AnalyzerTestCase
 {
@@ -19,12 +19,10 @@ class StableDependencyAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(StableDependencyAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
-    public function confirms_enlightn_has_stable_dependencies()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function confirms_larabeacon_has_stable_dependencies()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(StableDependencyAnalyzer::class);
     }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Performance\DevDependencyAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithComposer;
+use BaerSoftware\LaraBeacon\Analyzers\Performance\DevDependencyAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithComposer;
 
 class DevDependencyAnalyzerTest extends AnalyzerTestCase
 {
@@ -19,26 +19,22 @@ class DevDependencyAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(DevDependencyAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_dev_dependencies_in_production()
     {
         $this->app->config->set('app.env', 'production');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(DevDependencyAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_dev_dependencies_in_local()
     {
         $this->app->config->set('app.env', 'local');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(DevDependencyAnalyzer::class);
     }

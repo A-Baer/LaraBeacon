@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Analyzer;
+use BaerSoftware\LaraBeacon\Analyzers\Analyzer;
 
 abstract class PerformanceAnalyzer extends Analyzer
 {

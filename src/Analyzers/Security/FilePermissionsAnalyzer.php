@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
 use Illuminate\Support\Str;
 
@@ -55,7 +55,7 @@ class FilePermissionsAnalyzer extends SecurityAnalyzer
      */
     public function handle()
     {
-        $filesOrDirectoriesToCheck = config('enlightn.allowed_permissions', [
+        $filesOrDirectoriesToCheck = config('larabeacon.allowed_permissions', [
             base_path() => '775',
             app_path() => '775',
             resource_path() => '775',

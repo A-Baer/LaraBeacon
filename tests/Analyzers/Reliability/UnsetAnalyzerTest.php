@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\UnsetAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\UnsetStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\UnsetAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\UnsetStub;
 
 class UnsetAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,14 +16,12 @@ class UnsetAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(UnsetAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_invalid_unset_statements()
     {
         $this->setBasePathFrom(UnsetStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(UnsetAnalyzer::class, $this->getClassStubPath(UnsetStub::class), 9);
         $this->assertFailedAt(UnsetAnalyzer::class, $this->getClassStubPath(UnsetStub::class), 10);
@@ -33,14 +31,12 @@ class UnsetAnalyzerTest extends AnalyzerTestCase
         $this->assertHasErrors(UnsetAnalyzer::class, 5);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_unset_statements()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(UnsetAnalyzer::class);
     }

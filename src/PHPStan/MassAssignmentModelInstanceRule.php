@@ -1,12 +1,13 @@
 <?php
 
-namespace Enlightn\Enlightn\PHPStan;
+namespace BaerSoftware\LaraBeacon\PHPStan;
 
 use Illuminate\Database\Eloquent\Model;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
+use PHPStan\Rules\RuleErrorBuilder;
 
 class MassAssignmentModelInstanceRule implements Rule
 {
@@ -40,11 +41,11 @@ class MassAssignmentModelInstanceRule implements Rule
 
         if (isset($node->args[0]) && $this->retrievesRequestInput($node->args[0], $scope)) {
             return [
-                sprintf(
+                RuleErrorBuilder::message(sprintf(
                     "Call to %s method on a Model instance with request data may result in a "
                     ."mass assignment vulnerability.",
                     $methodName
-                ),
+                ))->identifier('larabeacon.massAssignment')->build(),
             ];
         }
 

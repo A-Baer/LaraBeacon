@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\UpToDateDependencyAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithComposer;
+use BaerSoftware\LaraBeacon\Analyzers\Security\UpToDateDependencyAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithComposer;
 
 class UpToDateDependencyAnalyzerTest extends AnalyzerTestCase
 {
@@ -19,12 +19,10 @@ class UpToDateDependencyAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(UpToDateDependencyAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_up_to_date_dependencies()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(UpToDateDependencyAnalyzer::class);
     }

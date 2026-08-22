@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -59,7 +59,7 @@ class DatabaseStatusAnalyzer extends ReliabilityAnalyzer
      */
     public function handle()
     {
-        $databaseConnectionsToCheck = config('enlightn.database_connections', [
+        $databaseConnectionsToCheck = config('larabeacon.database_connections', [
            config('database.default'),
         ]);
 

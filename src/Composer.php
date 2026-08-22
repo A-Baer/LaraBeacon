@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn;
+namespace BaerSoftware\LaraBeacon;
 
 use Illuminate\Support\Composer as BaseComposer;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Performance\AutoloaderOptimizationAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Performance\AutoloaderOptimizationAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 
 class AutoloaderOptimizationAnalyzerTest extends AnalyzerTestCase
 {
@@ -14,30 +14,26 @@ class AutoloaderOptimizationAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(AutoloaderOptimizationAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skips_in_local()
     {
         $this->app->config->set('app.env', 'local');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(AutoloaderOptimizationAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_non_optimized_autoloader()
     {
         $this->app->config->set('app.env', 'production');
 
-        $this->app->setBasePath(
-            realpath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR)
-        );
+        // The active Composer autoloader must be found even if the Laravel base
+        // path does not contain a conventional vendor directory.
+        $this->app->setBasePath(sys_get_temp_dir().'/larabeacon-custom-vendor-app');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(AutoloaderOptimizationAnalyzer::class);
     }

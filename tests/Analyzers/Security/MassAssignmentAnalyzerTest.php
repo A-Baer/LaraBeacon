@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\MassAssignmentAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\MassAssignmentStub;
+use BaerSoftware\LaraBeacon\Analyzers\Security\MassAssignmentAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\MassAssignmentStub;
 
 class MassAssignmentAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,14 +16,12 @@ class MassAssignmentAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(MassAssignmentAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_mass_assignment_vulnerabilities()
     {
         $this->setBasePathFrom(MassAssignmentStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(MassAssignmentAnalyzer::class, $this->getClassStubPath(MassAssignmentStub::class), 26);
         $this->assertFailedAt(MassAssignmentAnalyzer::class, $this->getClassStubPath(MassAssignmentStub::class), 33);
@@ -48,14 +46,12 @@ class MassAssignmentAnalyzerTest extends AnalyzerTestCase
         $this->assertHasErrors(MassAssignmentAnalyzer::class, 9);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_injection_call()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(MassAssignmentAnalyzer::class);
     }

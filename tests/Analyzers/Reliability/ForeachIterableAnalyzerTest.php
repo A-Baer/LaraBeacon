@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\ForeachIterableAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\ForeachIterableStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\ForeachIterableAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\ForeachIterableStub;
 
 class ForeachIterableAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,28 +16,24 @@ class ForeachIterableAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(ForeachIterableAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_non_iterable_foreach()
     {
         $this->setBasePathFrom(ForeachIterableStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(ForeachIterableAnalyzer::class, $this->getClassStubPath(ForeachIterableStub::class), 10);
         $this->assertFailedAt(ForeachIterableAnalyzer::class, $this->getClassStubPath(ForeachIterableStub::class), 19);
         $this->assertHasErrors(ForeachIterableAnalyzer::class, 2);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_foreach()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(ForeachIterableAnalyzer::class);
     }

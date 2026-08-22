@@ -4,10 +4,13 @@
 .php_cs.cache
 .php-cs-fixer.cache
 .phpunit.result.cache
+.phpunit.cache
 build
 /composer.lock
 coverage
 docs
+!docs/
+!docs/PRODUCT_ARCHITECTURE.md
 phpunit.xml
 vendor
 node_modules

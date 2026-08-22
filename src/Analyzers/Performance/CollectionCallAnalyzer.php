@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Concerns\ParsesPHPStanAnalysis;
-use Enlightn\Enlightn\PHPStan;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\ParsesPHPStanAnalysis;
+use BaerSoftware\LaraBeacon\PHPStan;
 
 class CollectionCallAnalyzer extends PerformanceAnalyzer
 {
@@ -46,7 +46,7 @@ class CollectionCallAnalyzer extends PerformanceAnalyzer
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\PHPStan $phpStan
+     * @param \BaerSoftware\LaraBeacon\PHPStan $phpStan
      * @return void
      */
     public function handle(PHPStan $phpStan)

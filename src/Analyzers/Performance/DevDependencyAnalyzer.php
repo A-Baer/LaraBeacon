@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Analyzers\Performance;
 
-use Enlightn\Enlightn\Composer;
+use BaerSoftware\LaraBeacon\Composer;
 use Illuminate\Support\Str;
 
 class DevDependencyAnalyzer extends PerformanceAnalyzer
@@ -50,7 +50,7 @@ class DevDependencyAnalyzer extends PerformanceAnalyzer
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\Composer $composer
+     * @param \BaerSoftware\LaraBeacon\Composer $composer
      * @return void
      */
     public function handle(Composer $composer)

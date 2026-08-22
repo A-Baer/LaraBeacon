@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Reporting;
+namespace BaerSoftware\LaraBeacon\Reporting;
 
 use GuzzleHttp\Client as GuzzleClient;
 
@@ -14,7 +14,7 @@ class Client
     public function __construct(
         $username,
         $apiToken,
-        string $baseUrl = 'https://www.laravel-enlightn.com/api/',
+        string $baseUrl,
         float $timeout = 10.0
     ) {
         $this->client = new GuzzleClient([
@@ -81,7 +81,7 @@ class Client
      * @param string $url
      * @param array $data
      * @return array|string
-     * @throws \Enlightn\Enlightn\Reporting\UnauthorizedException|\Enlightn\Enlightn\Reporting\BadResponseException
+     * @throws \BaerSoftware\LaraBeacon\Reporting\UnauthorizedException|\BaerSoftware\LaraBeacon\Reporting\BadResponseException
      */
     public function request(string $httpVerb, string $url, array $data = [])
     {

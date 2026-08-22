@@ -1,13 +1,13 @@
 <?php
 
-namespace Enlightn\Enlightn;
+namespace BaerSoftware\LaraBeacon;
 
-use Enlightn\Enlightn\Inspection\Inspector;
-use Enlightn\Enlightn\Reporting\API;
-use Enlightn\Enlightn\Reporting\Client;
+use BaerSoftware\LaraBeacon\Inspection\Inspector;
+use BaerSoftware\LaraBeacon\Reporting\API;
+use BaerSoftware\LaraBeacon\Reporting\Client;
 use Illuminate\Support\ServiceProvider;
 
-class EnlightnServiceProvider extends ServiceProvider
+class LaraBeaconServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any package services.
@@ -18,8 +18,8 @@ class EnlightnServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/enlightn.php' => config_path('enlightn.php'),
-            ], 'enlightn');
+                __DIR__.'/../config/larabeacon.php' => config_path('larabeacon.php'),
+            ], 'larabeacon');
         }
     }
 
@@ -31,15 +31,15 @@ class EnlightnServiceProvider extends ServiceProvider
     public function register()
     {
         $this->commands([
-            Console\EnlightnCommand::class,
+            Console\LaraBeaconCommand::class,
             Console\BaselineCommand::class,
         ]);
 
-        $this->mergeConfigFrom(__DIR__.'/../config/enlightn.php', 'enlightn');
+        $this->mergeConfigFrom(__DIR__.'/../config/larabeacon.php', 'larabeacon');
 
         $this->app->singleton(Inspector::class);
         $this->app->resolving(Inspector::class, function ($inspector) {
-            $inspector->start(Enlightn::$filePaths->toArray());
+            $inspector->start(LaraBeacon::$filePaths?->toArray() ?? []);
         });
 
         $this->app->singleton(Composer::class, function ($app) {
@@ -50,7 +50,7 @@ class EnlightnServiceProvider extends ServiceProvider
             return new PHPStan($app->make('files'), $app->basePath());
         });
         $this->app->afterResolving(PHPStan::class, function ($PHPStan) {
-            $PHPStan->start(Enlightn::$filePaths->toArray());
+            $PHPStan->start(LaraBeacon::$filePaths?->toArray() ?? []);
         });
 
         $this->app->singleton(NPM::class, function ($app) {
@@ -58,9 +58,18 @@ class EnlightnServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(API::class, function ($app) {
+            $endpoint = $app->config->get('larabeacon.cloud.endpoint');
+
+            if (empty($endpoint)) {
+                throw new \LogicException(
+                    'LaraBeacon Cloud reporting is not configured. Set LARABEACON_CLOUD_ENDPOINT first.'
+                );
+            }
+
             $client = new Client(
-                $app->config->get('enlightn.credentials.username'),
-                $app->config->get('enlightn.credentials.api_token')
+                $app->config->get('larabeacon.cloud.username'),
+                $app->config->get('larabeacon.cloud.api_token'),
+                $endpoint
             );
 
             return new API($client);

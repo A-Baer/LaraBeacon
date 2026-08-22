@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Concerns\AnalyzesMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesMiddleware;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Filesystem\Filesystem;

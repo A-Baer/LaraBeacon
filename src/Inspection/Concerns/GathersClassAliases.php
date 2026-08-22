@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Inspection\Concerns;
+namespace BaerSoftware\LaraBeacon\Inspection\Concerns;
 
 use PhpParser\Node\Stmt\UseUse;
 

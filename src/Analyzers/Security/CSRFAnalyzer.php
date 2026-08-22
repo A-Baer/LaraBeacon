@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Concerns\AnalyzesMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesMiddleware;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Router;

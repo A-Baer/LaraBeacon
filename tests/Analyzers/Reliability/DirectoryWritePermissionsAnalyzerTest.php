@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\DirectoryWritePermissionsAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\DirectoryWritePermissionsAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use Illuminate\Filesystem\Filesystem;
 use Mockery as m;
 
@@ -24,26 +24,22 @@ class DirectoryWritePermissionsAnalyzerTest extends AnalyzerTestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_writable_directories()
     {
         $this->files->shouldReceive('isWritable')->andReturn(true);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(DirectoryWritePermissionsAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_unwritable_directories()
     {
         $this->files->shouldReceive('isWritable')->andReturn(false);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(DirectoryWritePermissionsAnalyzer::class);
     }

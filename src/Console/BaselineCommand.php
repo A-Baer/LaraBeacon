@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Console;
+namespace BaerSoftware\LaraBeacon\Console;
 
-use Enlightn\Enlightn\Analyzers\Trace;
-use Enlightn\Enlightn\CodeCorrection\ConfigManipulator;
-use Enlightn\Enlightn\Enlightn;
+use BaerSoftware\LaraBeacon\Analyzers\Trace;
+use BaerSoftware\LaraBeacon\CodeCorrection\ConfigManipulator;
+use BaerSoftware\LaraBeacon\LaraBeacon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -16,8 +16,8 @@ class BaselineCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'enlightn:baseline
-                            {--ci : Run Enlightn in CI Mode}';
+    protected $signature = 'larabeacon:baseline
+                            {--ci : Run LaraBeacon in CI mode}';
 
     /**
      * The console command description.
@@ -52,22 +52,22 @@ class BaselineCommand extends Command
         $this->setColors();
         $this->line(require __DIR__.DIRECTORY_SEPARATOR.'logo.php');
         $this->output->newLine();
-        $this->line('Please wait while Enlightn scans your code base...');
+        $this->line('Please wait while LaraBeacon scans your code base...');
         $this->output->newLine();
 
         // Reset ignored errors to establish a complete baseline.
-        config()->set('enlightn.ignore_errors', []);
+        config()->set('larabeacon.ignore_errors', []);
 
         if ($this->option('ci')) {
-            Enlightn::filterAnalyzersForCI();
+            LaraBeacon::filterAnalyzersForCI();
         }
 
-        Enlightn::register();
+        LaraBeacon::register();
 
-        $this->progressbar = $this->output->createProgressBar(count(Enlightn::$analyzerClasses));
+        $this->progressbar = $this->output->createProgressBar(count(LaraBeacon::$analyzerClasses));
 
-        Enlightn::using([$this, 'parseAnalyzerResult']);
-        Enlightn::run($this->laravel);
+        LaraBeacon::using([$this, 'parseAnalyzerResult']);
+        LaraBeacon::run($this->laravel);
 
         $this->progressbar->finish();
         $this->output->newLine();
@@ -121,38 +121,31 @@ class BaselineCommand extends Command
      */
     protected function updateConfig()
     {
-        if (! file_exists(config_path('enlightn.php'))) {
-            if (Enlightn::isPro()) {
-                $this->call('vendor:publish', ['--tag' => 'enlightnpro']);
+        if (! file_exists(config_path('larabeacon.php'))) {
+            if (LaraBeacon::isPro()) {
+                $this->call('vendor:publish', ['--tag' => 'larabeacon-pro']);
             } else {
-                $this->call('vendor:publish', ['--tag' => 'enlightn']);
+                $this->call('vendor:publish', ['--tag' => 'larabeacon']);
             }
         }
 
-        (new ConfigManipulator)->replace(config_path('enlightn.php'), [
+        (new ConfigManipulator)->replace(config_path('larabeacon.php'), [
             'dont_report' => $this->dont_report,
             'ignore_errors' => $this->ignore_errors,
         ]);
 
-        $this->info("Successfully updated config/enlightn.php with new baseline values.");
+        $this->info('Successfully updated config/larabeacon.php with new baseline values.');
     }
 
     /**
-     * Set the console colors for Enlightn's logo.
+     * Set the console colors for LaraBeacon's logo.
      *
      * @return void
      */
     protected function setColors()
     {
         collect([
-            'e' => 'green',
-            'n' => 'green',
-            'l' => 'green',
-            'i' => 'green',
-            'g' => 'green',
-            'h' => 'green',
-            't' => 'green',
-            'ns' => 'green',
+            'lb' => 'green',
         ])->each(function ($color, $tag) {
             $this->output->getFormatter()->setStyle($tag, new OutputFormatterStyle($color));
         });

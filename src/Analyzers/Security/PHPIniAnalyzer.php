@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
 class PHPIniAnalyzer extends SecurityAnalyzer
 {
@@ -58,7 +58,7 @@ class PHPIniAnalyzer extends SecurityAnalyzer
      */
     public function handle()
     {
-        $secureSettings = config('enlightn.php_secure_settings', [
+        $secureSettings = config('larabeacon.php_secure_settings', [
             'allow_url_fopen' => false,
             'allow_url_include' => false,
             'expose_php' => false,

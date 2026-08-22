@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Performance\ConfigCachingAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Performance\ConfigCachingAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 
 class ConfigCachingAnalyzerTest extends AnalyzerTestCase
 {
@@ -14,58 +14,50 @@ class ConfigCachingAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(ConfigCachingAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_cached_config_in_local()
     {
         $this->app->config->set('app.env', 'local');
 
-        touch($this->app->getCachedConfigPath());
+        $this->app->instance('config_loaded_from_cache', true);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(ConfigCachingAnalyzer::class);
 
-        unlink($this->app->getCachedConfigPath());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_non_cached_config_in_production()
     {
         $this->app->config->set('app.env', 'production');
+        $this->app->instance('config_loaded_from_cache', false);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(ConfigCachingAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_cached_config_in_production()
     {
         $this->app->config->set('app.env', 'production');
 
-        touch($this->app->getCachedConfigPath());
+        $this->app->instance('config_loaded_from_cache', true);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(ConfigCachingAnalyzer::class);
 
-        unlink($this->app->getCachedConfigPath());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_non_cached_config_in_local()
     {
         $this->app->config->set('app.env', 'local');
+        $this->app->instance('config_loaded_from_cache', false);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(ConfigCachingAnalyzer::class);
     }

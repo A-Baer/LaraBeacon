@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\FilePermissionsAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Security\FilePermissionsAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithMiddleware;
 
 class FilePermissionsAnalyzerTest extends AnalyzerTestCase
 {
@@ -17,30 +17,26 @@ class FilePermissionsAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(FilePermissionsAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_max_permissions()
     {
-        $this->app->config->set('enlightn.allowed_permissions', [
+        $this->app->config->set('larabeacon.allowed_permissions', [
             __DIR__ => '777',
         ]);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(FilePermissionsAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fails_for_min_permissions()
     {
-        $this->app->config->set('enlightn.allowed_permissions', [
+        $this->app->config->set('larabeacon.allowed_permissions', [
             __DIR__ => '000',
         ]);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(FilePermissionsAnalyzer::class);
     }

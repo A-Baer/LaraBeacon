@@ -4,11 +4,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Enlightn Analyzer Classes
+    | LaraBeacon Analyzer Classes
     |--------------------------------------------------------------------------
     |
     | The following array lists the "analyzer" classes that will be registered
-    | with Enlightn. These analyzers run an analysis on the application via
+    | with LaraBeacon. These analyzers run an analysis on the application via
     | various methods such as static analysis. Feel free to customize it.
     |
     */
@@ -22,7 +22,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Enlightn Analyzer Paths
+    | LaraBeacon Analyzer Paths
     |--------------------------------------------------------------------------
     |
     | The following array lists the "analyzer" paths that will be searched
@@ -32,13 +32,12 @@ return [
     |
     */
     'analyzer_paths' => [
-        'Enlightn\\Enlightn\\Analyzers' => base_path('vendor/enlightn/enlightn/src/Analyzers'),
-        'Enlightn\\EnlightnPro\\Analyzers' => base_path('vendor/enlightn/enlightnpro/src/Analyzers'),
+        'BaerSoftware\\LaraBeacon\\Analyzers' => \BaerSoftware\LaraBeacon\LaraBeacon::analyzerPath(),
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Enlightn Base Path
+    | LaraBeacon Base Path
     |--------------------------------------------------------------------------
     |
     | The following array lists the directories that will be scanned for
@@ -62,7 +61,7 @@ return [
     | analyzers if the environment does not match.
     |
     */
-    'skip_env_specific' => env('ENLIGHTN_SKIP_ENVIRONMENT_SPECIFIC', false),
+    'skip_env_specific' => env('LARABEACON_SKIP_ENVIRONMENT_SPECIFIC', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +69,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Specify any guest url or path (preferably your app's login url) here. This
-    | would be used by Enlightn to inspect your application HTTP headers.
+    | would be used by LaraBeacon to inspect your application HTTP headers.
     | Example: '/login'.
     |
     */
@@ -83,9 +82,9 @@ return [
     |
     | Specify the analyzer classes that you wish to exclude from reporting. This
     | means that if any of these analyzers fail, they will not be counted
-    | towards the exit status of the Enlightn command. This is useful
+    | towards the exit status of the LaraBeacon command. This is useful
     | if you wish to run the command in your CI/CD pipeline.
-    | Example: [\Enlightn\Enlightn\Analyzers\Security\XSSAnalyzer::class].
+    | Example: [\BaerSoftware\LaraBeacon\Analyzers\Security\XSSAnalyzer::class].
     |
     */
     'dont_report' => [],
@@ -97,7 +96,7 @@ return [
     |
     | Use this config option to ignore specific errors. The key of this array
     | would be the analyzer class and the value would be an associative
-    | array with path and details. Run php artisan enlightn:baseline
+    | array with path and details. Run php artisan larabeacon:baseline
     | to auto-generate this. Patterns are supported in details.
     |
     */
@@ -121,31 +120,40 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Credentials
+    | LaraBeacon Cloud
     |--------------------------------------------------------------------------
     |
-    | The following credentials are used to share your Enlightn report with
-    | the Enlightn Github Bot. This allows the bot to compile the report
-    | and add review comments on your pull requests.
+    | Cloud reporting is optional and disabled until an endpoint is configured.
+    | The public package remains fully usable offline while LaraBeacon Cloud can
+    | later be connected without coupling the analyzer core to the SaaS.
     |
     */
-    'credentials' => [
-        'username' => env('ENLIGHTN_USERNAME'),
-        'api_token' => env('ENLIGHTN_API_TOKEN'),
+    'cloud' => [
+        'endpoint' => env('LARABEACON_CLOUD_ENDPOINT'),
+        'username' => env('LARABEACON_CLOUD_USERNAME'),
+        'api_token' => env('LARABEACON_CLOUD_API_TOKEN'),
     ],
 
-    // Set this value to your Github repo for integrating with the Enlightn Github Bot
+    // Set this value to your GitHub repository for future LaraBeacon Cloud integration.
     // Format: "myorg/myrepo" like "laravel/framework".
-    'github_repo' => env('ENLIGHTN_GITHUB_REPO'),
+    'github_repo' => env('LARABEACON_GITHUB_REPO'),
 
-    // Set to true to restrict the max number of files displayed in the enlightn
+    // Set to true to restrict the max number of files displayed in the LaraBeacon
     // command for each check. Set to false to display all files.
     'compact_lines' => true,
 
     // List your commercial packages (licensed by you) below, so that they are not
     // flagged by the License Analyzer.
     'commercial_packages' => [
-        'enlightn/enlightnpro',
+        'baer-software/larabeacon-pro',
+    ],
+
+    // Minified bundles usually contain a few very long lines. These thresholds
+    // avoid false positives for modern Vite builds while still flagging normal,
+    // human-formatted JavaScript and CSS.
+    'minification' => [
+        'max_lines' => 10,
+        'min_average_line_length' => 120,
     ],
 
     'allowed_permissions' => [
@@ -175,12 +183,12 @@ return [
     | PHPStan Runtime configurations
     |--------------------------------------------------------------------------
     |
-    | This setting allows us to pass through memory limits from artisan to phpstan.
-    | using `php -d memory_limit=1G artisan enlightn`.
+    | PHPStan analyzes the whole application in a worker process. Configure its
+    | memory limit independently so common 128 MB CLI defaults do not abort it.
     */
     'phpstan' => [
         '--error-format' => 'json',
         '--no-progress' => true,
-        '--memory-limit' => ini_get('memory_limit'),
+        '--memory-limit' => env('LARABEACON_PHPSTAN_MEMORY_LIMIT', '1G'),
     ],
 ];

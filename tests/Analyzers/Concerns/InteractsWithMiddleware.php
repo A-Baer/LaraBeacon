@@ -1,9 +1,9 @@
 <?php
 
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Concerns;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns;
 
-use Enlightn\Enlightn\Inspection\Reflector;
+use BaerSoftware\LaraBeacon\Inspection\Reflector;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Session\Middleware\StartSession;
@@ -28,7 +28,7 @@ trait InteractsWithMiddleware
      * @param string $middlewareGroup
      * @param string $middlewareClass
      * @throws \ReflectionException
-     * @see \Enlightn\Enlightn\Analyzers\Concerns\AnalyzesMiddleware::getGlobalMiddleware()
+     * @see \BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesMiddleware::getGlobalMiddleware()
      */
     protected function registerGroupMiddleware(string $middlewareGroup, string $middlewareClass)
     {
@@ -48,7 +48,7 @@ trait InteractsWithMiddleware
      * @param string $alias
      * @param string $middlewareClass
      * @throws \ReflectionException
-     * @see \Enlightn\Enlightn\Analyzers\Concerns\AnalyzesMiddleware::getGlobalMiddleware()
+     * @see \BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesMiddleware::getGlobalMiddleware()
      */
     protected function registerRouteMiddlewareAlias(string $alias, string $middlewareClass)
     {

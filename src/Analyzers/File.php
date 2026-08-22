@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers;
+namespace BaerSoftware\LaraBeacon\Analyzers;
 
 use SplFileObject;
 

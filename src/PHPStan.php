@@ -1,11 +1,13 @@
 <?php
 
-namespace Enlightn\Enlightn;
+namespace BaerSoftware\LaraBeacon;
 
-use Enlightn\Enlightn\Analyzers\Trace;
+use BaerSoftware\LaraBeacon\Analyzers\Trace;
+use Composer\InstalledVersions;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use RuntimeException;
 use Symfony\Component\Process\Process;
 
 class PHPStan
@@ -37,6 +39,13 @@ class PHPStan
      * @var string|null
      */
     protected $configPath;
+
+    /**
+     * The isolated PHPStan cache directory for the current run.
+     *
+     * @var string|null
+     */
+    protected $runtimeTempPath;
 
     /**
      * Create a new PHPStan manager instance.
@@ -123,12 +132,12 @@ class PHPStan
      */
     public function start($paths, $configPath = null)
     {
-        if (file_exists($stubFile = collect([$this->rootPath, 'vendor' , 'larastan', 'larastan', 'stubs', 'common', 'Http', 'Request.stub'])->join(DIRECTORY_SEPARATOR))) {
-            // Neither PHPStan nor Larastan supports stub overriding, so we have no choice but to overwrite the Request.stub file in the vendor/larastan/larastan/stubs/common/Http directory
-            copy(collect([__DIR__, '..', 'stubs', 'Request.stub'])->join(DIRECTORY_SEPARATOR), $stubFile);
-        }
+        $runtimeConfigPath = null;
+        $configPath = $configPath ?? $this->configPath;
 
-        $configPath = $configPath ?? $this->configPath ?? (__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'phpstan.neon');
+        if (is_null($configPath)) {
+            $configPath = $runtimeConfigPath = $this->createRuntimeConfig();
+        }
 
         $options = ['analyse', '--configuration='.$configPath];
 
@@ -138,9 +147,124 @@ class PHPStan
             $options[] = $path;
         }
 
-        $this->result = json_decode($this->runCommand($options, false), true);
+        try {
+            $output = $this->runCommand($options);
+            $this->result = $this->decodeResult($output);
+
+            if (is_null($this->result)) {
+                throw new RuntimeException('PHPStan did not return a valid JSON result: '.trim($output));
+            }
+        } finally {
+            if (! is_null($runtimeConfigPath)) {
+                $this->files->delete($runtimeConfigPath);
+            }
+
+            if (! is_null($this->runtimeTempPath)) {
+                $this->files->deleteDirectory($this->runtimeTempPath);
+                $this->runtimeTempPath = null;
+            }
+        }
 
         return $this;
+    }
+
+    /**
+     * Build a temporary PHPStan configuration using the host application's
+     * Composer dependencies. Package-relative vendor paths do not exist when
+     * LaraBeacon itself is installed below vendor/baer-software.
+     */
+    protected function createRuntimeConfig(): string
+    {
+        $paths = [
+            $this->packageInstallPath('larastan/larastan').'/extension.neon',
+            $this->packageInstallPath('phpstan/phpstan-deprecation-rules').'/rules.neon',
+            realpath(__DIR__.'/../phpstan.neon'),
+        ];
+
+        $configPath = sys_get_temp_dir().'/larabeacon-phpstan-'.bin2hex(random_bytes(12)).'.neon';
+        $this->runtimeTempPath = sys_get_temp_dir().'/larabeacon-phpstan-cache-'.bin2hex(random_bytes(12));
+        $contents = "includes:\n".collect($paths)
+            ->map(fn ($path) => '    - '.json_encode($path, JSON_THROW_ON_ERROR))
+            ->join("\n")."\nparameters:\n    tmpDir: ".json_encode(
+                $this->runtimeTempPath,
+                JSON_THROW_ON_ERROR
+            )."\n";
+
+        $this->files->put($configPath, $contents);
+
+        return $configPath;
+    }
+
+    /**
+     * Decode PHPStan's JSON result, allowing for informational output that
+     * newer PHPStan versions may print before the JSON payload.
+     */
+    protected function decodeResult(string $output): ?array
+    {
+        $result = json_decode($output, true);
+
+        if (is_array($result)) {
+            return $result;
+        }
+
+        foreach (array_reverse(preg_split('/\R/', trim($output)) ?: []) as $line) {
+            $result = json_decode($line, true);
+
+            if (is_array($result)) {
+                return $result;
+            }
+        }
+
+        $length = strlen($output);
+        $start = null;
+        $depth = 0;
+        $inString = false;
+        $escaped = false;
+
+        for ($index = 0; $index < $length; $index++) {
+            $character = $output[$index];
+
+            if (is_null($start)) {
+                if ($character === '{') {
+                    $start = $index;
+                    $depth = 1;
+                }
+
+                continue;
+            }
+
+            if ($inString) {
+                if ($escaped) {
+                    $escaped = false;
+                } elseif ($character === '\\') {
+                    $escaped = true;
+                } elseif ($character === '"') {
+                    $inString = false;
+                }
+
+                continue;
+            }
+
+            if ($character === '"') {
+                $inString = true;
+            } elseif ($character === '{') {
+                $depth++;
+            } elseif ($character === '}') {
+                $depth--;
+
+                if ($depth === 0) {
+                    $result = json_decode(substr($output, $start, $index - $start + 1), true);
+
+                    if (is_array($result)) {
+                        return $result;
+                    }
+
+                    $start = null;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -183,7 +307,21 @@ class PHPStan
      */
     protected function findPHPStan()
     {
-        return [$this->rootPath.'/vendor/bin/phpstan'];
+        return [PHP_BINARY, $this->packageInstallPath('phpstan/phpstan').'/phpstan.phar'];
+    }
+
+    /**
+     * Resolve a dependency independently of Composer's configured vendor path.
+     */
+    protected function packageInstallPath(string $package): string
+    {
+        $path = InstalledVersions::getInstallPath($package);
+
+        if (is_null($path)) {
+            throw new RuntimeException("Unable to locate the installed Composer package [{$package}].");
+        }
+
+        return $path;
     }
 
     /**
@@ -219,7 +357,7 @@ class PHPStan
     {
         $result = [];
 
-        $configs = config('enlightn.phpstan', ['--error-format' => 'json', '--no-progress' => true]);
+        $configs = config('larabeacon.phpstan', ['--error-format' => 'json', '--no-progress' => true]);
 
         foreach ($configs as $name => $value) {
             $option = is_bool($value) ? $name : implode('=', [$name, $value]);

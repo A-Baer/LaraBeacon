@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Concerns\ParsesConfigurationFiles;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\ParsesConfigurationFiles;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Str;

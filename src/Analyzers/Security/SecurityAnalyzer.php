@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Analyzer;
+use BaerSoftware\LaraBeacon\Analyzers\Analyzer;
 
 abstract class SecurityAnalyzer extends Analyzer
 {

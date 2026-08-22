@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\Composer;
+use BaerSoftware\LaraBeacon\Composer;
 
 class LicenseAnalyzer extends SecurityAnalyzer
 {
@@ -51,24 +51,24 @@ class LicenseAnalyzer extends SecurityAnalyzer
         return "Your application has a total of {$this->blacklistedPackages->count()} package(s) that you may not be legally "
             ."allowed to use. By default, we assume the MIT, Apache-2.0, ISC, BSD Clause 2 & 3 and LGPL licenses to be "
             ."legally valid for use for proprietary or commercial applications. However, you are free to change this "
-            ."in the Enlightn config. Unsafe packages include {$this->formatBlacklistedPackages()}";
+            ."in the LaraBeacon config. Unsafe packages include {$this->formatBlacklistedPackages()}";
     }
 
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\Composer $composer
+     * @param \BaerSoftware\LaraBeacon\Composer $composer
      * @return void
      */
     public function handle(Composer $composer)
     {
-        $whitelistedLicenses = array_map('strtoupper', config('enlightn.license_whitelist', [
+        $whitelistedLicenses = array_map('strtoupper', config('larabeacon.license_whitelist', [
             'Apache-2.0', 'Apache2', 'BSD-2-Clause', 'BSD-3-Clause', 'LGPL-2.1-only', 'LGPL-2.1',
             'LGPL-2.1-or-later', 'LGPL-3.0', 'LGPL-3.0-only', 'LGPL-3.0-or-later', 'MIT', 'ISC',
             'CC0-1.0', 'Unlicense', 'WTFPL',
         ]));
 
-        $commercialPackages = config('enlightn.commercial_packages', []);
+        $commercialPackages = config('larabeacon.commercial_packages', []);
 
         $this->allPackages = $composer->getLicenses();
         $this->blacklistedPackages = $this->allPackages->map(function ($licenses) {

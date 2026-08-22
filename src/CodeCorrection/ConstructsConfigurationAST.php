@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\CodeCorrection;
+namespace BaerSoftware\LaraBeacon\CodeCorrection;
 
 use Illuminate\Support\Str;
 use PhpParser\Node;

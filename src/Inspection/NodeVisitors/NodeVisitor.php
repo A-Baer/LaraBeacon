@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Inspection\NodeVisitors;
+namespace BaerSoftware\LaraBeacon\Inspection\NodeVisitors;
 
-use Enlightn\Enlightn\Inspection\InspectionLine;
+use BaerSoftware\LaraBeacon\Inspection\InspectionLine;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\NodeVisitorAbstract;

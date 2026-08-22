@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Console\Formatters;
+namespace BaerSoftware\LaraBeacon\Console\Formatters;
 
 use Illuminate\Console\Command;
 

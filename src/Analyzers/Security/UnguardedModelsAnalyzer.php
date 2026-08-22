@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Concerns\InspectsCode;
-use Enlightn\Enlightn\Inspection\Inspector;
-use Enlightn\Enlightn\Inspection\QueryBuilder;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\InspectsCode;
+use BaerSoftware\LaraBeacon\Inspection\Inspector;
+use BaerSoftware\LaraBeacon\Inspection\QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
 
 class UnguardedModelsAnalyzer extends SecurityAnalyzer
@@ -51,7 +51,7 @@ class UnguardedModelsAnalyzer extends SecurityAnalyzer
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\Inspection\Inspector $inspector
+     * @param \BaerSoftware\LaraBeacon\Inspection\Inspector $inspector
      * @return void
      */
     public function handle(Inspector $inspector)

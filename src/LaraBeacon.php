@@ -1,15 +1,15 @@
 <?php
 
-namespace Enlightn\Enlightn;
+namespace BaerSoftware\LaraBeacon;
 
-use Enlightn\Enlightn\Analyzers\Analyzer;
+use BaerSoftware\LaraBeacon\Analyzers\Analyzer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 
-class Enlightn
+class LaraBeacon
 {
     /**
      * The registered analyzer instances.
@@ -68,7 +68,7 @@ class Enlightn
     public static $rethrowExceptions = false;
 
     /**
-     * Register the Enlightn analyzers if Enlightn is enabled.
+     * Register the LaraBeacon analyzers.
      *
      * @param array $analyzerClasses
      * @return void
@@ -81,7 +81,7 @@ class Enlightn
     }
 
     /**
-     * Run all the registered Enlightn analyzers.
+     * Run all the registered LaraBeacon analyzers.
      *
      * @param \Illuminate\Contracts\Foundation\Application $app
      * @return void
@@ -118,19 +118,27 @@ class Enlightn
     }
 
     /**
-     * Determine if Enlightn Pro is installed.
+     * Determine if LaraBeacon Pro is installed.
      *
      * @return bool
      */
     public static function isPro()
     {
-        return class_exists(\Enlightn\EnlightnPro\EnlightnProServiceProvider::class);
+        return class_exists(\BaerSoftware\LaraBeaconPro\LaraBeaconProServiceProvider::class);
+    }
+
+    /**
+     * Get the package-owned analyzer directory.
+     */
+    public static function analyzerPath(): string
+    {
+        return __DIR__.'/Analyzers';
     }
 
     /**
      * Call the after callback on the analyzer.
      *
-     * @param \Enlightn\Enlightn\Analyzers\Analyzer $analyzer
+     * @param \BaerSoftware\LaraBeacon\Analyzers\Analyzer $analyzer
      * @return void
      */
     public static function callAfterCallback(Analyzer $analyzer)
@@ -181,11 +189,11 @@ class Enlightn
     public static function filterAnalyzersForCI()
     {
         static::filterUsing(function ($class) {
-            if (! empty($ciAnalyzers = config('enlightn.ci_mode_analyzers'))) {
+            if (! empty($ciAnalyzers = config('larabeacon.ci_mode_analyzers'))) {
                 return in_array($class, $ciAnalyzers);
             }
 
-            return $class::$runInCI && ! in_array($class, config('enlightn.ci_mode_exclude_analyzers'));
+            return $class::$runInCI && ! in_array($class, config('larabeacon.ci_mode_exclude_analyzers'));
         });
     }
 
@@ -213,7 +221,7 @@ class Enlightn
     }
 
     /**
-     * Flush all the registered Enlightn analyzers and analyzer classes.
+     * Flush all the registered LaraBeacon analyzers and analyzer classes.
      *
      * @return void
      */
@@ -261,7 +269,7 @@ class Enlightn
      */
     public static function getFilesToAnalyze()
     {
-        $paths = collect(config('enlightn.base_path', [
+        $paths = collect(config('larabeacon.base_path', [
             app_path(),
             database_path('migrations'),
             database_path('seeders'),
@@ -288,21 +296,21 @@ class Enlightn
      */
     public static function getAnalyzerPaths()
     {
-        return collect(config('enlightn.analyzer_paths', ['Enlightn\\Enlightn\\Analyzers' => __DIR__.'/Analyzers']))
+        return collect(config('larabeacon.analyzer_paths', [self::class.'\\Analyzers' => __DIR__.'/Analyzers']))
                 ->filter(function ($dir) {
                     return file_exists($dir);
                 })->toArray();
     }
 
     /**
-     * Get the configured Enlightn analyzer classes.
+     * Get the configured LaraBeacon analyzer classes.
      *
      * @return array
      */
     public static function getAnalyzerClasses()
     {
-        if (! in_array('*', Arr::wrap(config('enlightn.analyzers', '*')))) {
-            return Arr::wrap(config('enlightn.analyzers'));
+        if (! in_array('*', Arr::wrap(config('larabeacon.analyzers', '*')))) {
+            return Arr::wrap(config('larabeacon.analyzers'));
         }
 
         $analyzerClasses = [];
@@ -328,7 +336,7 @@ class Enlightn
             }
         });
 
-        if (empty($exclusions = config('enlightn.exclude_analyzers', []))) {
+        if (empty($exclusions = config('larabeacon.exclude_analyzers', []))) {
             return $analyzerClasses;
         }
 
@@ -348,7 +356,7 @@ class Enlightn
     }
 
     /**
-     * Register the configured Enlightn analyzer classes.
+     * Register the configured LaraBeacon analyzer classes.
      *
      * @param array $analyzerClasses
      * @return void
@@ -364,7 +372,7 @@ class Enlightn
     }
 
     /**
-     * Register an Enlightn analyzer class.
+     * Register a LaraBeacon analyzer class.
      *
      * @param string $class
      * @return void
@@ -383,7 +391,7 @@ class Enlightn
     }
 
     /**
-     * Register an Enlightn analyzer category.
+     * Register a LaraBeacon analyzer category.
      *
      * @param string $class
      * @return void

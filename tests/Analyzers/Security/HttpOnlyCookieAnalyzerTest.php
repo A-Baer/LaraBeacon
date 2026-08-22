@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\HttpOnlyCookieAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Security\HttpOnlyCookieAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithMiddleware;
 
 class HttpOnlyCookieAnalyzerTest extends AnalyzerTestCase
 {
@@ -17,40 +17,34 @@ class HttpOnlyCookieAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(HttpOnlyCookieAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_no_http_only()
     {
         $this->registerStatefulGlobalMiddleware();
 
         $this->app->config->set('session.http_only', false);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(HttpOnlyCookieAnalyzer::class, $this->getConfigStubPath('session'), 184);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_http_only()
     {
         $this->registerStatefulGlobalMiddleware();
 
         $this->app->config->set('session.http_only', true);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(HttpOnlyCookieAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skips_for_stateless_apps()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(HttpOnlyCookieAnalyzer::class);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Analyzers\Performance;
 
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 

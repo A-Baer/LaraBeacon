@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers;
+namespace BaerSoftware\LaraBeacon\Analyzers;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Str;
@@ -14,11 +14,11 @@ abstract class Analyzer
     const SEVERITY_INFO = 'info';
 
     /**
-     * The base URL of the Enlightn documentation.
+     * The base URL of the LaraBeacon analyzer documentation.
      *
      * @var string
      */
-    const DOCS_URL = 'https://www.laravel-enlightn.com/docs';
+    const DOCS_URL = 'https://github.com/A-Baer/LaraBeacon/blob/main/src/Analyzers';
 
     /**
      * The category of the analyzer.
@@ -154,7 +154,7 @@ abstract class Analyzer
     /**
      * Push a trace to the traces array.
      *
-     * @param \Enlightn\Enlightn\Analyzers\Trace $trace
+     * @param \BaerSoftware\LaraBeacon\Analyzers\Trace $trace
      * @return $this
      */
     public function pushTrace(Trace $trace)
@@ -239,7 +239,7 @@ abstract class Analyzer
             'error' => ($this->getStatus() == 'failed') ? $this->getErrorMessage() : null,
             'traces' => $this->traces,
             'docsUrl' => $this->getDocsUrl(),
-            'reportable' => ! in_array(static::class, config('enlightn.dont_report', [])),
+            'reportable' => ! in_array(static::class, config('larabeacon.dont_report', [])),
             'class' => static::class,
             'stackTrace' => $this->stackTrace,
         ];
@@ -298,16 +298,7 @@ abstract class Analyzer
      */
     public function getDocsUrl()
     {
-        $page = $this->docsPageName ??
-                Str::kebab(
-                    str_replace(
-                        ['CSRF', 'SQL', 'HSTS', 'NPlusOne', 'XSS', 'PHP'],
-                        ['Csrf', 'Sql', 'Hsts', 'Nplusone', 'Xss', 'Php'],
-                        class_basename(get_class($this))
-                    )
-                );
-
-        return self::DOCS_URL.'/'.strtolower($this->category).'/'.$page.'.html';
+        return self::DOCS_URL.'/'.$this->category.'/'.class_basename(get_class($this)).'.php';
     }
 
     /**
@@ -317,7 +308,7 @@ abstract class Analyzer
      */
     public function isLocalAndShouldSkip()
     {
-        return config('app.env') === 'local' && config('enlightn.skip_env_specific', false);
+        return config('app.env') === 'local' && config('larabeacon.skip_env_specific', false);
     }
 
     /**
@@ -329,7 +320,7 @@ abstract class Analyzer
      */
     public function isIgnoredError(string $path, $details)
     {
-        $ignoredErrors = config('enlightn.ignore_errors', []);
+        $ignoredErrors = config('larabeacon.ignore_errors', []);
 
         if (! isset($ignoredErrors[static::class])) {
             return false;

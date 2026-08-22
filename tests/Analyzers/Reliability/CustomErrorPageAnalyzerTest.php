@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\CustomErrorPageAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\CustomErrorPageAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithMiddleware;
 
 class CustomErrorPageAnalyzerTest extends AnalyzerTestCase
 {
@@ -17,50 +17,42 @@ class CustomErrorPageAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(CustomErrorPageAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skipped_for_stateless_apps()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(CustomErrorPageAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_no_custom_error_pages()
     {
         $this->registerStatefulGlobalMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(CustomErrorPageAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_custom_error_pages()
     {
         $this->registerStatefulGlobalMiddleware();
         $this->app->config->set('view.paths', [$this->getViewStubPath()]);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(CustomErrorPageAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_custom_error_namespace()
     {
         $this->registerStatefulGlobalMiddleware();
         $this->app['view']->replaceNamespace('errors', $this->getViewStubPath().DIRECTORY_SEPARATOR.'errors');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(CustomErrorPageAnalyzer::class);
     }

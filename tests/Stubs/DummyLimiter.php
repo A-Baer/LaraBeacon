@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Stubs;
+namespace BaerSoftware\LaraBeacon\Tests\Stubs;
 
 use Illuminate\Cache\RateLimiter;
 

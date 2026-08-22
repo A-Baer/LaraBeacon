@@ -15,8 +15,8 @@ assignees: ''
 
 * PHP version:
 * Laravel version:
-* Enlightn version:
-* Enlightn Pro version (if applicable):
+* LaraBeacon version:
+* LaraBeacon Pro version (if applicable):
 
 ### Description
 

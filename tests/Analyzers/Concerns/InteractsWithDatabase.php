@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Concerns;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns;
 
 trait InteractsWithDatabase
 {

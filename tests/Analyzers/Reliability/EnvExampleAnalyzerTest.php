@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\EnvExampleAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\EnvStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\EnvExampleAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\EnvStub;
 
 class EnvExampleAnalyzerTest extends AnalyzerTestCase
 {
@@ -17,14 +17,12 @@ class EnvExampleAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(EnvExampleAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_missing_env_variables()
     {
         $this->app->setBasePath(dirname($this->getClassStubPath(EnvStub::class)));
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(EnvExampleAnalyzer::class);
         $this->assertErrorMessageContains(EnvExampleAnalyzer::class, 'KEY_FOUR');

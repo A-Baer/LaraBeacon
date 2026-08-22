@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -63,9 +63,9 @@ class CacheStatusAnalyzer extends ReliabilityAnalyzer
         $payload = Str::random(10);
 
         try {
-            Cache::put('enlightn:check', $payload, 10);
+            Cache::put('larabeacon:check', $payload, 10);
 
-            if (Cache::get('enlightn:check') !== $payload) {
+            if (Cache::get('larabeacon:check') !== $payload) {
                 $this->markFailed();
             }
         } catch (Throwable $e) {

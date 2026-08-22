@@ -1,36 +1,36 @@
 <?php
 
-namespace Enlightn\Enlightn\Console;
+namespace BaerSoftware\LaraBeacon\Console;
 
-use Enlightn\Enlightn\Console\Formatters\AnsiFormatter;
-use Enlightn\Enlightn\Enlightn;
-use Enlightn\Enlightn\Reporting\API;
-use Enlightn\Enlightn\Reporting\JsonReportBuilder;
+use BaerSoftware\LaraBeacon\Console\Formatters\AnsiFormatter;
+use BaerSoftware\LaraBeacon\LaraBeacon;
+use BaerSoftware\LaraBeacon\Reporting\API;
+use BaerSoftware\LaraBeacon\Reporting\JsonReportBuilder;
 use Illuminate\Console\Command;
 
-class EnlightnCommand extends Command
+class LaraBeaconCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'enlightn
+    protected $signature = 'larabeacon
                             {analyzer?* : The analyzer class that you wish to run}
                             {--details : Show details of each failed check}
-                            {--ci : Run Enlightn in CI Mode}
-                            {--report : Compile a report to trigger a comment by the Enlightn Github Bot}
-                            {--review : Enable this for a review of the diff by the Enlightn Github Bot}
+                            {--ci : Run LaraBeacon in CI mode}
+                            {--report : Send this run to LaraBeacon Cloud}
+                            {--review : Request a pull request review from LaraBeacon Cloud}
                             {--show-exceptions : Display the stack trace of exceptions if any}
-                            {--issue= : The issue number of the pull request for the Enlightn Github Bot}
-                            {--hash= : An optional alternative commit hash to report to the Web UI}';
+                            {--issue= : The pull request number for LaraBeacon Cloud}
+                            {--hash= : An optional commit hash to report to LaraBeacon Cloud}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Enlightn your application!';
+    protected $description = 'Inspect your Laravel application with LaraBeacon.';
 
     /**
      * The final result of the analysis.
@@ -61,7 +61,7 @@ class EnlightnCommand extends Command
     protected $analyzerClasses;
 
     /**
-     * @var \Enlightn\Enlightn\Console\Formatters\Formatter
+     * @var \BaerSoftware\LaraBeacon\Console\Formatters\Formatter
      */
     protected $formatter;
 
@@ -73,13 +73,13 @@ class EnlightnCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param \Enlightn\Enlightn\Reporting\API $api
+     * @param \BaerSoftware\LaraBeacon\Reporting\API $api
      * @return int
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \ReflectionException
      * @throws \Throwable
      */
-    public function handle(API $api)
+    public function handle()
     {
         $this->analyzerClasses = $this->argument('analyzer');
 
@@ -88,21 +88,22 @@ class EnlightnCommand extends Command
         $this->formatter->beforeAnalysis($this);
 
         if ($this->option('ci')) {
-            Enlightn::filterAnalyzersForCI();
+            LaraBeacon::filterAnalyzersForCI();
         }
 
-        Enlightn::register($this->analyzerClasses);
+        LaraBeacon::register($this->analyzerClasses);
 
-        $this->totalAnalyzers = Enlightn::totalAnalyzers();
+        $this->totalAnalyzers = LaraBeacon::totalAnalyzers();
         $this->countAnalyzers = 1;
         $this->initializeResult();
 
-        Enlightn::using([$this, 'printAnalyzerOutput']);
-        Enlightn::run($this->laravel);
+        LaraBeacon::using([$this, 'printAnalyzerOutput']);
+        LaraBeacon::run($this->laravel);
 
         $this->formatter->afterAnalysis($this, empty($this->analyzerClasses));
 
         if ($this->option('report')) {
+            $api = $this->laravel->make(API::class);
             $reportBuilder = new JsonReportBuilder();
 
             $metadata = [];
@@ -168,7 +169,7 @@ class EnlightnCommand extends Command
     {
         $this->result = [];
 
-        foreach (array_merge(Enlightn::$categories, ['Total']) as $category) {
+        foreach (array_merge(LaraBeacon::$categories, ['Total']) as $category) {
             $this->result[$category] = [
                 'passed' => 0,
                 'failed' => 0,
@@ -191,7 +192,7 @@ class EnlightnCommand extends Command
     {
         $this->result[$info['category']][$info['status']]++;
         $this->result['Total'][$info['status']]++;
-        if ($info['status'] === 'failed' && ($info['reportable'] ?? true)) {
+        if (in_array($info['status'], ['failed', 'error'], true) && ($info['reportable'] ?? true)) {
             $this->result[$info['category']]['reported']++;
             $this->result['Total']['reported']++;
         }

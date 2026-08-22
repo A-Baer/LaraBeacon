@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Concerns\ParsesConfigurationFiles;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\ParsesConfigurationFiles;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class CachePrefixAnalyzer extends ReliabilityAnalyzer

@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn;
+namespace BaerSoftware\LaraBeacon;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem as BaseFilesystem;

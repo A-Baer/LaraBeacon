@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\FillableForeignKeyAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\FillableForeignKeyStub;
+use BaerSoftware\LaraBeacon\Analyzers\Security\FillableForeignKeyAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\FillableForeignKeyStub;
 
 class FillableForeignKeyAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,27 +16,23 @@ class FillableForeignKeyAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(FillableForeignKeyAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_validation_sql_injection()
     {
         $this->setBasePathFrom(FillableForeignKeyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(FillableForeignKeyAnalyzer::class, $this->getClassStubPath(FillableForeignKeyStub::class), 10);
         $this->assertHasErrors(FillableForeignKeyAnalyzer::class, 1);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_injection_call()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(FillableForeignKeyAnalyzer::class);
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Concerns\AnalyzesMiddleware;
-use Enlightn\Enlightn\Analyzers\Concerns\InspectsCode;
-use Enlightn\Enlightn\Inspection\Inspector;
-use Enlightn\Enlightn\Inspection\QueryBuilder;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\InspectsCode;
+use BaerSoftware\LaraBeacon\Inspection\Inspector;
+use BaerSoftware\LaraBeacon\Inspection\QueryBuilder;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Middleware\ThrottleRequests;
@@ -78,7 +78,7 @@ class LoginThrottlingAnalyzer extends SecurityAnalyzer
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\Inspection\Inspector $inspector
+     * @param \BaerSoftware\LaraBeacon\Inspection\Inspector $inspector
      * @return void
      * @throws \ReflectionException
      */
@@ -146,7 +146,7 @@ class LoginThrottlingAnalyzer extends SecurityAnalyzer
     /**
      * Determine whether the app uses the RateLimiter facade
      *
-     * @param \Enlightn\Enlightn\Inspection\Inspector $inspector
+     * @param \BaerSoftware\LaraBeacon\Inspection\Inspector $inspector
      * @return bool
      */
     protected function appUsesRateLimiterFacade(Inspector $inspector)
@@ -159,7 +159,7 @@ class LoginThrottlingAnalyzer extends SecurityAnalyzer
     /**
      * Determine whether the app uses the RateLimiter facade
      *
-     * @param \Enlightn\Enlightn\Inspection\Inspector $inspector
+     * @param \BaerSoftware\LaraBeacon\Inspection\Inspector $inspector
      * @return bool
      */
     protected function appUsesRateLimiterInstance(Inspector $inspector)

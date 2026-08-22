@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Concerns;
+namespace BaerSoftware\LaraBeacon\Analyzers\Concerns;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\EnvAccessAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Security\EnvAccessAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
@@ -17,9 +17,7 @@ class EnvAccessAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(EnvAccessAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_publicly_accessible_env_file()
     {
         $this->app->make(EnvAccessAnalyzer::class)->setClient(new Client(
@@ -28,14 +26,12 @@ class EnvAccessAnalyzerTest extends AnalyzerTestCase
             ])]
         ));
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(EnvAccessAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_safe_setup()
     {
         $this->app->make(EnvAccessAnalyzer::class)->setClient(new Client(
@@ -44,7 +40,7 @@ class EnvAccessAnalyzerTest extends AnalyzerTestCase
             ])]
         ));
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(EnvAccessAnalyzer::class);
     }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\LicenseAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithComposer;
+use BaerSoftware\LaraBeacon\Analyzers\Security\LicenseAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithComposer;
 
 class LicenseAnalyzerTest extends AnalyzerTestCase
 {
@@ -19,15 +19,13 @@ class LicenseAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(LicenseAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
-    public function confirms_enlightn_uses_dependencies_with_safe_licenses()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function confirms_larabeacon_uses_dependencies_with_safe_licenses()
     {
-        // set GPL 2 to be valid for Enlightn, since Larastan uses phpmyadmin/sql-parser
-        $this->app->config->set('enlightn.license_whitelist', [...config('enlightn.license_whitelist'), 'GPL-2.0-OR-LATER']);
+        // Set GPL 2 as valid for LaraBeacon, since Larastan uses phpmyadmin/sql-parser.
+        $this->app->config->set('larabeacon.license_whitelist', [...config('larabeacon.license_whitelist'), 'GPL-2.0-OR-LATER']);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(LicenseAnalyzer::class);
     }

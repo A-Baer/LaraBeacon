@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: ❓ Questions
-    url: https://github.com/enlightn/enlightn/discussions
+    url: https://github.com/A-Baer/LaraBeacon/discussions
     about: The issuer tracker is focused on reporting bugs or problems. Please use the Discussions tabs for questions!
   - name: 📚 Documentation improvements
-    url: https://github.com/enlightn/enlightn-docs
-    about: Our documentation is open-source, you can make a PR with your suggested changes over there.
-  - name: Commercial Support
-    url: https://www.laravel-enlightn.com/
-    about: We offer email support on bug reports for Enlightn Pro customers and also offer consulting on boosting performance and security for your application. Email us at support@laravel-enlightn.com.
+    url: https://github.com/A-Baer/LaraBeacon/issues/new?template=---feature-request.md
+    about: Suggest documentation improvements through the feature request template.
+  - name: Security reports
+    url: https://github.com/A-Baer/LaraBeacon/security/policy
+    about: Please follow the private reporting instructions in our security policy.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\CodeCorrection;
+namespace BaerSoftware\LaraBeacon\CodeCorrection;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;

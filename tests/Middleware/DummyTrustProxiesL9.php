@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Middleware;
+namespace BaerSoftware\LaraBeacon\Tests\Middleware;
 
 use Illuminate\Http\Middleware\TrustProxies;
 

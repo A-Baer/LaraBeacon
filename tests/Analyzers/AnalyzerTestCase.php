@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers;
 
-use Enlightn\Enlightn\Enlightn;
-use Enlightn\Enlightn\PHPStan;
-use Enlightn\Enlightn\Tests\TestCase;
+use BaerSoftware\LaraBeacon\LaraBeacon;
+use BaerSoftware\LaraBeacon\PHPStan;
+use BaerSoftware\LaraBeacon\Tests\TestCase;
 use Mockery as m;
 use ReflectionClass;
 
@@ -12,11 +12,11 @@ class AnalyzerTestCase extends TestCase
 {
     protected function setupEnvironmentFor($analyzerClass, $app, $instance = null)
     {
-        $app->config->set('enlightn.analyzers', $analyzerClass);
+        $app->config->set('larabeacon.analyzers', $analyzerClass);
 
-        $app->config->set('enlightn.config_path', $this->getConfigStubPath());
+        $app->config->set('larabeacon.config_path', $this->getConfigStubPath());
 
-        $app->config->set('enlightn.skip_env_specific', true);
+        $app->config->set('larabeacon.skip_env_specific', true);
 
         if (! $instance) {
             $app->singleton($analyzerClass);
@@ -39,11 +39,11 @@ class AnalyzerTestCase extends TestCase
      * @throws \ReflectionException
      * @throws \Throwable
      */
-    protected function runEnlightn()
+    protected function runLaraBeacon()
     {
-        Enlightn::$rethrowExceptions = true;
-        Enlightn::register();
-        Enlightn::run($this->app);
+        LaraBeacon::$rethrowExceptions = true;
+        LaraBeacon::register();
+        LaraBeacon::run($this->app);
     }
 
     protected function assertPassed($analyzerClass)
@@ -134,7 +134,7 @@ class AnalyzerTestCase extends TestCase
     protected function setBasePathFrom($stubClass)
     {
         $this->app->config->set(
-            'enlightn.base_path',
+            'larabeacon.base_path',
             $this->getClassStubPath($stubClass)
         );
     }

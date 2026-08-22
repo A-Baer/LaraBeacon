@@ -1,6 +1,6 @@
 {
-    "name": "enlightn/enlightn",
-    "description": "Enlightn - Your performance & security consultant, an artisan command away.",
+    "name": "baer-software/larabeacon",
+    "description": "Production readiness, performance, security, and reliability checks for Laravel applications.",
     "type": "library",
     "keywords": [
         "laravel",
@@ -14,12 +14,19 @@
         "audit",
         "analysis tool"
     ],
-    "homepage": "https://www.laravel-enlightn.com/",
+    "homepage": "https://github.com/A-Baer/LaraBeacon",
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
+            "name": "Bär Softwareentwicklung UG (haftungsbeschränkt)",
+            "email": "anthony.baer@baer-software.com",
+            "homepage": "https://baer-software.com",
+            "role": "Maintainer"
+        },
+        {
             "name": "Paras Malhotra",
-            "email": "paras@laravel-enlightn.com"
+            "email": "paras@laravel-enlightn.com",
+            "role": "Original author"
         },
         {
             "name": "Miguel Piedrafita",
@@ -31,42 +38,45 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/enlightn/enlightn/issues",
-        "docs": "https://www.laravel-enlightn.com/docs/"
+        "issues": "https://github.com/A-Baer/LaraBeacon/issues",
+        "source": "https://github.com/A-Baer/LaraBeacon"
     },
     "require": {
-        "php": "^8.0",
+        "composer-runtime-api": "^2.2",
+        "php": "^8.2",
         "ext-json": "*",
-        "enlightn/security-checker": "^1.1|^2.0",
-        "guzzlehttp/guzzle": "^7.0",
-        "larastan/larastan": "^2.0",
-        "laravel/framework": "^9.0|^10.0|^11.0",
-        "nikic/php-parser": "^4.0|^5.0",
-        "phpstan/phpstan": ">=1.10.48",
-        "phpstan/phpstan-deprecation-rules": "^1.1",
-        "symfony/finder": "^4.0|^5.0|^6.0|^7.0"
+        "enlightn/security-checker": "^2.0",
+        "guzzlehttp/guzzle": "^7.8",
+        "larastan/larastan": "^3.10",
+        "laravel/framework": "^12.0|^13.0",
+        "nikic/php-parser": "^5.4",
+        "phpstan/phpstan": "^2.2.2",
+        "phpstan/phpstan-deprecation-rules": "^2.0.1",
+        "symfony/finder": "^7.2|^8.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.8|^3.0",
-        "brianium/paratest": "^6.1|^7.0",
-        "friendsofphp/php-cs-fixer": "^2.18|^3.0",
-        "mockery/mockery": "^1.3",
-        "orchestra/testbench": "^7.0|^8.0|^9.0",
-        "phpunit/phpunit": "^9.0|^10.0",
-        "predis/predis": "*"
+        "barryvdh/laravel-ide-helper": "^3.0",
+        "brianium/paratest": "^7.0|^8.0",
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^10.0|^11.0",
+        "phpunit/phpunit": "^11.5|^12.5|^13.0",
+        "predis/predis": "^2.3|^3.0"
     },
     "autoload": {
         "psr-4": {
-            "Enlightn\\Enlightn\\": "src"
+            "BaerSoftware\\LaraBeacon\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Enlightn\\Enlightn\\Tests\\": "tests"
+            "BaerSoftware\\LaraBeacon\\Tests\\": "tests"
         }
     },
     "scripts": {
-        "test": "vendor/bin/paratest --colors"
+        "test": "vendor/bin/paratest --colors",
+        "format": "php-cs-fixer fix --config=.php-cs-fixer.dist.php --sequential",
+        "format:check": "php-cs-fixer fix --dry-run --diff --config=.php-cs-fixer.dist.php --sequential"
     },
     "config": {
         "sort-packages": true
@@ -74,10 +84,12 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Enlightn\\Enlightn\\EnlightnServiceProvider"
+                "BaerSoftware\\LaraBeacon\\LaraBeaconServiceProvider"
             ]
         }
     },
-    "minimum-stability": "dev",
+    "suggest": {
+        "baer-software/larabeacon-pro": "Adds commercial analyzers and premium support."
+    },
     "prefer-stable": true
 }

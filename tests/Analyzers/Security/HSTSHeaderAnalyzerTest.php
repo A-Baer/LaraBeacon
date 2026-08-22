@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Security\HSTSHeaderAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Security\HSTSHeaderAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
@@ -18,19 +18,15 @@ class HSTSHeaderAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(HSTSHeaderAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skips_for_http_apps()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(HSTSHeaderAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_missing_hsts_header_for_https_url()
     {
         $this->app->config->set('app.url', 'https://localhost');
@@ -45,14 +41,12 @@ class HSTSHeaderAnalyzerTest extends AnalyzerTestCase
             //
         })->name('login');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(HSTSHeaderAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_missing_hsts_header_for_secure_cookie_attributes()
     {
         $this->app->config->set('session.secure', true);
@@ -67,14 +61,12 @@ class HSTSHeaderAnalyzerTest extends AnalyzerTestCase
             //
         })->name('login');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(HSTSHeaderAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_for_hsts_headers()
     {
         $this->app->config->set('session.secure', true);
@@ -90,7 +82,7 @@ class HSTSHeaderAnalyzerTest extends AnalyzerTestCase
             //
         })->name('login');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(HSTSHeaderAnalyzer::class);
     }

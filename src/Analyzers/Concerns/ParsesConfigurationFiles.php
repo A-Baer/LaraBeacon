@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Concerns;
+namespace BaerSoftware\LaraBeacon\Analyzers\Concerns;
 
-use Enlightn\Enlightn\FileParser;
+use BaerSoftware\LaraBeacon\FileParser;
 use Illuminate\Support\Str;
 
 trait ParsesConfigurationFiles
@@ -19,7 +19,7 @@ trait ParsesConfigurationFiles
     {
         if (file_exists(
             $filePath = config(
-                'enlightn.config_path',
+                'larabeacon.config_path',
                 config_path()
             ).DIRECTORY_SEPARATOR."{$config}.php"
         )) {

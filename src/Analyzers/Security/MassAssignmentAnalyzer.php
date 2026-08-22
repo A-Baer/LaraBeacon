@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Concerns\ParsesPHPStanAnalysis;
-use Enlightn\Enlightn\PHPStan;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\ParsesPHPStanAnalysis;
+use BaerSoftware\LaraBeacon\PHPStan;
 
 class MassAssignmentAnalyzer extends SecurityAnalyzer
 {
@@ -46,7 +46,7 @@ class MassAssignmentAnalyzer extends SecurityAnalyzer
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\PHPStan $phpStan
+     * @param \BaerSoftware\LaraBeacon\PHPStan $phpStan
      * @return void
      */
     public function handle(PHPStan $phpStan)

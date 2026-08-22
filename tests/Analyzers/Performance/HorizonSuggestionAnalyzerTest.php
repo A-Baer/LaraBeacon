@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Performance\HorizonSuggestionAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Performance\HorizonSuggestionAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 
 class HorizonSuggestionAnalyzerTest extends AnalyzerTestCase
 {
@@ -14,24 +14,20 @@ class HorizonSuggestionAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(HorizonSuggestionAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function skips_for_non_redis_queues()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertSkipped(HorizonSuggestionAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_redis_queues_without_horizon()
     {
         $this->app->config->set('queue.default', 'redis');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(HorizonSuggestionAnalyzer::class);
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Concerns\AnalyzesMiddleware;
-use Enlightn\Enlightn\Analyzers\Concerns\ParsesConfigurationFiles;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\ParsesConfigurationFiles;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;

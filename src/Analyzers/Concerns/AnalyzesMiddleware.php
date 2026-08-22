@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Concerns;
+namespace BaerSoftware\LaraBeacon\Analyzers\Concerns;
 
 use Closure;
 use Exception;
@@ -191,7 +191,7 @@ trait AnalyzesMiddleware
     protected function findLoginRoute()
     {
         // First, we check to see if a guest path is provided. If yes, we return the corresponding URL.
-        if (! is_null($guestPath = config('enlightn.guest_url'))) {
+        if (! is_null($guestPath = config('larabeacon.guest_url'))) {
             return url($guestPath);
         }
 

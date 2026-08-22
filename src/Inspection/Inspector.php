@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Inspection;
+namespace BaerSoftware\LaraBeacon\Inspection;
 
-use Enlightn\Enlightn\Analyzers\Trace;
+use BaerSoftware\LaraBeacon\Analyzers\Trace;
 use Illuminate\Filesystem\Filesystem;
 use PhpParser\Error;
 use PhpParser\ErrorHandler\Collecting;

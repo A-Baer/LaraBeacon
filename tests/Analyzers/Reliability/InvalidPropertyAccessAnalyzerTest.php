@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\InvalidPropertyAccessAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\InvalidAccessPropertiesStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\InvalidPropertyAccessAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\InvalidAccessPropertiesStub;
 
 class InvalidPropertyAccessAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,28 +16,24 @@ class InvalidPropertyAccessAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(InvalidPropertyAccessAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_invalid_property_access()
     {
         $this->setBasePathFrom(InvalidAccessPropertiesStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(InvalidPropertyAccessAnalyzer::class, $this->getClassStubPath(InvalidAccessPropertiesStub::class), 16);
         $this->assertFailedAt(InvalidPropertyAccessAnalyzer::class, $this->getClassStubPath(InvalidAccessPropertiesStub::class), 17);
         $this->assertHasErrors(InvalidPropertyAccessAnalyzer::class, 2);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_invalid_access()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(InvalidPropertyAccessAnalyzer::class);
     }

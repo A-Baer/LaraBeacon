@@ -1,16 +1,16 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Concerns;
+namespace BaerSoftware\LaraBeacon\Analyzers\Concerns;
 
-use Enlightn\Enlightn\Analyzers\Trace;
-use Enlightn\Enlightn\PHPStan;
+use BaerSoftware\LaraBeacon\Analyzers\Trace;
+use BaerSoftware\LaraBeacon\PHPStan;
 
 trait ParsesPHPStanAnalysis
 {
     /**
      * Parse the analysis and add traces for the errors.
      *
-     * @param \Enlightn\Enlightn\PHPStan $phpStan
+     * @param \BaerSoftware\LaraBeacon\PHPStan $phpStan
      * @param string|array $search
      */
     protected function parsePHPStanAnalysis(PHPStan $phpStan, $search)
@@ -23,7 +23,7 @@ trait ParsesPHPStanAnalysis
     /**
      * Parse the analysis and add traces for the errors.
      *
-     * @param \Enlightn\Enlightn\PHPStan $phpStan
+     * @param \BaerSoftware\LaraBeacon\PHPStan $phpStan
      * @param string|array $pattern
      */
     protected function matchPHPStanAnalysis(PHPStan $phpStan, $pattern)
@@ -36,7 +36,7 @@ trait ParsesPHPStanAnalysis
     /**
      * Parse the analysis and add traces for the errors.
      *
-     * @param \Enlightn\Enlightn\PHPStan $phpStan
+     * @param \BaerSoftware\LaraBeacon\PHPStan $phpStan
      * @param string|array $pattern
      */
     protected function pregMatchPHPStanAnalysis(PHPStan $phpStan, $pattern)

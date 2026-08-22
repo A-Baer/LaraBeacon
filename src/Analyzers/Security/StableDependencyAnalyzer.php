@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\Composer;
+use BaerSoftware\LaraBeacon\Composer;
 use Illuminate\Support\Str;
 
 class StableDependencyAnalyzer extends SecurityAnalyzer
@@ -42,7 +42,7 @@ class StableDependencyAnalyzer extends SecurityAnalyzer
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\Composer $composer
+     * @param \BaerSoftware\LaraBeacon\Composer $composer
      * @return void
      */
     public function handle(Composer $composer)

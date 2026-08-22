@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Inspection;
+namespace BaerSoftware\LaraBeacon\Inspection;
 
 class InspectionLine
 {

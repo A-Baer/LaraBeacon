@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Reporting;
+namespace BaerSoftware\LaraBeacon\Reporting;
 
 class API
 {
     /**
-     * @var \Enlightn\Enlightn\Reporting\Client
+     * @var \BaerSoftware\LaraBeacon\Reporting\Client
      */
     private $client;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn;
+namespace BaerSoftware\LaraBeacon;
 
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
@@ -70,9 +70,22 @@ class NPM
      */
     public function audit($excludeDev = true)
     {
-        $options = ($excludeDev && ! $this->isYarn) ? ['audit', '--production', '--json'] : ['audit', '--json'];
+        // Detect Yarn before building options because --omit=dev is npm-only.
+        $this->findNpmOrYarn();
+        $options = ($excludeDev && ! $this->isYarn) ? ['audit', '--omit=dev', '--json'] : ['audit', '--json'];
+        $output = $this->runCommand($options, false);
+        $result = json_decode($output, true);
 
-        return json_decode($this->runCommand($options, true), true) ?? [];
+        if (is_array($result)) {
+            return $result;
+        }
+
+        // Yarn Classic emits newline-delimited JSON events. Its auditSummary
+        // event has the same data.vulnerabilities shape supported above.
+        return collect(preg_split('/\R/', trim((string) $output)) ?: [])
+            ->map(fn ($line) => json_decode($line, true))
+            ->filter(fn ($event) => is_array($event) && ($event['type'] ?? null) === 'auditSummary')
+            ->last() ?? [];
     }
 
     /**
@@ -115,7 +128,7 @@ class NPM
         }
 
         if ($this->commandExists('yarn')) {
-            $this->isYarn = false;
+            $this->isYarn = true;
 
             return ['yarn'];
         }

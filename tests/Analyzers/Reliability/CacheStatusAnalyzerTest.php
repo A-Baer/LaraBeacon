@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\CacheStatusAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\CacheStatusAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 
 class CacheStatusAnalyzerTest extends AnalyzerTestCase
 {
@@ -14,24 +14,20 @@ class CacheStatusAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(CacheStatusAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_default_file_driver()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(CacheStatusAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_non_existent_storage_path()
     {
         $this->app->config->set('cache.default', 'memcached');
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(CacheStatusAnalyzer::class);
     }

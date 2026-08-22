@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -54,7 +54,7 @@ class DirectoryWritePermissionsAnalyzer extends ReliabilityAnalyzer
      */
     public function handle(Filesystem $files)
     {
-        $directoriesToCheck = config('enlightn.writable_directories', [
+        $directoriesToCheck = config('larabeacon.writable_directories', [
             storage_path(),
             app()->bootstrapPath('cache'),
         ]);

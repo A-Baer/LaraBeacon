@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Concerns\AnalyzesMiddleware;
-use Enlightn\Enlightn\Inspection\Reflector;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesMiddleware;
+use BaerSoftware\LaraBeacon\Inspection\Reflector;
 use Fideloper\Proxy\TrustProxies;
 use Fruitcake\Cors\HandleCors;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;

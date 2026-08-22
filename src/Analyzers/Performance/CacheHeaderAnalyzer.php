@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Concerns\AnalyzesHeaders;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesHeaders;
 use GuzzleHttp\Client;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;

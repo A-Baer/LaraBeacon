@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\InvalidImportAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\InvalidImportStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\InvalidImportAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\InvalidImportStub;
 
 class InvalidImportAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,27 +16,23 @@ class InvalidImportAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(InvalidImportAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_missing_return_statements()
     {
         $this->setBasePathFrom(InvalidImportStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(InvalidImportAnalyzer::class, $this->getClassStubPath(InvalidImportStub::class), 5);
         $this->assertHasErrors(InvalidImportAnalyzer::class, 1);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_return_statements()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(InvalidImportAnalyzer::class);
     }

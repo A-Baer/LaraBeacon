@@ -1,15 +1,15 @@
 <?php
 
-namespace Enlightn\Enlightn\Inspection;
+namespace BaerSoftware\LaraBeacon\Inspection;
 
-use Enlightn\Enlightn\Inspection\NodeVisitors\ClassInstantiationVisitor;
-use Enlightn\Enlightn\Inspection\NodeVisitors\EvalExpressionVisitor;
-use Enlightn\Enlightn\Inspection\NodeVisitors\ExitStatementVisitor;
-use Enlightn\Enlightn\Inspection\NodeVisitors\FunctionCallVisitor;
-use Enlightn\Enlightn\Inspection\NodeVisitors\GlobalStatementVisitor;
-use Enlightn\Enlightn\Inspection\NodeVisitors\GlobalVariableVisitor;
-use Enlightn\Enlightn\Inspection\NodeVisitors\StaticMethodCallVisitor;
-use Enlightn\Enlightn\Inspection\NodeVisitors\UsesClassVisitor;
+use BaerSoftware\LaraBeacon\Inspection\NodeVisitors\ClassInstantiationVisitor;
+use BaerSoftware\LaraBeacon\Inspection\NodeVisitors\EvalExpressionVisitor;
+use BaerSoftware\LaraBeacon\Inspection\NodeVisitors\ExitStatementVisitor;
+use BaerSoftware\LaraBeacon\Inspection\NodeVisitors\FunctionCallVisitor;
+use BaerSoftware\LaraBeacon\Inspection\NodeVisitors\GlobalStatementVisitor;
+use BaerSoftware\LaraBeacon\Inspection\NodeVisitors\GlobalVariableVisitor;
+use BaerSoftware\LaraBeacon\Inspection\NodeVisitors\StaticMethodCallVisitor;
+use BaerSoftware\LaraBeacon\Inspection\NodeVisitors\UsesClassVisitor;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\InvalidOffsetAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\InvalidOffsetStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\InvalidOffsetAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\InvalidOffsetStub;
 
 class InvalidOffsetAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,14 +16,12 @@ class InvalidOffsetAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(InvalidOffsetAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_invalid_offset()
     {
         $this->setBasePathFrom(InvalidOffsetStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(InvalidOffsetAnalyzer::class, $this->getClassStubPath(InvalidOffsetStub::class), 10);
         $this->assertFailedAt(InvalidOffsetAnalyzer::class, $this->getClassStubPath(InvalidOffsetStub::class), 13);
@@ -32,14 +30,12 @@ class InvalidOffsetAnalyzerTest extends AnalyzerTestCase
         $this->assertHasErrors(InvalidOffsetAnalyzer::class, 5);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_offset()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(InvalidOffsetAnalyzer::class);
     }

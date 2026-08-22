@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Analyzer;
+use BaerSoftware\LaraBeacon\Analyzers\Analyzer;
 
 abstract class ReliabilityAnalyzer extends Analyzer
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Analyzers\Performance;
 
-use Enlightn\Enlightn\Filesystem;
+use BaerSoftware\LaraBeacon\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\Finder;
 
@@ -58,7 +58,7 @@ class MinificationAnalyzer extends PerformanceAnalyzer
     /**
      * Execute the analyzer.
      *
-     * @param \Enlightn\Enlightn\Filesystem $files
+     * @param \BaerSoftware\LaraBeacon\Filesystem $files
      * @return void
      */
     public function handle(Filesystem $files)
@@ -70,10 +70,16 @@ class MinificationAnalyzer extends PerformanceAnalyzer
         $this->unMinifiedAssets = collect($this->getFilesThatShouldBeMinified())->map(function ($fileInfo) {
             return $fileInfo->getRealPath();
         })->filter(function ($path) use ($files) {
-            // We assume here that any file with more than 10 lines is not minified. That should
-            // take care of the copyright notice (if any), sourcemap URL, etc. Case in point:
-            // Bootstrap minified css/js actually have 7 lines.
-            return $files->lines($path)->count() > 10;
+            $lines = $files->lines($path)->filter(fn ($line) => trim($line) !== '');
+            $maxLines = config('larabeacon.minification.max_lines', 10);
+
+            if ($lines->count() <= $maxLines) {
+                return false;
+            }
+
+            $averageLineLength = $lines->avg(fn ($line) => strlen($line));
+
+            return $averageLineLength < config('larabeacon.minification.min_average_line_length', 120);
         })->map(function ($path) {
             return Str::contains($path, base_path())
                 ? ('['.trim(Str::after($path, base_path()), '/').']') : '['.$path.']';
@@ -91,7 +97,7 @@ class MinificationAnalyzer extends PerformanceAnalyzer
     {
         // We assume that all assets are in the public directory. However, this can be configured
         // using the "build_path" configuration option.
-        return (new Finder)->in(config('enlightn.build_path', public_path()))->name([
+        return (new Finder)->in(config('larabeacon.build_path', public_path()))->name([
             // This would automatically include files named like *.min.js as well.
             '*.js', '*.css',
         ])->files();

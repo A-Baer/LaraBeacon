@@ -1,11 +1,11 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\MissingReturnStatementAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
-use Enlightn\Enlightn\Tests\Stubs\MissingReturnStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\MissingReturnStatementAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\MissingReturnStub;
 
 class MissingReturnStatementAnalyzerTest extends AnalyzerTestCase
 {
@@ -16,28 +16,24 @@ class MissingReturnStatementAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(MissingReturnStatementAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_missing_return_statements()
     {
         $this->setBasePathFrom(MissingReturnStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(MissingReturnStatementAnalyzer::class, $this->getClassStubPath(MissingReturnStub::class), 7);
         $this->assertFailedAt(MissingReturnStatementAnalyzer::class, $this->getClassStubPath(MissingReturnStub::class), 13);
         $this->assertHasErrors(MissingReturnStatementAnalyzer::class, 2);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_return_statements()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(MissingReturnStatementAnalyzer::class);
     }

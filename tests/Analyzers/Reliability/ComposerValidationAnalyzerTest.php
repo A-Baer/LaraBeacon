@@ -1,10 +1,10 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\ComposerValidationAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithComposer;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\ComposerValidationAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithComposer;
 
 class ComposerValidationAnalyzerTest extends AnalyzerTestCase
 {
@@ -19,12 +19,10 @@ class ComposerValidationAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(ComposerValidationAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
-    public function confirms_passes_for_enlightn()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function confirms_passes_for_larabeacon()
     {
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(ComposerValidationAnalyzer::class);
     }

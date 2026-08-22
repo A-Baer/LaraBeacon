@@ -1,4 +1,4 @@
-name: Format PHP
+name: PHP style
 
 on: pull_request
 
@@ -6,16 +6,13 @@ jobs:
   php-cs-fixer:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
+      - uses: actions/checkout@v4
 
-      - name: Run php-cs-fixer
-        uses: docker://oskarstark/php-cs-fixer-ga
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          args: --config=.php-cs-fixer.dist.php
+          php-version: '8.4'
+          coverage: none
 
-      - uses: stefanzweifel/git-auto-commit-action@v4.1.0
-        with:
-          commit_message: Apply php-cs-fixer changes
-          branch: ${{ github.head_ref }}
+      - run: composer install --prefer-dist --no-interaction --no-progress
+      - run: composer format:check

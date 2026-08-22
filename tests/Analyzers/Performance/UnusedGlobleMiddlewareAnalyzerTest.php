@@ -1,12 +1,12 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Performance;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Performance;
 
-use Enlightn\Enlightn\Analyzers\Performance\UnusedGlobalMiddlewareAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Analyzers\Concerns\InteractsWithMiddleware;
-use Enlightn\Enlightn\Tests\Middleware\DummyTrustProxiesL9;
-use Enlightn\Enlightn\Tests\Middleware\UnusedTrustProxiesL9;
+use BaerSoftware\LaraBeacon\Analyzers\Performance\UnusedGlobalMiddlewareAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithMiddleware;
+use BaerSoftware\LaraBeacon\Tests\Middleware\DummyTrustProxiesL9;
+use BaerSoftware\LaraBeacon\Tests\Middleware\UnusedTrustProxiesL9;
 use Fruitcake\Cors\HandleCors;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Middleware\TrustHosts;
@@ -22,60 +22,50 @@ class UnusedGlobleMiddlewareAnalyzerTest extends AnalyzerTestCase
         $this->setupEnvironmentFor(UnusedGlobalMiddlewareAnalyzer::class, $app);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_global_middleware()
     {
         $this->clearMiddleware();
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(UnusedGlobalMiddlewareAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_trusted_hosts_without_trusted_proxies()
     {
         $kernel = $this->clearMiddleware();
         $kernel->pushMiddleware(TrustHosts::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(UnusedGlobalMiddlewareAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_wildcard_trusted_proxies()
     {
         $kernel = $this->clearMiddleware();
         $kernel->pushMiddleware(DummyTrustProxiesL9::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(UnusedGlobalMiddlewareAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_unused_trusted_proxies()
     {
         $kernel = $this->clearMiddleware();
         $kernel->pushMiddleware(UnusedTrustProxiesL9::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(UnusedGlobalMiddlewareAnalyzer::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_unused_cors()
     {
         $this->app->config->set('cors.paths', []);
@@ -83,7 +73,7 @@ class UnusedGlobleMiddlewareAnalyzerTest extends AnalyzerTestCase
         $kernel = $this->clearMiddleware();
         $kernel->pushMiddleware(HandleCors::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailed(UnusedGlobalMiddlewareAnalyzer::class);
     }

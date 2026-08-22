@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Stubs;
+namespace BaerSoftware\LaraBeacon\Tests\Stubs;
 
-use Enlightn\Enlightn\Tests\Stubs\Models\BananaModel;
+use BaerSoftware\LaraBeacon\Tests\Stubs\Models\BananaModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Security;
+namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
-use Enlightn\Enlightn\Analyzers\Concerns\AnalyzesHeaders;
-use Enlightn\Enlightn\Analyzers\Concerns\AnalyzesMiddleware;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesHeaders;
+use BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesMiddleware;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;

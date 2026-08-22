@@ -1,17 +1,17 @@
 <?php
 
-namespace Enlightn\Enlightn\Analyzers\Concerns;
+namespace BaerSoftware\LaraBeacon\Analyzers\Concerns;
 
-use Enlightn\Enlightn\Inspection\Inspector;
-use Enlightn\Enlightn\Inspection\QueryBuilder;
+use BaerSoftware\LaraBeacon\Inspection\Inspector;
+use BaerSoftware\LaraBeacon\Inspection\QueryBuilder;
 
 trait InspectsCode
 {
     /**
      * Inspect the code, record the errors in the inspector and determine if the code passes the analysis.
      *
-     * @param \Enlightn\Enlightn\Inspection\Inspector $inspector
-     * @param \Enlightn\Enlightn\Inspection\QueryBuilder $builder
+     * @param \BaerSoftware\LaraBeacon\Inspection\Inspector $inspector
+     * @param \BaerSoftware\LaraBeacon\Inspection\QueryBuilder $builder
      * @return bool
      */
     protected function passesCodeInspection(Inspector $inspector, QueryBuilder $builder)
@@ -24,8 +24,8 @@ trait InspectsCode
     /**
      * Inspect the code and record error traces if the inspection fails.
      *
-     * @param \Enlightn\Enlightn\Inspection\Inspector $inspector
-     * @param \Enlightn\Enlightn\Inspection\QueryBuilder $builder
+     * @param \BaerSoftware\LaraBeacon\Inspection\Inspector $inspector
+     * @param \BaerSoftware\LaraBeacon\Inspection\QueryBuilder $builder
      */
     protected function inspectCode(Inspector $inspector, QueryBuilder $builder)
     {

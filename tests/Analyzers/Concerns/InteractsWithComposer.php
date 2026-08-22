@@ -1,9 +1,9 @@
 <?php
 
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Concerns;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns;
 
-use Enlightn\Enlightn\Composer;
+use BaerSoftware\LaraBeacon\Composer;
 
 trait InteractsWithComposer
 {

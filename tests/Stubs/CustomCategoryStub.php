@@ -1,8 +1,8 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Stubs;
+namespace BaerSoftware\LaraBeacon\Tests\Stubs;
 
-use Enlightn\Enlightn\Analyzers\Analyzer;
+use BaerSoftware\LaraBeacon\Analyzers\Analyzer;
 
 class CustomCategoryStub extends Analyzer
 {

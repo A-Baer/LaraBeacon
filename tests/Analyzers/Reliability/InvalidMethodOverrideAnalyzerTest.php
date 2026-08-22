@@ -1,11 +1,13 @@
 <?php
 
-namespace Enlightn\Enlightn\Tests\Analyzers\Reliability;
+namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 
-use Enlightn\Enlightn\Analyzers\Reliability\InvalidMethodOverrideAnalyzer;
-use Enlightn\Enlightn\Tests\Analyzers\AnalyzerTestCase;
-use Enlightn\Enlightn\Tests\Stubs\DummyStub;
+use BaerSoftware\LaraBeacon\Analyzers\Reliability\InvalidMethodOverrideAnalyzer;
+use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
+use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 
+#[RequiresPhp('< 8.0.0')]
 class InvalidMethodOverrideAnalyzerTest extends AnalyzerTestCase
 {
     protected function getEnvironmentSetUp($app)
@@ -14,36 +16,29 @@ class InvalidMethodOverrideAnalyzerTest extends AnalyzerTestCase
 
         $this->setupEnvironmentFor(InvalidMethodOverrideAnalyzer::class, $app);
 
-        if (PHP_VERSION_ID >= 80000) {
-            $this->markTestSkipped();
-        }
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function detects_invalid_method_overrides()
     {
         $this->app->config->set(
-            'enlightn.base_path',
+            'larabeacon.base_path',
             $path = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.
                 'Stubs/InvalidMethodOverrideStub.php'
         );
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertFailedAt(InvalidMethodOverrideAnalyzer::class, $path, 14);
         $this->assertHasErrors(InvalidMethodOverrideAnalyzer::class, 1);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_invalid_overrides()
     {
         $this->setBasePathFrom(DummyStub::class);
 
-        $this->runEnlightn();
+        $this->runLaraBeacon();
 
         $this->assertPassed(InvalidMethodOverrideAnalyzer::class);
     }
