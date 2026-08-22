@@ -61,6 +61,8 @@ class CSRFAnalyzerTest extends AnalyzerTestCase
 
         $this->runLaraBeacon();
 
+        $analyzer = $this->app->make(CSRFAnalyzer::class);
+        $this->assertCount(0, $analyzer->unprotectedRoutes, $analyzer->unprotectedRoutes->join(', '));
         $this->assertPassed(CSRFAnalyzer::class);
     }
 
@@ -70,6 +72,36 @@ class CSRFAnalyzerTest extends AnalyzerTestCase
         $this->clearMiddlewareGroups();
         $this->registerStatefulGlobalMiddleware();
         $this->registerUnprotectedRoute();
+
+        $this->runLaraBeacon();
+
+        $this->assertFailed(CSRFAnalyzer::class);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function passes_for_stateless_api_routes()
+    {
+        $this->clearMiddlewareGroups();
+        $this->registerStatefulGlobalMiddleware();
+
+        Route::post('/api/webhook', function () {
+            return 'Accepted';
+        });
+
+        $this->runLaraBeacon();
+
+        $this->assertPassed(CSRFAnalyzer::class);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function detects_unprotected_application_routes_with_storage_like_names()
+    {
+        $this->clearMiddlewareGroups();
+        $this->registerStatefulGlobalMiddleware();
+
+        Route::post('/documents/upload', function () {
+            return 'Uploaded';
+        })->name('storage.documents.upload');
 
         $this->runLaraBeacon();
 

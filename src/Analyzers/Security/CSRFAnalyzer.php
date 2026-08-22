@@ -141,18 +141,45 @@ class CSRFAnalyzer extends SecurityAnalyzer
             return collect($route->methods())->contains(function ($method) {
                 return ! in_array($method, ['HEAD', 'GET', 'OPTIONS']);
             });
+        })->reject(function ($route) {
+            // Laravel 12 registers signed local-disk upload routes. Their
+            // signature validation protects them without CSRF middleware.
+            return $this->isFrameworkStorageUploadRoute($route);
         })->filter(function ($route) {
             // Get the routes that don't apply the VerifyCsrfToken middleware
             return ! $this->routeUsesMiddleware($route, VerifyCsrfToken::class);
         })->filter(function ($route) {
             // Exclude the routes that are API routes (do not need CSRF protection)
-            return ! Str::is('/api/*', $route->uri());
+            return ! Str::is('api/*', ltrim($route->uri(), '/'));
         })->map(function ($route) {
             // Prettify unprotected routes to display in error message
             return '['.implode(',', $route->methods()).'] '.$route->uri();
         });
 
         return $this->unprotectedRoutes->count() == 0;
+    }
+
+    /**
+     * Determine whether a route is Laravel's signed local-disk upload route.
+     */
+    protected function isFrameworkStorageUploadRoute($route): bool
+    {
+        if ($route->methods() !== ['PUT']
+            || ! preg_match('/^storage\.(.+)\.upload$/', $route->getName() ?? '', $matches)) {
+            return false;
+        }
+
+        $disk = config('filesystems.disks.'.$matches[1], []);
+
+        if (($disk['driver'] ?? null) !== 'local' || ($disk['serve'] ?? false) !== true) {
+            return false;
+        }
+
+        $uri = isset($disk['url'])
+            ? trim(parse_url($disk['url'], PHP_URL_PATH) ?? '', '/')
+            : 'storage';
+
+        return ltrim($route->uri(), '/') === $uri.'/{path}';
     }
 
     /**
