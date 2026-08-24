@@ -294,7 +294,7 @@ abstract class Analyzer
     /**
      * Get the documentation URL for this analyzer.
      *
-     * @return bool
+     * @return string
      */
     public function getDocsUrl()
     {

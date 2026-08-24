@@ -8,7 +8,7 @@ LaraBeacon checks Laravel applications for production-readiness problems across 
 
 | LaraBeacon | PHP | Laravel | Larastan | PHPStan |
 | --- | --- | --- | --- | --- |
-| `dev-main` | 8.2–8.5 | 12–13 | 3.x | 2.x |
+| `3.x` / `dev-main` | 8.2–8.5 | 12–13 | 3.x | 2.x |
 
 Laravel 13 requires PHP 8.3 or newer.
 
@@ -53,13 +53,21 @@ Some analyzers inspect runtime-specific configuration. Run LaraBeacon in a produ
 
 ## Extensions and product boundaries
 
-The public package stays at the repository root so Composer and Packagist can install it directly. Analyzer discovery supports additional namespaces and paths, including the planned private package `baer-software/larabeacon-pro`.
+The public package stays at the repository root so Composer and Packagist can install it directly. Analyzer discovery supports additional namespaces and paths, including the separately implemented private package `baer-software/larabeacon-pro`.
 
 - **LaraBeacon**: LGPL-licensed analyzer engine and public checks in this repository.
-- **LaraBeacon Pro**: planned private Composer package containing commercial analyzers.
+- **LaraBeacon Pro**: private Composer package containing 64 clean-room historical Pro checks plus modern Laravel checks.
 - **LaraBeacon Cloud**: planned SaaS for report history, teams, and repository integrations.
 
-Cloud reporting is disabled by default. The public analyzer remains fully usable offline. See [Product architecture](docs/PRODUCT_ARCHITECTURE.md) for the intended boundaries.
+Cloud reporting is disabled by default and only runs with `--report`. Report payloads contain project metadata and analyzer findings; source snippets and exception stack traces are excluded unless they are enabled through separate explicit configuration flags. The public analyzer remains fully usable offline. See [Product architecture](docs/PRODUCT_ARCHITECTURE.md) for the intended boundaries.
+
+LaraBeacon Pro cannot be published as a stable package until LaraBeacon Core 3.0 has been tagged and made available to Composer. The required release order is Core first, then Pro; this workspace does not create or publish those releases automatically.
+
+## Website
+
+The standalone Laravel application in `website/` contains the LaraBeacon marketing site, documentation, legal notices, and the complete Free/Pro check catalogue. It keeps the website deployment independent from Core and the private Pro repository while deriving catalogue metadata from the real analyzers.
+
+Nothing in this repository deploys or publishes the website automatically. See `website/README.md` and `website/docs/LAUNCH_CHECKLIST.md` before preparing a public launch.
 
 ## Development
 

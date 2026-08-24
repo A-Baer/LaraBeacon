@@ -14,3 +14,16 @@ docs
 phpunit.xml
 vendor
 node_modules
+
+# Local checkout of the proprietary package. It is a separate repository and
+# must never become part of the public LaraBeacon source distribution.
+/packages/larabeacon-pro/
+
+# Standalone deployment applications. They are maintained as separate
+# repositories so the public Composer package stays installable at its root.
+/website/
+/apps/larabeacon-cloud/
+
+# Generated research and image-generation scratch files. Finished website
+# assets live in website/public instead.
+/work/

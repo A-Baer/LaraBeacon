@@ -122,11 +122,11 @@ class BaselineCommand extends Command
     protected function updateConfig()
     {
         if (! file_exists(config_path('larabeacon.php'))) {
-            if (LaraBeacon::isPro()) {
-                $this->call('vendor:publish', ['--tag' => 'larabeacon-pro']);
-            } else {
-                $this->call('vendor:publish', ['--tag' => 'larabeacon']);
-            }
+            $this->call('vendor:publish', ['--tag' => 'larabeacon']);
+        }
+
+        if (LaraBeacon::isPro() && ! file_exists(config_path('larabeacon-pro.php'))) {
+            $this->call('vendor:publish', ['--tag' => 'larabeacon-pro']);
         }
 
         (new ConfigManipulator)->replace(config_path('larabeacon.php'), [

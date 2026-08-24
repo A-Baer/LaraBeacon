@@ -271,22 +271,30 @@ class LaraBeacon
     {
         $paths = collect(config('larabeacon.base_path', [
             app_path(),
+            base_path('routes'),
+            config_path(),
+            base_path('bootstrap/app.php'),
             database_path('migrations'),
             database_path('seeders'),
         ]))->filter(function ($path) {
             return file_exists($path);
-        })->toArray();
+        });
 
-        // Paths are either all directories or all files. A mix of
-        // files and directories is currently not supported.
-        $files = collect($paths)->every(function ($value) {
-            return is_dir($value);
-        }) ? (new Finder)->in($paths)->exclude('vendor')->name('*.php')
-            ->notName('*.blade.php')->files() : Arr::wrap($paths);
+        $files = $paths->flatMap(function ($path) {
+            if (is_file($path)) {
+                return [$path];
+            }
+
+            return iterator_to_array(
+                (new Finder)->in($path)->exclude('vendor')->name('*.php')
+                    ->notName('*.blade.php')->files(),
+                false
+            );
+        });
 
         return collect($files)->map(function ($file) {
             return is_string($file) ? $file : $file->getRealPath();
-        });
+        })->filter()->unique()->values();
     }
 
     /**

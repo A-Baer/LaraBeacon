@@ -40,13 +40,17 @@ return [
     | LaraBeacon Base Path
     |--------------------------------------------------------------------------
     |
-    | The following array lists the directories that will be scanned for
-    | application specific code. By default, we are scanning your app
-    | folder, migrations folder and the seeders folder.
+    | The following array lists the files and directories that will be scanned
+    | for application-specific code. Routes, configuration and bootstrap/app.php
+    | are included because modern Laravel applications define important runtime
+    | and security behavior there.
     |
     */
     'base_path' => [
         app_path(),
+        base_path('routes'),
+        config_path(),
+        base_path('bootstrap/app.php'),
         database_path('migrations'),
         database_path('seeders'),
     ],
@@ -123,7 +127,7 @@ return [
     | LaraBeacon Cloud
     |--------------------------------------------------------------------------
     |
-    | Cloud reporting is optional and disabled until an endpoint is configured.
+    | Cloud reporting is optional and disabled until an HTTPS endpoint is configured.
     | The public package remains fully usable offline while LaraBeacon Cloud can
     | later be connected without coupling the analyzer core to the SaaS.
     |
@@ -132,6 +136,8 @@ return [
         'endpoint' => env('LARABEACON_CLOUD_ENDPOINT'),
         'username' => env('LARABEACON_CLOUD_USERNAME'),
         'api_token' => env('LARABEACON_CLOUD_API_TOKEN'),
+        'include_code_snippets' => env('LARABEACON_CLOUD_INCLUDE_CODE_SNIPPETS', false),
+        'include_exception_stack_traces' => env('LARABEACON_CLOUD_INCLUDE_EXCEPTION_STACK_TRACES', false),
     ],
 
     // Set this value to your GitHub repository for future LaraBeacon Cloud integration.

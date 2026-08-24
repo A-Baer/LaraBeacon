@@ -17,11 +17,22 @@ class Client
         string $baseUrl,
         float $timeout = 10.0
     ) {
+        $parts = parse_url($baseUrl);
+
+        if (! is_array($parts)
+            || strtolower((string) ($parts['scheme'] ?? '')) !== 'https'
+            || empty($parts['host'])) {
+            throw new \InvalidArgumentException(
+                'The LaraBeacon Cloud endpoint must be an absolute HTTPS URL.'
+            );
+        }
+
         $this->client = new GuzzleClient([
             'base_uri' => $baseUrl,
             'auth' => [$username, $apiToken],
             'timeout' => $timeout,
             'http_errors' => false,
+            'allow_redirects' => ['protocols' => ['https']],
             'headers' => ['Accept' => 'application/json'],
         ]);
     }

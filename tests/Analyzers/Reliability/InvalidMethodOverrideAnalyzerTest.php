@@ -5,9 +5,7 @@ namespace BaerSoftware\LaraBeacon\Tests\Analyzers\Reliability;
 use BaerSoftware\LaraBeacon\Analyzers\Reliability\InvalidMethodOverrideAnalyzer;
 use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
-use PHPUnit\Framework\Attributes\RequiresPhp;
 
-#[RequiresPhp('< 8.0.0')]
 class InvalidMethodOverrideAnalyzerTest extends AnalyzerTestCase
 {
     protected function getEnvironmentSetUp($app)

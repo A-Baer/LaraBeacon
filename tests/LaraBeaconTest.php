@@ -146,6 +146,31 @@ class LaraBeaconTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
+    public function scans_mixed_file_and_directory_paths_without_losing_application_files()
+    {
+        $files = new Filesystem();
+        $directory = sys_get_temp_dir().'/larabeacon-mixed-paths-'.bin2hex(random_bytes(6));
+        $files->makeDirectory($directory.'/routes', 0775, true);
+        $files->put($directory.'/routes/web.php', '<?php return true;');
+        $files->put($directory.'/bootstrap.php', '<?php return true;');
+        $files->put($directory.'/routes/view.blade.php', 'ignored');
+        $this->app->config->set('larabeacon.base_path', [
+            $directory.'/routes',
+            $directory.'/bootstrap.php',
+        ]);
+
+        try {
+            $paths = LaraBeacon::getFilesToAnalyze()->all();
+
+            $this->assertContains(realpath($directory.'/routes/web.php'), $paths);
+            $this->assertContains($directory.'/bootstrap.php', $paths);
+            $this->assertCount(2, $paths);
+        } finally {
+            $files->deleteDirectory($directory);
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function runs_before_running_callback()
     {
         LaraBeacon::register();
