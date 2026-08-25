@@ -45,6 +45,12 @@ class JsonReportBuilder implements ReportBuilder
 
             if (! $includeStackTraces) {
                 unset($result['stackTrace']);
+            } elseif (isset($result['stackTrace']) && is_string($result['stackTrace'])) {
+                $stackTrace = preg_split('/\R/u', trim($result['stackTrace']));
+
+                $result['stackTrace'] = is_array($stackTrace)
+                    ? array_values(array_filter($stackTrace, fn ($line) => $line !== ''))
+                    : [];
             }
 
             if (isset($result['traces']) && is_array($result['traces'])) {

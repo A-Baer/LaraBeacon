@@ -57,7 +57,7 @@ The public package stays at the repository root so Composer and Packagist can in
 
 - **LaraBeacon**: LGPL-licensed analyzer engine and public checks in this repository.
 - **LaraBeacon Pro**: private Composer package containing 64 clean-room historical Pro checks plus modern Laravel checks.
-- **LaraBeacon Cloud**: planned SaaS for report history, teams, and repository integrations.
+- **LaraBeacon Cloud**: invitation-only SaaS for report history and teams in the private website deployment; repository integrations remain a later extension.
 
 Cloud reporting is disabled by default and only runs with `--report`. Report payloads contain project metadata and analyzer findings; source snippets and exception stack traces are excluded unless they are enabled through separate explicit configuration flags. The public analyzer remains fully usable offline. See [Product architecture](docs/PRODUCT_ARCHITECTURE.md) for the intended boundaries.
 
@@ -65,7 +65,7 @@ LaraBeacon Pro cannot be published as a stable package until LaraBeacon Core 3.0
 
 ## Website
 
-The standalone Laravel application in `website/` contains the LaraBeacon marketing site, documentation, legal notices, and the complete Free/Pro check catalogue. It keeps the website deployment independent from Core and the private Pro repository while deriving catalogue metadata from the real analyzers.
+The standalone Laravel application in `website/` contains the LaraBeacon marketing site, documentation, legal notices, complete Free/Pro check catalogue, and invitation-only Cloud application. It is a modular monolith with one deployment and database, while keeping Core and the private Pro package in their own repositories. The public catalogue still derives metadata from the real analyzers without including proprietary Pro source.
 
 Nothing in this repository deploys or publishes the website automatically. See `website/README.md` and `website/docs/LAUNCH_CHECKLIST.md` before preparing a public launch.
 

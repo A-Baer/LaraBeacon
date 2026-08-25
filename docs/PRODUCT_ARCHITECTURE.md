@@ -25,17 +25,17 @@ Pro must remain a separate private repository. Proprietary analyzer code must no
 
 ## LaraBeacon Cloud
 
-The planned SaaS will be a separate application and repository. This package only owns the client-side report contract and transport. The Cloud endpoint and credentials are optional `LARABEACON_CLOUD_*` environment variables; the client accepts only absolute HTTPS endpoints and follows redirects only over HTTPS.
+The invitation-only SaaS is implemented as a module of the private `website/` Laravel application and is deployed from that application's independent repository. This public package owns only the client-side report contract and transport. The Cloud endpoint and credentials are optional `LARABEACON_CLOUD_*` environment variables; the client accepts only absolute HTTPS endpoints and follows redirects only over HTTPS.
 
 The report contract includes project metadata, analyzer results, paths, line numbers, and finding details. Source snippets and exception stack traces are removed before transport by default and require separate explicit opt-ins through `LARABEACON_CLOUD_INCLUDE_CODE_SNIPPETS` and `LARABEACON_CLOUD_INCLUDE_EXCEPTION_STACK_TRACES`.
 
 ## Public website
 
-The local `website/` checkout is a standalone Laravel 13 application with its own private deployment repository, Composer lock file, and npm lock file. The Core repository ignores that checkout just as it ignores the private Pro package. The application contains the public marketing pages, documentation, legal pages, and a server-rendered catalogue of every Core and Pro check.
+The local `website/` checkout is a standalone Laravel 13 application with its own private deployment repository, Composer lock file, npm lock file, and production database. The Core repository ignores that checkout just as it ignores the private Pro package. The application is a modular monolith containing public marketing pages, documentation, legal pages, the server-rendered Core/Pro catalogue, and the authenticated Cloud module.
 
-The catalogue is generated from analyzer metadata, but the website never contains proprietary Pro implementation source. It may describe and link to Pro and the future Cloud application; authentication, subscriptions, payments, repository integrations, and the Cloud dashboard remain outside this application until those product boundaries are designed and implemented explicitly.
+The catalogue is generated from analyzer metadata, but the website never contains proprietary Pro implementation source. Cloud authentication, teams, project licence allocations, project API tokens, report ingestion, queued processing, report history, and retention live inside this application. Checkout, subscription billing, automatic Stripe fulfilment, package delivery, and repository-provider integrations remain disabled or unimplemented until those boundaries are reviewed separately.
 
-The website is deployed independently from the Composer packages. It must remain useful and indexable without JavaScript, while optional interactivity such as catalogue filtering enhances the server-rendered content. The future Cloud application will use a third repository and is not implemented inside the marketing site.
+The website is deployed independently from the Composer packages. Its public pages remain useful and indexable without JavaScript, while the authenticated Cloud area may use progressive Livewire navigation. Public routes stay stateless; sessions and browser storage are limited to authentication and Cloud routes.
 
 ## Compatibility policy
 

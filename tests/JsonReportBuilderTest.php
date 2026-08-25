@@ -40,7 +40,7 @@ class JsonReportBuilderTest extends TestCase
         $result = $report['analyzer_results'][0];
         $trace = $result['traces'][0];
 
-        $this->assertSame(['frame one', 'frame two'], $result['stackTrace']);
+        $this->assertSame(['#0 frame one', '#1 frame two'], $result['stackTrace']);
         $this->assertNotEmpty($trace['codeSnippet']);
         $this->assertStringContainsString('DummyStub', implode("\n", $trace['codeSnippet']));
     }
@@ -68,7 +68,7 @@ class JsonReportBuilderTest extends TestCase
             'title' => 'Example analyzer',
             'status' => 'failed',
             'traces' => [$trace],
-            'stackTrace' => ['frame one', 'frame two'],
+            'stackTrace' => "#0 frame one\n#1 frame two",
         ];
     }
 }
