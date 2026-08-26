@@ -30,7 +30,7 @@ class File
      * @param int|null $lineNumber
      * @return string
      */
-    public function getLine(int $lineNumber = null)
+    public function getLine(?int $lineNumber = null)
     {
         if (is_null($lineNumber)) {
             return $this->getNextLine();

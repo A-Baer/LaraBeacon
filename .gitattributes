@@ -6,7 +6,7 @@
 *.md diff=markdown
 *.php diff=php
 
-# Ignore all test and documentation with "export-ignore".
+# Keep public package archives limited to the Core package.
 /.github            export-ignore
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
@@ -15,6 +15,17 @@
 /tests              export-ignore
 /.editorconfig      export-ignore
 /.php-cs-fixer.dist.php export-ignore
-/.github            export-ignore
+/.php_cs.cache export-ignore
+/.php-cs-fixer.cache export-ignore
+/.phpunit.cache export-ignore
+/.phpunit.result.cache export-ignore
 /psalm.xml          export-ignore
 /psalm.xml.dist     export-ignore
+/apps               export-ignore
+/composer.lock      export-ignore
+/node_modules       export-ignore
+/packages           export-ignore
+/tools              export-ignore
+/vendor             export-ignore
+/website            export-ignore
+/work               export-ignore

@@ -14,11 +14,8 @@ Laravel 13 requires PHP 8.3 or newer.
 
 ## Installation
 
-Until the first Packagist release is published, add the repository as a VCS source:
-
 ```bash
-composer config repositories.larabeacon vcs https://github.com/A-Baer/LaraBeacon
-composer require --dev baer-software/larabeacon:dev-main
+composer require --dev baer-software/larabeacon:^3.0
 ```
 
 Publish the configuration if you want to customize analyzer selection or baselines:
@@ -61,7 +58,7 @@ The public package stays at the repository root so Composer and Packagist can in
 
 Cloud reporting is disabled by default and only runs with `--report`. Report payloads contain project metadata and analyzer findings; source snippets and exception stack traces are excluded unless they are enabled through separate explicit configuration flags. The public analyzer remains fully usable offline. See [Product architecture](docs/PRODUCT_ARCHITECTURE.md) for the intended boundaries.
 
-LaraBeacon Pro cannot be published as a stable package until LaraBeacon Core 3.0 has been tagged and made available to Composer. The required release order is Core first, then Pro; this workspace does not create or publish those releases automatically.
+LaraBeacon Pro is released separately as a private Composer package and requires LaraBeacon Core `^3.0`.
 
 ## Website
 

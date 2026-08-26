@@ -74,6 +74,7 @@
         }
     },
     "scripts": {
+        "archive:check": "php tools/verify-package-archive.php",
         "test": "vendor/bin/paratest --colors",
         "format": "php-cs-fixer fix --config=.php-cs-fixer.dist.php --sequential",
         "format:check": "php-cs-fixer fix --dry-run --diff --config=.php-cs-fixer.dist.php --sequential"

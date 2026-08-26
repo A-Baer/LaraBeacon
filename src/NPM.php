@@ -3,6 +3,7 @@
 namespace BaerSoftware\LaraBeacon;
 
 use Illuminate\Filesystem\Filesystem;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
 class NPM
@@ -144,10 +145,7 @@ class NPM
      */
     protected function commandExists(string $command)
     {
-        return is_executable(trim(shell_exec(
-            strpos(PHP_OS, 'WIN') === 0 ? 'where ' : 'command -v '
-            .$command
-        )));
+        return (new ExecutableFinder())->find($command) !== null;
     }
 
     /**

@@ -39,3 +39,7 @@ jobs:
 
       - name: Validate package metadata
         run: composer validate --strict
+
+      - name: Verify public package archive boundary
+        if: matrix.php == '8.4' && matrix.laravel == '13.*'
+        run: composer archive:check

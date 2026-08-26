@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.0.0 - 2026-08-26
+
 ### Added
 - Fork Enlightn as LaraBeacon under the `BaerSoftware\\LaraBeacon` namespace.
 - Add Laravel 12 and Laravel 13 compatibility with Larastan 3 and PHPStan 2.
