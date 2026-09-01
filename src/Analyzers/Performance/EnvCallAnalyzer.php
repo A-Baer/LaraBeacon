@@ -54,6 +54,14 @@ class EnvCallAnalyzer extends PerformanceAnalyzer
     {
         $builder = (new QueryBuilder)->doesntHaveFunctionCall('env');
 
-        $this->inspectCode($inspector, $builder);
+        $configPath = realpath(config('larabeacon.config_path', config_path()))
+            ?: config('larabeacon.config_path', config_path());
+        $configPath = rtrim($configPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+
+        $this->inspectCode($inspector, $builder, function (string $path) use ($configPath): bool {
+            $path = realpath($path) ?: $path;
+
+            return ! str_starts_with($path, $configPath);
+        });
     }
 }

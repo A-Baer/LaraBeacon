@@ -7,6 +7,7 @@ use Enlightn\SecurityChecker\AdvisoryAnalyzer;
 use Enlightn\SecurityChecker\AdvisoryFetcher;
 use Enlightn\SecurityChecker\AdvisoryParser;
 use Enlightn\SecurityChecker\Composer as SecurityCheckerComposer;
+use RuntimeException;
 use Throwable;
 
 class VulnerableDependencyAnalyzer extends SecurityAnalyzer
@@ -61,15 +62,52 @@ class VulnerableDependencyAnalyzer extends SecurityAnalyzer
      */
     public function handle(Composer $composer)
     {
-        $parser = new AdvisoryParser((new AdvisoryFetcher)->fetchAdvisories());
+        $this->withAdvisoryLock(function () use ($composer): void {
+            $parser = new AdvisoryParser((new AdvisoryFetcher)->fetchAdvisories());
 
-        $dependencies = (new SecurityCheckerComposer)->getDependencies($composer->getLockFile());
+            $dependencies = (new SecurityCheckerComposer)->getDependencies($composer->getLockFile());
 
-        $this->result = (new AdvisoryAnalyzer($parser->getAdvisories()))->analyzeDependencies($dependencies);
+            $this->result = (new AdvisoryAnalyzer($parser->getAdvisories()))->analyzeDependencies($dependencies);
+        });
 
         if (count($this->result) > 0) {
             $this->markFailed();
         }
+    }
+
+    /**
+     * Run the advisory fetch, extraction and analysis while holding a host-wide lock.
+     *
+     * The upstream security checker uses fixed paths in the system temporary
+     * directory, so concurrent LaraBeacon processes must not access them at once.
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     */
+    protected function withAdvisoryLock(callable $callback)
+    {
+        $lock = fopen($this->advisoryLockPath(), 'c');
+
+        if ($lock === false) {
+            throw new RuntimeException('Unable to open the LaraBeacon security advisory lock file.');
+        }
+
+        try {
+            if (! flock($lock, LOCK_EX)) {
+                throw new RuntimeException('Unable to acquire the LaraBeacon security advisory lock.');
+            }
+
+            return $callback();
+        } finally {
+            flock($lock, LOCK_UN);
+            fclose($lock);
+        }
+    }
+
+    protected function advisoryLockPath(): string
+    {
+        return sys_get_temp_dir().DIRECTORY_SEPARATOR.'larabeacon-security-advisories.lock';
     }
 
     /**

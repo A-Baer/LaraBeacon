@@ -14,9 +14,9 @@ trait InspectsCode
      * @param \BaerSoftware\LaraBeacon\Inspection\QueryBuilder $builder
      * @return bool
      */
-    protected function passesCodeInspection(Inspector $inspector, QueryBuilder $builder)
+    protected function passesCodeInspection(Inspector $inspector, QueryBuilder $builder, ?callable $pathFilter = null)
     {
-        $inspector->inspect($builder);
+        $inspector->inspect($builder, $pathFilter);
 
         return $inspector->passed();
     }
@@ -27,9 +27,9 @@ trait InspectsCode
      * @param \BaerSoftware\LaraBeacon\Inspection\Inspector $inspector
      * @param \BaerSoftware\LaraBeacon\Inspection\QueryBuilder $builder
      */
-    protected function inspectCode(Inspector $inspector, QueryBuilder $builder)
+    protected function inspectCode(Inspector $inspector, QueryBuilder $builder, ?callable $pathFilter = null)
     {
-        if (! $this->passesCodeInspection($inspector, $builder)) {
+        if (! $this->passesCodeInspection($inspector, $builder, $pathFilter)) {
             collect($inspector->getLastErrors())->each(function ($trace) {
                 $this->pushTrace($trace);
             });

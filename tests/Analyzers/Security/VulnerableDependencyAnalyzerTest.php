@@ -47,4 +47,36 @@ class VulnerableDependencyAnalyzerTest extends AnalyzerTestCase
         $this->assertErrorMessageContains(VulnerableDependencyAnalyzer::class, '8.22.0');
         $this->assertErrorMessageContains(VulnerableDependencyAnalyzer::class, 'Unexpected bindings in QueryBuilder');
     }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function holds_a_host_wide_lock_while_security_advisories_are_processed()
+    {
+        $analyzer = new TestableVulnerableDependencyAnalyzer;
+
+        $result = $analyzer->withLock(function () use ($analyzer): string {
+            $competingLock = fopen($analyzer->lockPath(), 'c');
+
+            $this->assertIsResource($competingLock);
+            $this->assertFalse(flock($competingLock, LOCK_EX | LOCK_NB));
+
+            fclose($competingLock);
+
+            return 'locked';
+        });
+
+        $this->assertSame('locked', $result);
+    }
+}
+
+class TestableVulnerableDependencyAnalyzer extends VulnerableDependencyAnalyzer
+{
+    public function withLock(callable $callback): mixed
+    {
+        return $this->withAdvisoryLock($callback);
+    }
+
+    public function lockPath(): string
+    {
+        return $this->advisoryLockPath();
+    }
 }

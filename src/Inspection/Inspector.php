@@ -58,12 +58,16 @@ class Inspector
      * @param QueryBuilder $builder
      * @return array
      */
-    public function inspect(QueryBuilder $builder)
+    public function inspect(QueryBuilder $builder, ?callable $pathFilter = null)
     {
         $this->traces = [];
         $this->passed = true;
 
         foreach ($this->nodes as $path => $nodes) {
+            if ($pathFilter !== null && ! $pathFilter($path)) {
+                continue;
+            }
+
             if (! empty($errors = $builder->getErrors($nodes))) {
                 collect($errors)->each(function (InspectionLine $line) use ($path) {
                     $this->traces[] = new Trace($path, $line->lineNumber, $line->details);

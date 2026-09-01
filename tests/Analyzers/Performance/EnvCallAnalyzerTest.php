@@ -27,6 +27,21 @@ class EnvCallAnalyzerTest extends AnalyzerTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
+    public function ignores_env_function_calls_in_configuration_files()
+    {
+        $this->app->config->set('larabeacon.base_path', [
+            $this->getClassStubPath(EnvStub::class),
+            $this->getConfigStubPath('app'),
+        ]);
+
+        $this->runLaraBeacon();
+
+        $this->assertFailedAt(EnvCallAnalyzer::class, $this->getClassStubPath(EnvStub::class), 9);
+        $this->assertNotFailedAt(EnvCallAnalyzer::class, $this->getConfigStubPath('app'), 16);
+        $this->assertHasErrors(EnvCallAnalyzer::class, 1);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function ignores_errors()
     {
         $this->setBasePathFrom(EnvStub::class);

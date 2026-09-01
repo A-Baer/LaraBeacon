@@ -4,6 +4,8 @@ namespace BaerSoftware\LaraBeacon\Analyzers\Security;
 
 use BaerSoftware\LaraBeacon\Analyzers\Concerns\AnalyzesMiddleware;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Str;
@@ -102,10 +104,10 @@ class CSRFAnalyzer extends SecurityAnalyzer
     protected function webMiddlewareGroupIsProtected()
     {
         if (isset($this->kernel->getMiddlewareGroups()['web'])) {
-            if (collect($this->kernel->getMiddlewareGroups()['web'])->contains(function ($middleware) {
-                return is_subclass_of($middleware, VerifyCsrfToken::class);
-            })) {
-                // Analysis passed as the web middleware group has the VerifyCsrfToken middleware
+            if (collect($this->kernel->getMiddlewareGroups()['web'])->contains(
+                fn ($middleware) => $this->isCsrfMiddleware($middleware)
+            )) {
+                // Analysis passed as the web middleware group has CSRF middleware.
                 return true;
             }
         }
@@ -121,8 +123,10 @@ class CSRFAnalyzer extends SecurityAnalyzer
      */
     protected function appIsGloballyProtected()
     {
-        if ($this->appUsesGlobalMiddleware(VerifyCsrfToken::class)) {
-            // Analysis passed as the VerifyCsrfToken middleware is global
+        if (collect($this->getGlobalMiddleware())->contains(
+            fn ($middleware) => $this->isCsrfMiddleware($middleware)
+        )) {
+            // Analysis passed as CSRF middleware is global.
             return true;
         }
 
@@ -146,8 +150,10 @@ class CSRFAnalyzer extends SecurityAnalyzer
             // signature validation protects them without CSRF middleware.
             return $this->isFrameworkStorageUploadRoute($route);
         })->filter(function ($route) {
-            // Get the routes that don't apply the VerifyCsrfToken middleware
-            return ! $this->routeUsesMiddleware($route, VerifyCsrfToken::class);
+            // Get the routes that don't apply CSRF middleware.
+            return ! collect($this->getMiddleware($route))->contains(
+                fn ($middleware) => $this->isCsrfMiddleware($middleware)
+            );
         })->filter(function ($route) {
             // Exclude the routes that are API routes (do not need CSRF protection)
             return ! Str::is('api/*', ltrim($route->uri(), '/'));
@@ -157,6 +163,16 @@ class CSRFAnalyzer extends SecurityAnalyzer
         });
 
         return $this->unprotectedRoutes->count() == 0;
+    }
+
+    protected function isCsrfMiddleware(string $middleware): bool
+    {
+        return collect([
+            PreventRequestForgery::class,
+            ValidateCsrfToken::class,
+            VerifyCsrfToken::class,
+        ])->filter(fn (string $class) => class_exists($class))
+            ->contains(fn (string $class) => $middleware === $class || is_subclass_of($middleware, $class));
     }
 
     /**

@@ -6,6 +6,8 @@ use BaerSoftware\LaraBeacon\Analyzers\Security\CSRFAnalyzer;
 use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithMiddleware;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +48,30 @@ class CSRFAnalyzerTest extends AnalyzerTestCase
         $this->clearMiddlewareGroups();
         $this->registerStatefulGlobalMiddleware();
         $this->registerGroupMiddleware('web', AppVerifyCsrfToken::class);
+
+        $this->runLaraBeacon();
+
+        $this->assertPassed(CSRFAnalyzer::class);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function passes_for_laravel_twelve_web_group_middleware()
+    {
+        $this->clearMiddlewareGroups();
+        $this->registerStatefulGlobalMiddleware();
+        $this->registerGroupMiddleware('web', AppValidateCsrfToken::class);
+
+        $this->runLaraBeacon();
+
+        $this->assertPassed(CSRFAnalyzer::class);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function passes_for_laravel_thirteen_exact_base_middleware()
+    {
+        $this->clearMiddlewareGroups();
+        $this->registerStatefulGlobalMiddleware();
+        $this->registerGroupMiddleware('web', PreventRequestForgery::class);
 
         $this->runLaraBeacon();
 
@@ -142,5 +168,9 @@ class CSRFAnalyzerTest extends AnalyzerTestCase
 }
 
 class AppVerifyCsrfToken extends VerifyCsrfToken
+{
+}
+
+class AppValidateCsrfToken extends ValidateCsrfToken
 {
 }
