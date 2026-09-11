@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 3.0.1 - 2026-09-11
+
+### Fixed
+- Ignore legitimate `env()` calls inside application configuration files.
+- Recognize Laravel 12 and 13 CSRF middleware variants across middleware groups, global middleware, and routes.
+- Serialize security-advisory processing to prevent concurrent scans from corrupting shared temporary files.
+
 ## 3.0.0 - 2026-08-26
 
 ### Added

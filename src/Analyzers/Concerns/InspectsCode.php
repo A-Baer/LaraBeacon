@@ -16,7 +16,11 @@ trait InspectsCode
      */
     protected function passesCodeInspection(Inspector $inspector, QueryBuilder $builder, ?callable $pathFilter = null)
     {
-        $inspector->inspect($builder, $pathFilter);
+        if ($pathFilter === null) {
+            $inspector->inspect($builder);
+        } else {
+            $inspector->inspectWhere($builder, $pathFilter);
+        }
 
         return $inspector->passed();
     }

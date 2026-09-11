@@ -58,13 +58,23 @@ class Inspector
      * @param QueryBuilder $builder
      * @return array
      */
-    public function inspect(QueryBuilder $builder, ?callable $pathFilter = null)
+    public function inspect(QueryBuilder $builder)
+    {
+        return $this->inspectWhere($builder, static fn (): bool => true);
+    }
+
+    /**
+     * @param QueryBuilder $builder
+     * @param callable(string): bool $pathFilter
+     * @return array
+     */
+    public function inspectWhere(QueryBuilder $builder, callable $pathFilter)
     {
         $this->traces = [];
         $this->passed = true;
 
         foreach ($this->nodes as $path => $nodes) {
-            if ($pathFilter !== null && ! $pathFilter($path)) {
+            if (! $pathFilter($path)) {
                 continue;
             }
 
