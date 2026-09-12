@@ -72,12 +72,12 @@ return [
     | Guest URL
     |--------------------------------------------------------------------------
     |
-    | Specify any guest url or path (preferably your app's login url) here. This
-    | would be used by LaraBeacon to inspect your application HTTP headers.
-    | Example: '/login'.
+    | Specify any guest URL or path (preferably your app's login URL) here. A
+    | full production URL lets a local LaraBeacon run inspect live HTTP headers.
+    | Examples: '/login' or 'https://example.com/login'.
     |
     */
-    'guest_url' => null,
+    'guest_url' => env('LARABEACON_GUEST_URL'),
 
     /*
     |--------------------------------------------------------------------------

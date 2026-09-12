@@ -14,14 +14,14 @@ class FillableForeignKeyAnalyzer extends SecurityAnalyzer
      *
      * @var string|null
      */
-    public $title = 'Your application does not expose foreign keys for mass assignment.';
+    public $title = 'Models do not declare potential foreign keys as fillable.';
 
     /**
      * The severity of the analyzer.
      *
      * @var string|null
      */
-    public $severity = self::SEVERITY_CRITICAL;
+    public $severity = self::SEVERITY_MINOR;
 
     /**
      * The time to fix in minutes.
@@ -37,8 +37,8 @@ class FillableForeignKeyAnalyzer extends SecurityAnalyzer
      */
     public function errorMessage()
     {
-        return "Your application declares potential foreign keys as fillable. This could expose "
-            ."your application to mass assignment attacks.";
+        return "Your application declares potential foreign keys as fillable. This is a review signal, not proof of a "
+            ."vulnerability: verify that every write path validates or authorizes these relationship identifiers.";
     }
 
     /**

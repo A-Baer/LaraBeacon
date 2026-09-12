@@ -20,7 +20,7 @@ class HSTSHeaderAnalyzer extends SecurityAnalyzer
      *
      * @var string|null
      */
-    public $title = 'Your application includes the HSTS header if it is a HTTPS only app.';
+    public $title = 'The configured HTTPS target sends the HSTS header.';
 
     /**
      * The severity of the analyzer.
@@ -64,8 +64,8 @@ class HSTSHeaderAnalyzer extends SecurityAnalyzer
      */
     public function errorMessage()
     {
-        return "Your application uses HTTPS only cookies, yet it does not include a HSTS (Strict-Transport-Security) "
-            ."response header that tells browsers that it should only be accessed using HTTPS. This may expose your "
+        return "The configured HTTPS target does not include a HSTS (Strict-Transport-Security) response header that "
+            ."tells browsers it should only be accessed using HTTPS. This may expose your "
             ."application to man-in-the-middle attacks.";
     }
 

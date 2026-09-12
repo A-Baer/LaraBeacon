@@ -13,8 +13,12 @@ trait DetectsHttps
      */
     protected function appIsHttpsOnly()
     {
+        $guestUrl = config('larabeacon.guest_url');
+
         // We assume here that if the app URL points to a URL with the https protocol or if the secure attribute
         // is set to true (as the default for all app cookies), then the app is an HTTPS only app.
-        return Str::contains(config('app.url'), 'https://') || config('session.secure') == true;
+        return Str::startsWith((string) $guestUrl, 'https://')
+            || Str::startsWith((string) config('app.url'), 'https://')
+            || config('session.secure') == true;
     }
 }

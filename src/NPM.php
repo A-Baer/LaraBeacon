@@ -3,6 +3,7 @@
 namespace BaerSoftware\LaraBeacon;
 
 use Illuminate\Filesystem\Filesystem;
+use RuntimeException;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
@@ -50,17 +51,24 @@ class NPM
      */
     public function countVulnerabilities($excludeDev = true)
     {
-        $auditResult = $this->audit($excludeDev);
+        return array_sum($this->vulnerabilitySummary($excludeDev));
+    }
 
-        if (empty($auditResult)) {
-            return 0;
-        }
+    /**
+     * Return vulnerability counts grouped by severity.
+     *
+     * @param bool $excludeDev
+     * @return array<string, int>
+     */
+    public function vulnerabilitySummary($excludeDev = true)
+    {
+        $auditResult = $this->audit($excludeDev);
 
         return collect($auditResult['metadata']['vulnerabilities']
             ?? $auditResult['data']['vulnerabilities'] ?? [])
             ->filter(function ($_, $type) {
                 return ! in_array($type, ['total', 'info']);
-            })->sum();
+            })->map(fn ($count) => (int) $count)->all();
     }
 
     /**
@@ -77,16 +85,41 @@ class NPM
         $output = $this->runCommand($options, false);
         $result = json_decode($output, true);
 
-        if (is_array($result)) {
+        if (is_array($result) && $this->hasVulnerabilitySummary($result)) {
             return $result;
         }
 
         // Yarn Classic emits newline-delimited JSON events. Its auditSummary
         // event has the same data.vulnerabilities shape supported above.
-        return collect(preg_split('/\R/', trim((string) $output)) ?: [])
+        $summary = collect(preg_split('/\R/', trim((string) $output)) ?: [])
             ->map(fn ($line) => json_decode($line, true))
             ->filter(fn ($event) => is_array($event) && ($event['type'] ?? null) === 'auditSummary')
-            ->last() ?? [];
+            ->last();
+
+        if (is_array($summary) && $this->hasVulnerabilitySummary($summary)) {
+            return $summary;
+        }
+
+        throw new RuntimeException('The package manager did not return a valid vulnerability audit summary.');
+    }
+
+    protected function hasVulnerabilitySummary(array $result): bool
+    {
+        $summary = $result['metadata']['vulnerabilities'] ?? $result['data']['vulnerabilities'] ?? null;
+
+        if (! is_array($summary) || $summary === []) {
+            return false;
+        }
+
+        $allowedKeys = ['info', 'low', 'moderate', 'high', 'critical', 'total'];
+        $severityKeys = ['info', 'low', 'moderate', 'high', 'critical'];
+
+        if (array_diff(array_keys($summary), $allowedKeys) !== []
+            || array_intersect(array_keys($summary), $severityKeys) === []) {
+            return false;
+        }
+
+        return collect($summary)->every(fn ($count) => is_int($count) && $count >= 0);
     }
 
     /**
@@ -120,8 +153,42 @@ class NPM
      */
     public function findNpmOrYarn()
     {
+        $this->isYarn = false;
+
         if (! $this->files->exists($this->rootPath.'/package.json')) {
             return [];
+        }
+
+        $packageJson = json_decode((string) $this->files->get($this->rootPath.'/package.json'), true);
+        $packageManager = $packageJson['packageManager'] ?? null;
+
+        if (is_string($packageManager) && str_starts_with($packageManager, 'yarn@')) {
+            if (! $this->commandExists('yarn')) {
+                return [];
+            }
+
+            $this->isYarn = true;
+
+            return ['yarn'];
+        }
+
+        if (is_string($packageManager) && str_starts_with($packageManager, 'npm@')) {
+            return $this->commandExists('npm') ? ['npm'] : [];
+        }
+
+        if ($this->files->exists($this->rootPath.'/yarn.lock')) {
+            if ($this->commandExists('yarn')) {
+                $this->isYarn = true;
+
+                return ['yarn'];
+            }
+        }
+
+        if ($this->files->exists($this->rootPath.'/package-lock.json')
+            || $this->files->exists($this->rootPath.'/npm-shrinkwrap.json')) {
+            if ($this->commandExists('npm')) {
+                return ['npm'];
+            }
         }
 
         if ($this->commandExists('npm')) {

@@ -48,6 +48,14 @@ php artisan larabeacon 'BaerSoftware\LaraBeacon\Analyzers\Security\CSRFAnalyzer'
 
 Some analyzers inspect runtime-specific configuration. Run LaraBeacon in a production-like environment for a complete result. Use `--ci` for checks that are safe and deterministic in continuous integration.
 
+To inspect headers on a deployed application while running LaraBeacon locally, provide a full guest URL:
+
+```bash
+LARABEACON_GUEST_URL=https://example.com/login php artisan larabeacon
+```
+
+License findings identify packages that need project-specific review; they do not prove a violation. Add licensed proprietary packages to `commercial_packages` in the published configuration instead of globally allowing the `proprietary` license label.
+
 ## Extensions and product boundaries
 
 The public package stays at the repository root so Composer and Packagist can install it directly. Analyzer discovery supports additional namespaces and paths, including the separately implemented private package `baer-software/larabeacon-pro`.

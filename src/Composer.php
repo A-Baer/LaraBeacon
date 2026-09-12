@@ -69,6 +69,21 @@ class Composer extends BaseComposer
     }
 
     /**
+     * Run Composer's native security audit.
+     *
+     * Returns null when the installed Composer version does not support a JSON
+     * audit result, allowing callers to use a compatible fallback.
+     *
+     * @return array|null
+     */
+    public function audit()
+    {
+        $result = json_decode($this->runCommand(['audit', '--locked', '--format=json'], false), true);
+
+        return is_array($result) && array_key_exists('advisories', $result) ? $result : null;
+    }
+
+    /**
      * Run any Composer command and get the output.
      *
      * @param  array  $options

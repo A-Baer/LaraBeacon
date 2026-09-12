@@ -8,6 +8,7 @@ use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithComposer;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Str;
+use Mockery;
 
 class VulnerableDependencyAnalyzerTest extends AnalyzerTestCase
 {
@@ -46,6 +47,28 @@ class VulnerableDependencyAnalyzerTest extends AnalyzerTestCase
         $this->assertErrorMessageContains(VulnerableDependencyAnalyzer::class, 'laravel/framework');
         $this->assertErrorMessageContains(VulnerableDependencyAnalyzer::class, '8.22.0');
         $this->assertErrorMessageContains(VulnerableDependencyAnalyzer::class, 'Unexpected bindings in QueryBuilder');
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function uses_composers_native_audit_result_when_available()
+    {
+        $composer = Mockery::mock(Composer::class);
+        $composer->shouldReceive('audit')->once()->andReturn([
+            'advisories' => [
+                'example/package' => [[
+                    'advisoryId' => 'PKSA-example',
+                    'title' => 'A current Packagist advisory',
+                ]],
+            ],
+        ]);
+        $composer->shouldReceive('getLockFile')->once()->andReturn(null);
+        $this->app->instance(Composer::class, $composer);
+
+        $this->runLaraBeacon();
+
+        $this->assertFailed(VulnerableDependencyAnalyzer::class);
+        $this->assertErrorMessageContains(VulnerableDependencyAnalyzer::class, 'example/package');
+        $this->assertErrorMessageContains(VulnerableDependencyAnalyzer::class, 'A current Packagist advisory');
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

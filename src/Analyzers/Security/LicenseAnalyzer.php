@@ -11,14 +11,14 @@ class LicenseAnalyzer extends SecurityAnalyzer
      *
      * @var string|null
      */
-    public $title = 'Your application does not rely on dependencies you are not legally allowed to use.';
+    public $title = 'Dependency licenses are approved for this application.';
 
     /**
      * The severity of the analyzer.
      *
      * @var string|null
      */
-    public $severity = self::SEVERITY_CRITICAL;
+    public $severity = self::SEVERITY_MAJOR;
 
     /**
      * The time to fix in minutes.
@@ -48,10 +48,10 @@ class LicenseAnalyzer extends SecurityAnalyzer
      */
     public function errorMessage()
     {
-        return "Your application has a total of {$this->blacklistedPackages->count()} package(s) that you may not be legally "
-            ."allowed to use. By default, we assume the MIT, Apache-2.0, ISC, BSD Clause 2 & 3 and LGPL licenses to be "
-            ."legally valid for use for proprietary or commercial applications. However, you are free to change this "
-            ."in the LaraBeacon config. Unsafe packages include {$this->formatBlacklistedPackages()}";
+        return "Your application has {$this->blacklistedPackages->count()} package(s) whose licenses require project-specific "
+            ."review. This is not proof of a licensing violation: approve compatible licenses in license_whitelist and "
+            ."licensed proprietary packages in commercial_packages. Packages requiring review: "
+            .$this->formatBlacklistedPackages();
     }
 
     /**

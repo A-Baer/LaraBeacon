@@ -12,7 +12,7 @@ class UpToDateDependencyAnalyzer extends SecurityAnalyzer
      *
      * @var string|null
      */
-    public $title = 'Dependencies are up-to-date.';
+    public $title = 'Installed dependencies match composer.lock.';
 
     /**
      * The severity of the analyzer.
@@ -35,8 +35,8 @@ class UpToDateDependencyAnalyzer extends SecurityAnalyzer
      */
     public function errorMessage()
     {
-        return "Your application's dependencies are not up-to-date. These may include bug fixes and/or security "
-                ."patches.";
+        return "The installed dependencies do not match composer.lock. Run Composer install to restore the locked "
+            ."dependency set.";
     }
 
     /**

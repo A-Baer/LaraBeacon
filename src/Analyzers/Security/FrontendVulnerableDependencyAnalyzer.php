@@ -41,6 +41,9 @@ class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
      */
     protected $vulnerabilityCount;
 
+    /** @var array<string, int> */
+    protected $vulnerabilitySummary = [];
+
     /**
      * Create a new analyzer instance.
      *
@@ -58,9 +61,11 @@ class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
      */
     public function errorMessage()
     {
-        return "Your application has a total of {$this->vulnerabilityCount} known vulnerabilities in the application's "
-            ."frontend dependencies. This can be very dangerous and you may investigate this further by running an "
-            ."npm audit or a yarn audit command.";
+        return "The audited dependency graph contains {$this->vulnerabilityCount} advisories reported by npm or Yarn "
+            ."({$this->formatVulnerabilitySummary()}). npm scans omit declared development dependencies; Yarn support "
+            ."depends on the installed version. Findings may still involve browser runtime code, server-side JavaScript "
+            ."or build tooling, so review reachability and deployment impact before prioritising fixes. Run npm audit "
+            ."or yarn audit for package-level details.";
     }
 
     /**
@@ -70,11 +75,26 @@ class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
      */
     public function handle()
     {
-        $this->vulnerabilityCount = $this->NPM->countVulnerabilities();
+        $this->vulnerabilitySummary = $this->NPM->vulnerabilitySummary();
+        $this->vulnerabilityCount = array_sum($this->vulnerabilitySummary);
 
         if ($this->vulnerabilityCount > 0) {
+            $this->severity = match (true) {
+                ($this->vulnerabilitySummary['critical'] ?? 0) > 0 => self::SEVERITY_CRITICAL,
+                ($this->vulnerabilitySummary['high'] ?? 0) > 0 => self::SEVERITY_MAJOR,
+                default => self::SEVERITY_MINOR,
+            };
+
             $this->markFailed();
         }
+    }
+
+    protected function formatVulnerabilitySummary(): string
+    {
+        return collect($this->vulnerabilitySummary)
+            ->filter()
+            ->map(fn ($count, $severity) => $severity.': '.$count)
+            ->implode(', ');
     }
 
     /**

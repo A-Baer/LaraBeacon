@@ -37,8 +37,8 @@ class MassAssignmentAnalyzer extends SecurityAnalyzer
      */
     public function errorMessage()
     {
-        return "Your application passes user controlled request data directly into the database. This "
-            ."exposes your application to mass assignment SQL injection vulnerabilities. Use the Request "
+        return "Your application passes user-controlled request data directly into mass-assignment operations. This "
+            ."can allow unintended attributes to be changed; it is not SQL injection. Use the Request "
             ."object's only or validated methods to restrict the database columns to the ones that are "
             ."intended to be modified to fix these vulnerabilities.";
     }

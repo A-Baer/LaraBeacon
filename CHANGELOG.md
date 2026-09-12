@@ -1,6 +1,15 @@
 # Release Notes
 
-## Unreleased
+## 3.0.2 - 2026-09-12
+
+### Fixed
+- Use Composer's native Packagist audit data before falling back to the legacy advisory feed.
+- Allow local scans to check deployed HTTPS headers through `LARABEACON_GUEST_URL`.
+- Distinguish available dependency updates from an installation that differs from `composer.lock`.
+- Describe license and fillable foreign-key findings as review signals instead of confirmed violations.
+- Report frontend advisory severities and clarify that build-tool findings require a reachability review.
+- Treat invalid package-manager audit output as an analyzer error and prefer Yarn for Yarn-managed projects.
+- Correct the mass-assignment guidance so it no longer describes the issue as SQL injection.
 
 ## 3.0.1 - 2026-09-11
 

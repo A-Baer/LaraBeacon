@@ -12,7 +12,7 @@ class StableDependencyAnalyzer extends SecurityAnalyzer
      *
      * @var string|null
      */
-    public $title = 'Your application uses stable versions of dependencies.';
+    public $title = 'No dependency updates are available within the current Composer constraints.';
 
     /**
      * The severity of the analyzer.
@@ -35,8 +35,8 @@ class StableDependencyAnalyzer extends SecurityAnalyzer
      */
     public function errorMessage()
     {
-        return "Your application's dependencies are unstable versions. These may include bug fixes and/or security "
-                ."patches. It is recommended to update to the most stable versions.";
+        return "A Composer update dry-run found newer dependency versions allowed by the current constraints. "
+            ."Review the proposed updates and their changelogs before applying them.";
     }
 
     /**

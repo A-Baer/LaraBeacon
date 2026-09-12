@@ -6,6 +6,8 @@ use BaerSoftware\LaraBeacon\Analyzers\Security\HSTSHeaderAnalyzer;
 use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +46,28 @@ class HSTSHeaderAnalyzerTest extends AnalyzerTestCase
         $this->runLaraBeacon();
 
         $this->assertFailed(HSTSHeaderAnalyzer::class);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function checks_an_explicit_https_guest_url_when_the_local_app_url_is_http()
+    {
+        $this->app->config->set('app.url', 'http://localhost');
+        $this->app->config->set('larabeacon.guest_url', 'https://example.com/login');
+
+        $history = [];
+        $handler = HandlerStack::create(new MockHandler([
+            new Response(200, []),
+        ]));
+        $handler->push(Middleware::history($history));
+
+        $this->app->make(HSTSHeaderAnalyzer::class)->setClient(new Client(
+            ['handler' => $handler]
+        ));
+
+        $this->runLaraBeacon();
+
+        $this->assertFailed(HSTSHeaderAnalyzer::class);
+        $this->assertSame('https://example.com/login', (string) $history[0]['request']->getUri());
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

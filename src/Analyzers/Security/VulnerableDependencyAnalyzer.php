@@ -47,8 +47,8 @@ class VulnerableDependencyAnalyzer extends SecurityAnalyzer
      */
     public function errorMessage()
     {
-        return "Your application has a total of ".count($this->result)." known vulnerabilities in the application "
-            ."dependencies. This can be very dangerous and you must resolve this by either applying patch updates or "
+        return "Your application has a total of ".$this->vulnerabilityCount()." known vulnerabilities in the application "
+            ."dependencies. Resolve these by either applying patch updates or "
             ."removing the vulnerable dependencies. The packages which have these vulnerabilities include: "
             .PHP_EOL.$this->listVulnerablePackages();
     }
@@ -62,6 +62,22 @@ class VulnerableDependencyAnalyzer extends SecurityAnalyzer
      */
     public function handle(Composer $composer)
     {
+        if (is_array($audit = $composer->audit())) {
+            $versions = $this->lockedVersions($composer->getLockFile());
+
+            $this->result = collect($audit['advisories'])
+                ->map(fn ($advisories, $package) => [
+                    'version' => $versions[$package] ?? 'unknown',
+                    'advisories' => array_values($advisories),
+                ])->all();
+
+            if ($this->vulnerabilityCount() > 0) {
+                $this->markFailed();
+            }
+
+            return;
+        }
+
         $this->withAdvisoryLock(function () use ($composer): void {
             $parser = new AdvisoryParser((new AdvisoryFetcher)->fetchAdvisories());
 
@@ -73,6 +89,30 @@ class VulnerableDependencyAnalyzer extends SecurityAnalyzer
         if (count($this->result) > 0) {
             $this->markFailed();
         }
+    }
+
+    /**
+     * Read installed package versions from composer.lock.
+     *
+     * @return array<string, string>
+     */
+    protected function lockedVersions(?string $lockFile): array
+    {
+        if ($lockFile === null || ! is_file($lockFile)) {
+            return [];
+        }
+
+        $lock = json_decode((string) file_get_contents($lockFile), true);
+
+        return collect(array_merge($lock['packages'] ?? [], $lock['packages-dev'] ?? []))
+            ->mapWithKeys(fn ($package) => [$package['name'] => $package['version']])
+            ->all();
+    }
+
+    protected function vulnerabilityCount(): int
+    {
+        return collect($this->result)
+            ->sum(fn ($vulnerability) => count($vulnerability['advisories'] ?? []));
     }
 
     /**

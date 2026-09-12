@@ -192,7 +192,7 @@ trait AnalyzesMiddleware
     {
         // First, we check to see if a guest path is provided. If yes, we return the corresponding URL.
         if (! is_null($guestPath = config('larabeacon.guest_url'))) {
-            return url($guestPath);
+            return Str::startsWith($guestPath, ['http://', 'https://']) ? $guestPath : url($guestPath);
         }
 
         // Here we just return the login named route. By default, Laravel uses
