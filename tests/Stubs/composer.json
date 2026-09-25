@@ -1,0 +1,6 @@
+{
+    "name": "baer-software/larabeacon-vulnerable-fixture",
+    "require": {
+        "laravel/framework": "v8.22.0"
+    }
+}

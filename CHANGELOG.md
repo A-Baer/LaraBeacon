@@ -7,6 +7,7 @@
 
 ### Fixed
 - Do not report arrays returned by request validation as mass-assignment vulnerabilities after they are stored in variables or indexed.
+- Use Composer's native security audit exclusively so Laravel 13 projects are not held back to Symfony 7 by the legacy security-checker fallback.
 
 ## 3.0.2 - 2026-09-12
 

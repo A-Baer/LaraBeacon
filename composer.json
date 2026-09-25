@@ -42,10 +42,10 @@
         "source": "https://github.com/A-Baer/LaraBeacon"
     },
     "require": {
+        "composer": "^2.4",
         "composer-runtime-api": "^2.2",
         "php": "^8.2",
         "ext-json": "*",
-        "enlightn/security-checker": "^2.0",
         "guzzlehttp/guzzle": "^7.8",
         "larastan/larastan": "^3.10",
         "laravel/framework": "^12.0|^13.0",

@@ -6,9 +6,11 @@ use BaerSoftware\LaraBeacon\Analyzers\Security\VulnerableDependencyAnalyzer;
 use BaerSoftware\LaraBeacon\Composer;
 use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use BaerSoftware\LaraBeacon\Tests\Analyzers\Concerns\InteractsWithComposer;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Str;
 use Mockery;
+use RuntimeException;
 
 class VulnerableDependencyAnalyzerTest extends AnalyzerTestCase
 {
@@ -72,34 +74,52 @@ class VulnerableDependencyAnalyzerTest extends AnalyzerTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function holds_a_host_wide_lock_while_security_advisories_are_processed()
+    public function composer_audit_uses_the_locked_json_result()
     {
-        $analyzer = new TestableVulnerableDependencyAnalyzer;
+        $composer = new class(new Filesystem, __DIR__) extends Composer {
+            public $options;
 
-        $result = $analyzer->withLock(function () use ($analyzer): string {
-            $competingLock = fopen($analyzer->lockPath(), 'c');
+            public $includeErrorOutput;
 
-            $this->assertIsResource($competingLock);
-            $this->assertFalse(flock($competingLock, LOCK_EX | LOCK_NB));
+            public function runCommand(array $options = [], $includeErrorOutput = true)
+            {
+                $this->options = $options;
+                $this->includeErrorOutput = $includeErrorOutput;
 
-            fclose($competingLock);
+                return '{"advisories":[],"abandoned":[]}';
+            }
+        };
 
-            return 'locked';
-        });
-
-        $this->assertSame('locked', $result);
-    }
-}
-
-class TestableVulnerableDependencyAnalyzer extends VulnerableDependencyAnalyzer
-{
-    public function withLock(callable $callback): mixed
-    {
-        return $this->withAdvisoryLock($callback);
+        $this->assertSame(['advisories' => [], 'abandoned' => []], $composer->audit());
+        $this->assertSame(['audit', '--locked', '--format=json'], $composer->options);
+        $this->assertFalse($composer->includeErrorOutput);
     }
 
-    public function lockPath(): string
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidComposerAuditOutputs')]
+    public function rejects_invalid_composer_audit_output(string $output)
     {
-        return $this->advisoryLockPath();
+        $composer = new class(new Filesystem, __DIR__) extends Composer {
+            public $output;
+
+            public function runCommand(array $options = [], $includeErrorOutput = true)
+            {
+                return $this->output;
+            }
+        };
+        $composer->output = $output;
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('valid JSON security audit result');
+
+        $composer->audit();
+    }
+
+    public static function invalidComposerAuditOutputs(): iterable
+    {
+        yield 'invalid JSON' => ['Composer audit failed'];
+        yield 'null advisories' => ['{"advisories":null}'];
+        yield 'false advisories' => ['{"advisories":false}'];
+        yield 'string advisories' => ['{"advisories":"invalid"}'];
     }
 }

@@ -3,6 +3,7 @@
 namespace BaerSoftware\LaraBeacon;
 
 use Illuminate\Support\Composer as BaseComposer;
+use RuntimeException;
 
 class Composer extends BaseComposer
 {
@@ -71,16 +72,17 @@ class Composer extends BaseComposer
     /**
      * Run Composer's native security audit.
      *
-     * Returns null when the installed Composer version does not support a JSON
-     * audit result, allowing callers to use a compatible fallback.
-     *
-     * @return array|null
+     * @return array
      */
-    public function audit()
+    public function audit(): array
     {
         $result = json_decode($this->runCommand(['audit', '--locked', '--format=json'], false), true);
 
-        return is_array($result) && array_key_exists('advisories', $result) ? $result : null;
+        if (! is_array($result) || ! isset($result['advisories']) || ! is_array($result['advisories'])) {
+            throw new RuntimeException('Composer did not return a valid JSON security audit result.');
+        }
+
+        return $result;
     }
 
     /**
