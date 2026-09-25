@@ -1,5 +1,10 @@
 # Release Notes
 
+## 3.0.4 - 2026-09-25
+
+### Fixed
+- Allow Laravel 13 applications to retain Guzzle 8 while preserving Guzzle 7 support for Laravel 12.
+
 ## 3.0.3 - 2026-09-25
 
 ### Added

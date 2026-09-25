@@ -46,7 +46,7 @@
         "composer-runtime-api": "^2.2",
         "php": "^8.2",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.8",
+        "guzzlehttp/guzzle": "^7.8.2 || ^8.0",
         "larastan/larastan": "^3.10",
         "laravel/framework": "^12.0|^13.0",
         "nikic/php-parser": "^5.4",
