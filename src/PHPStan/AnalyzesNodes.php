@@ -30,7 +30,7 @@ trait AnalyzesNodes
         $logic = (new RequestArrayDataType(new UnionType([new StringType, new IntegerType]), new RequestDataType))
             ->isSuperTypeOf($scope->getType($expr));
 
-        return $logic->yes() || $logic->maybe();
+        return $logic->yes();
     }
 
     /**

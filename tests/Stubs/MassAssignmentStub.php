@@ -72,4 +72,19 @@ class MassAssignmentStub
             return in_array($key, ['name', 'description']);
         }));
     }
+
+    public function safeStoredValidatedDataTest(FormRequest $request)
+    {
+        $validated = $request->validated();
+        BananaModel::create($validated);
+        BananaModel::create($validated['config']);
+        (new BananaModel)->fill($validated)->save();
+    }
+
+    public function safeStoredInlineValidationTest(Request $request)
+    {
+        $validated = $request->validate(['name' => ['required', 'string']]);
+        BananaModel::create($validated);
+        (new BananaModel)->update($validated);
+    }
 }

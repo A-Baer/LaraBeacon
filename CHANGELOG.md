@@ -1,5 +1,13 @@
 # Release Notes
 
+## Unreleased
+
+### Added
+- Support pnpm lockfiles and `packageManager` declarations in frontend vulnerability audits.
+
+### Fixed
+- Do not report arrays returned by request validation as mass-assignment vulnerabilities after they are stored in variables or indexed.
+
 ## 3.0.2 - 2026-09-12
 
 ### Fixed

@@ -43,6 +43,12 @@ class MassAssignmentAnalyzerTest extends AnalyzerTestCase
         $this->assertNotFailedAt(MassAssignmentAnalyzer::class, $this->getClassStubPath(MassAssignmentStub::class), 70);
         $this->assertNotFailedAt(MassAssignmentAnalyzer::class, $this->getClassStubPath(MassAssignmentStub::class), 71);
 
+        $this->assertNotFailedAt(MassAssignmentAnalyzer::class, $this->getClassStubPath(MassAssignmentStub::class), 79);
+        $this->assertNotFailedAt(MassAssignmentAnalyzer::class, $this->getClassStubPath(MassAssignmentStub::class), 80);
+        $this->assertNotFailedAt(MassAssignmentAnalyzer::class, $this->getClassStubPath(MassAssignmentStub::class), 81);
+        $this->assertNotFailedAt(MassAssignmentAnalyzer::class, $this->getClassStubPath(MassAssignmentStub::class), 87);
+        $this->assertNotFailedAt(MassAssignmentAnalyzer::class, $this->getClassStubPath(MassAssignmentStub::class), 88);
+
         $this->assertHasErrors(MassAssignmentAnalyzer::class, 9);
     }
 

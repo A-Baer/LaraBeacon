@@ -61,11 +61,11 @@ class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
      */
     public function errorMessage()
     {
-        return "The audited dependency graph contains {$this->vulnerabilityCount} advisories reported by npm or Yarn "
-            ."({$this->formatVulnerabilitySummary()}). npm scans omit declared development dependencies; Yarn support "
-            ."depends on the installed version. Findings may still involve browser runtime code, server-side JavaScript "
-            ."or build tooling, so review reachability and deployment impact before prioritising fixes. Run npm audit "
-            ."or yarn audit for package-level details.";
+        return "The audited dependency graph contains {$this->vulnerabilityCount} advisories reported by npm, pnpm "
+            ."or Yarn ({$this->formatVulnerabilitySummary()}). npm and pnpm scans omit declared development "
+            ."dependencies; Yarn support depends on the installed version. Findings may still involve browser runtime "
+            ."code, server-side JavaScript or build tooling, so review reachability and deployment impact before "
+            ."prioritising fixes. Run the detected package manager's audit command for package-level details.";
     }
 
     /**
@@ -104,7 +104,7 @@ class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
      */
     public function skip()
     {
-        // Skip the analyzer if package.json or npm/yarn does not exist.
+        // Skip the analyzer if package.json or a supported package manager does not exist.
         return empty($this->NPM->findNpmOrYarn());
     }
 }

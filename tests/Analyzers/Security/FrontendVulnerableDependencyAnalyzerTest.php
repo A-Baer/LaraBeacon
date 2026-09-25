@@ -24,6 +24,7 @@ class FrontendVulnerableDependencyAnalyzerTest extends TestCase
 
         $this->assertSame($analyzer::SEVERITY_MAJOR, $analyzer->severity);
         $this->assertStringContainsString('moderate: 1, high: 2', $analyzer->errorMessage());
+        $this->assertStringContainsString('npm, pnpm or Yarn', $analyzer->errorMessage());
         $this->assertStringContainsString('review reachability and deployment impact', $analyzer->errorMessage());
     }
 }

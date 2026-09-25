@@ -31,6 +31,13 @@ class NPM
     protected $isYarn = false;
 
     /**
+     * Determine whether the command is pnpm.
+     *
+     * @var bool
+     */
+    protected $isPnpm = false;
+
+    /**
      * Create a new PHPStan manager instance.
      *
      * @param  \Illuminate\Filesystem\Filesystem  $files
@@ -79,9 +86,15 @@ class NPM
      */
     public function audit($excludeDev = true)
     {
-        // Detect Yarn before building options because --omit=dev is npm-only.
+        // Detect the package manager before building options because each tool
+        // uses a different option for excluding development dependencies.
         $this->findNpmOrYarn();
-        $options = ($excludeDev && ! $this->isYarn) ? ['audit', '--omit=dev', '--json'] : ['audit', '--json'];
+        $options = match (true) {
+            $this->isPnpm && $excludeDev => ['audit', '--prod', '--json'],
+            $this->isYarn || $this->isPnpm => ['audit', '--json'],
+            $excludeDev => ['audit', '--omit=dev', '--json'],
+            default => ['audit', '--json'],
+        };
         $output = $this->runCommand($options, false);
         $result = json_decode($output, true);
 
@@ -154,6 +167,7 @@ class NPM
     public function findNpmOrYarn()
     {
         $this->isYarn = false;
+        $this->isPnpm = false;
 
         if (! $this->files->exists($this->rootPath.'/package.json')) {
             return [];
@@ -176,7 +190,26 @@ class NPM
             return $this->commandExists('npm') ? ['npm'] : [];
         }
 
-        if ($this->files->exists($this->rootPath.'/yarn.lock')) {
+        if (is_string($packageManager) && str_starts_with($packageManager, 'pnpm@')) {
+            if (! $this->commandExists('pnpm')) {
+                return [];
+            }
+
+            $this->isPnpm = true;
+
+            return ['pnpm'];
+        }
+
+        $hasYarnLock = $this->files->exists($this->rootPath.'/yarn.lock');
+        $hasPnpmLock = $this->files->exists($this->rootPath.'/pnpm-lock.yaml');
+        $hasNpmLock = $this->files->exists($this->rootPath.'/package-lock.json')
+            || $this->files->exists($this->rootPath.'/npm-shrinkwrap.json');
+
+        if (count(array_filter([$hasYarnLock, $hasPnpmLock, $hasNpmLock])) > 1) {
+            return [];
+        }
+
+        if ($hasYarnLock) {
             if ($this->commandExists('yarn')) {
                 $this->isYarn = true;
 
@@ -184,8 +217,17 @@ class NPM
             }
         }
 
-        if ($this->files->exists($this->rootPath.'/package-lock.json')
-            || $this->files->exists($this->rootPath.'/npm-shrinkwrap.json')) {
+        if ($hasPnpmLock) {
+            if ($this->commandExists('pnpm')) {
+                $this->isPnpm = true;
+
+                return ['pnpm'];
+            }
+
+            return [];
+        }
+
+        if ($hasNpmLock) {
             if ($this->commandExists('npm')) {
                 return ['npm'];
             }
@@ -199,6 +241,12 @@ class NPM
             $this->isYarn = true;
 
             return ['yarn'];
+        }
+
+        if ($this->commandExists('pnpm')) {
+            $this->isPnpm = true;
+
+            return ['pnpm'];
         }
 
         return [];

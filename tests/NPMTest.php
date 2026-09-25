@@ -61,6 +61,35 @@ class NPMTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
+    public function pnpm_production_audits_use_the_supported_prod_option()
+    {
+        $npm = new class(new Filesystem(), __DIR__) extends NPM {
+            public $options;
+
+            public $includeErrorOutput;
+
+            public function findNpmOrYarn()
+            {
+                $this->isPnpm = true;
+
+                return ['pnpm'];
+            }
+
+            public function runCommand(array $options = [], $includeErrorOutput = true)
+            {
+                $this->options = $options;
+                $this->includeErrorOutput = $includeErrorOutput;
+
+                return '{"metadata":{"vulnerabilities":{"high":1,"total":1}}}';
+            }
+        };
+
+        $this->assertSame(1, $npm->countVulnerabilities());
+        $this->assertSame(['audit', '--prod', '--json'], $npm->options);
+        $this->assertFalse($npm->includeErrorOutput);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function exposes_vulnerability_counts_by_severity()
     {
         $npm = new class(new Filesystem(), __DIR__) extends NPM {
@@ -165,6 +194,99 @@ class NPMTest extends TestCase
             };
 
             $this->assertSame(['npm'], $npm->findNpmOrYarn());
+        } finally {
+            $files->deleteDirectory($root);
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function an_explicit_pnpm_package_manager_is_detected()
+    {
+        $files = new Filesystem;
+        $root = sys_get_temp_dir().DIRECTORY_SEPARATOR.'larabeacon-npm-test-'.uniqid();
+        $files->makeDirectory($root);
+        $files->put($root.'/package.json', '{"packageManager":"pnpm@11.9.0"}');
+        $files->put($root.'/yarn.lock', '');
+
+        try {
+            $npm = new class($files, $root) extends NPM {
+                protected function commandExists(string $command)
+                {
+                    return $command === 'pnpm';
+                }
+            };
+
+            $this->assertSame(['pnpm'], $npm->findNpmOrYarn());
+        } finally {
+            $files->deleteDirectory($root);
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function ambiguous_lockfiles_are_not_audited_without_an_explicit_package_manager()
+    {
+        $files = new Filesystem;
+        $root = sys_get_temp_dir().DIRECTORY_SEPARATOR.'larabeacon-npm-test-'.uniqid();
+        $files->makeDirectory($root);
+        $files->put($root.'/package.json', '{}');
+        $files->put($root.'/yarn.lock', '');
+        $files->put($root.'/pnpm-lock.yaml', 'lockfileVersion: 9');
+
+        try {
+            $npm = new class($files, $root) extends NPM {
+                protected function commandExists(string $command)
+                {
+                    return in_array($command, ['npm', 'yarn', 'pnpm'], true);
+                }
+            };
+
+            $this->assertSame([], $npm->findNpmOrYarn());
+        } finally {
+            $files->deleteDirectory($root);
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function a_pnpm_lockfile_is_detected()
+    {
+        $files = new Filesystem;
+        $root = sys_get_temp_dir().DIRECTORY_SEPARATOR.'larabeacon-npm-test-'.uniqid();
+        $files->makeDirectory($root);
+        $files->put($root.'/package.json', '{}');
+        $files->put($root.'/pnpm-lock.yaml', 'lockfileVersion: 9');
+
+        try {
+            $npm = new class($files, $root) extends NPM {
+                protected function commandExists(string $command)
+                {
+                    return in_array($command, ['npm', 'pnpm'], true);
+                }
+            };
+
+            $this->assertSame(['pnpm'], $npm->findNpmOrYarn());
+        } finally {
+            $files->deleteDirectory($root);
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function a_pnpm_lockfile_is_not_audited_with_npm_when_pnpm_is_missing()
+    {
+        $files = new Filesystem;
+        $root = sys_get_temp_dir().DIRECTORY_SEPARATOR.'larabeacon-npm-test-'.uniqid();
+        $files->makeDirectory($root);
+        $files->put($root.'/package.json', '{}');
+        $files->put($root.'/pnpm-lock.yaml', 'lockfileVersion: 9');
+
+        try {
+            $npm = new class($files, $root) extends NPM {
+                protected function commandExists(string $command)
+                {
+                    return $command === 'npm';
+                }
+            };
+
+            $this->assertSame([], $npm->findNpmOrYarn());
         } finally {
             $files->deleteDirectory($root);
         }
