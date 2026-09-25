@@ -1,6 +1,6 @@
 # Release Notes
 
-## Unreleased
+## 3.0.3 - 2026-09-25
 
 ### Added
 - Support pnpm lockfiles and `packageManager` declarations in frontend vulnerability audits.

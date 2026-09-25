@@ -23,11 +23,11 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         if: github.event.inputs.git-ref == ''
 
       - name: Checkout code (Custom Ref)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
