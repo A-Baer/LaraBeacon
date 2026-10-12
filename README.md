@@ -56,6 +56,12 @@ LARABEACON_GUEST_URL=https://example.com/login php artisan larabeacon
 
 License findings identify packages that need project-specific review; they do not prove a violation. Add licensed proprietary packages to `commercial_packages` in the published configuration instead of globally allowing the `proprietary` license label.
 
+## Share feedback, get LaraBeacon Pro
+
+Using LaraBeacon in a Laravel project? I'm looking for the first five external projects willing to try it and share 20 minutes of honest feedback about installation, useful findings, and false positives. In return, I'll provide a free LaraBeacon Pro licence for one project per participant.
+
+Email [anthony.baer@baer-software.com](mailto:anthony.baer@baer-software.com?subject=LaraBeacon%20feedback) with your Laravel version and a short description of your project. Private projects are welcome; you do not need to share your source code. I'll confirm your place and arrange Pro access personally.
+
 ## Extensions and product boundaries
 
 The public package stays at the repository root so Composer and Packagist can install it directly. Analyzer discovery supports additional namespaces and paths, including the separately implemented private package `baer-software/larabeacon-pro`.

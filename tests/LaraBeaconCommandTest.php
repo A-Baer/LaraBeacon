@@ -15,6 +15,32 @@ use Symfony\Component\Console\Output\BufferedOutput;
 class LaraBeaconCommandTest extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\Test]
+    public function feedback_invitation_only_appears_in_interactive_non_ci_output()
+    {
+        foreach (['interactive', 'ci', 'non-interactive', 'quiet'] as $mode) {
+            $this->app->config->set('larabeacon.analyzers', AppDebugAnalyzer::class);
+            $this->app->config->set('app.env', 'production');
+            $this->app->config->set('app.debug', false);
+
+            $command = new LaraBeaconCommand;
+            $command->setLaravel($this->app);
+            $input = new ArrayInput($mode === 'ci' ? ['--ci' => true] : []);
+            $input->setInteractive($mode !== 'non-interactive');
+            $output = new BufferedOutput($mode === 'quiet' ? BufferedOutput::VERBOSITY_QUIET : BufferedOutput::VERBOSITY_NORMAL);
+
+            $this->assertSame(0, $command->run($input, $output));
+            $text = $output->fetch();
+
+            if ($mode === 'interactive') {
+                $this->assertStringContainsString('first five external projects', $text);
+                $this->assertStringContainsString('anthony.baer@baer-software.com', $text);
+            } else {
+                $this->assertStringNotContainsString('free Pro licence', $text, $mode);
+            }
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function command_exits_with_success_status_code_on_passing()
     {
         $this->app->config->set('larabeacon.analyzers', AppDebugAnalyzer::class);

@@ -132,6 +132,12 @@ class LaraBeaconCommand extends Command
             }
         }
 
+        if (! $this->option('ci') && $this->input->isInteractive() && ! $this->getOutput()->isQuiet()) {
+            $this->newLine();
+            $this->line('Using LaraBeacon? The first five external projects can get a free Pro licence for one project in return for 20 minutes of honest feedback.');
+            $this->line('Share installation feedback, useful findings, and false positives: anthony.baer@baer-software.com');
+        }
+
         // Exit with a non-zero exit code if there were failed checks to throw an error on CI environments
         return collect($this->result)->sum(function ($category) {
             return $category['reported'];
