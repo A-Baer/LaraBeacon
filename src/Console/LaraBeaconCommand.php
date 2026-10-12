@@ -3,6 +3,11 @@
 namespace BaerSoftware\LaraBeacon\Console;
 
 use BaerSoftware\LaraBeacon\Console\Formatters\AnsiFormatter;
+use BaerSoftware\LaraBeacon\Findings\Baseline;
+use BaerSoftware\LaraBeacon\Findings\Exporter;
+use BaerSoftware\LaraBeacon\Findings\FixPreview;
+use BaerSoftware\LaraBeacon\Findings\Report;
+use BaerSoftware\LaraBeacon\Findings\ScanProfile;
 use BaerSoftware\LaraBeacon\LaraBeacon;
 use BaerSoftware\LaraBeacon\Reporting\API;
 use BaerSoftware\LaraBeacon\Reporting\JsonReportBuilder;
@@ -17,12 +22,21 @@ class LaraBeaconCommand extends Command
      */
     protected $signature = 'larabeacon
                             {analyzer?* : The analyzer class that you wish to run}
+                            {--format=terminal : terminal, json, markdown or sarif}
+                            {--output= : Write the local report to this file}
+                            {--profile= : local, ci or production}
+                            {--preflight : Explain the selected environment without executing checks}
+                            {--baseline= : Load a finding-level JSON acceptance baseline}
+                            {--only-new : Fail only for findings not accepted by the baseline}
+                            {--fail-on=info : Minimum blocking severity: info, minor, major or critical}
+                            {--fix-preview : Include a reviewable diff for supported deterministic fixes}
                             {--details : Show details of each failed check}
                             {--ci : Run LaraBeacon in CI mode}
                             {--report : Send this run to LaraBeacon Cloud}
                             {--review : Request a pull request review from LaraBeacon Cloud}
                             {--show-exceptions : Display the stack trace of exceptions if any}
                             {--issue= : The pull request number for LaraBeacon Cloud}
+                            {--branch= : Branch name for Cloud history isolation}
                             {--hash= : An optional commit hash to report to LaraBeacon Cloud}';
 
     /**
@@ -81,11 +95,49 @@ class LaraBeaconCommand extends Command
      */
     public function handle()
     {
+        $originalConfig = config('larabeacon');
+        $originalFilter = LaraBeacon::$filterCallback;
+
+        try {
+            return $this->runAnalysis();
+        } catch (\InvalidArgumentException|\JsonException $exception) {
+            $this->error($exception->getMessage());
+
+            return 2;
+        } finally {
+            config()->set('larabeacon', $originalConfig);
+            LaraBeacon::$filterCallback = $originalFilter;
+        }
+    }
+
+    protected function runAnalysis(): int
+    {
+        $format = $this->option('format');
+        if (! in_array($format, ['terminal', 'json', 'markdown', 'sarif'], true)
+            || ! in_array($this->option('fail-on'), ['info', 'minor', 'major', 'critical'], true)) {
+            throw new \InvalidArgumentException('Invalid format or severity threshold.');
+        }
+        if ($this->option('only-new') && ! $this->option('baseline')) {
+            throw new \InvalidArgumentException('--only-new requires --baseline.');
+        }
+        if ($this->option('output') && $format === 'terminal') {
+            throw new \InvalidArgumentException('--output requires json, markdown or sarif format.');
+        }
+        $entries = $this->option('baseline') ? Baseline::load($this->option('baseline')) : [];
+        ScanProfile::apply($this->option('profile'), (bool) $this->option('ci'));
+        $this->analyzerInfos = [];
         $this->analyzerClasses = $this->argument('analyzer');
+        if ($this->option('preflight')) {
+            $this->output->write(json_encode(ScanProfile::preflight($this->option('profile')), JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR)."\n");
+
+            return 0;
+        }
 
         $this->formatter = new AnsiFormatter;
 
-        $this->formatter->beforeAnalysis($this);
+        if ($format === 'terminal') {
+            $this->formatter->beforeAnalysis($this);
+        }
 
         if ($this->option('ci')) {
             LaraBeacon::filterAnalyzersForCI();
@@ -100,7 +152,34 @@ class LaraBeaconCommand extends Command
         LaraBeacon::using([$this, 'printAnalyzerOutput']);
         LaraBeacon::run($this->laravel);
 
-        $this->formatter->afterAnalysis($this, empty($this->analyzerClasses));
+        if ($format === 'terminal') {
+            $this->formatter->afterAnalysis($this, empty($this->analyzerClasses));
+        }
+        $localReport = Baseline::annotate(Report::build($this->analyzerInfos), $entries);
+        $localReport['scan'] = ScanProfile::preflight($this->option('profile'));
+        if ($this->option('fix-preview')) {
+            $localReport['fix_previews'] = FixPreview::build($localReport);
+        }
+        if ($format !== 'terminal') {
+            $rendered = Exporter::render($localReport, $format);
+            if ($path = $this->option('output')) {
+                if (@file_put_contents($path, $rendered) === false) {
+                    throw new \InvalidArgumentException('Could not write report: '.$path);
+                }
+            } else {
+                $this->output->write($rendered);
+            }
+        } elseif ($this->option('fix-preview')) {
+            foreach ($localReport['fix_previews'] as $preview) {
+                $this->output->write($preview['diff']);
+            }
+            if ($localReport['fix_previews'] === []) {
+                $this->line('No deterministic fix preview is available for these findings. Follow the remediation guidance.');
+            }
+        }
+        if ($format === 'terminal' && $this->option('baseline')) {
+            $this->line(count(array_filter($localReport['findings'], fn ($finding) => $finding['accepted'])).' accepted findings; '.count($localReport['stale_baseline_entries']).' baseline entries absent from this scan (review scope before removing).');
+        }
 
         if ($this->option('report')) {
             $api = $this->laravel->make(API::class);
@@ -116,8 +195,12 @@ class LaraBeaconCommand extends Command
                 $metadata['needs_review'] = true;
             }
 
-            if ($this->option('ci')) {
+            if ($this->option('ci') || $this->option('profile') === 'ci') {
                 $metadata['trigger'] = 'ci';
+            }
+
+            if ($branch = $this->option('branch')) {
+                $metadata['branch'] = $branch;
             }
 
             if ($hash = $this->option('hash')) {
@@ -126,22 +209,19 @@ class LaraBeaconCommand extends Command
 
             $url = $api->sendReport($reportBuilder->buildReport($this->analyzerInfos, $this->result, $metadata));
 
-            if (! is_null($url)) {
+            if (! is_null($url) && $format === 'terminal') {
                 $this->getOutput()->newLine();
                 $this->comment("Your report can be viewed at <href={$url}>{$url}</>");
             }
         }
 
-        if (! $this->option('ci') && $this->input->isInteractive() && ! $this->getOutput()->isQuiet()) {
+        if ($format === 'terminal' && ! $this->option('ci') && $this->option('profile') !== 'ci' && $this->input->isInteractive() && ! $this->getOutput()->isQuiet()) {
             $this->newLine();
             $this->line('Using LaraBeacon? The first five external projects can get a free Pro licence for one project in return for 20 minutes of honest feedback.');
             $this->line('Share installation feedback, useful findings, and false positives: anthony.baer@baer-software.com');
         }
 
-        // Exit with a non-zero exit code if there were failed checks to throw an error on CI environments
-        return collect($this->result)->sum(function ($category) {
-            return $category['reported'];
-        }) == 0 ? 0 : 1;
+        return Baseline::blocks($localReport, $this->option('fail-on'), (bool) $this->option('only-new')) ? 1 : 0;
     }
 
     /**
@@ -153,13 +233,15 @@ class LaraBeaconCommand extends Command
     {
         $this->analyzerInfos[] = $info;
 
-        $this->formatter->parseAnalyzerResult(
-            $this,
-            $info,
-            $this->countAnalyzers,
-            $this->totalAnalyzers,
-            empty($this->analyzerClasses)
-        );
+        if ($this->option('format') === 'terminal') {
+            $this->formatter->parseAnalyzerResult(
+                $this,
+                $info,
+                $this->countAnalyzers,
+                $this->totalAnalyzers,
+                empty($this->analyzerClasses)
+            );
+        }
 
         $this->updateResult($info);
 

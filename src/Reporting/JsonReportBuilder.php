@@ -43,6 +43,8 @@ class JsonReportBuilder implements ReportBuilder
                 return $result;
             }
 
+            $result['guidance'] = \BaerSoftware\LaraBeacon\Findings\Guidance::forAnalyzer($result);
+
             if (! $includeStackTraces) {
                 unset($result['stackTrace']);
             } elseif (isset($result['stackTrace']) && is_string($result['stackTrace'])) {
@@ -75,6 +77,7 @@ class JsonReportBuilder implements ReportBuilder
                 'path' => $trace->relativePath(),
                 'lineNumber' => $trace->lineNumber,
                 'details' => $trace->details,
+                'evidenceKey' => $trace->evidenceKey(),
             ];
 
             if ($includeCodeSnippet) {

@@ -56,6 +56,20 @@ LARABEACON_GUEST_URL=https://example.com/login php artisan larabeacon
 
 License findings identify packages that need project-specific review; they do not prove a violation. Add licensed proprietary packages to `commercial_packages` in the published configuration instead of globally allowing the `proprietary` license label.
 
+## Remediation and CI workflows
+
+With Core 3.1.0 or newer, export findings locally, choose an environment profile, accept known findings individually, and review deterministic patch proposals:
+
+```bash
+php artisan larabeacon --profile=local --details
+php artisan larabeacon --profile=ci --format=markdown --output=larabeacon.md
+php artisan larabeacon:baseline --profile=ci --output=larabeacon-baseline.json --reason="Scheduled remediation"
+php artisan larabeacon --profile=ci --baseline=larabeacon-baseline.json --only-new --fail-on=major
+php artisan larabeacon --details --fix-preview
+```
+
+See [the remediation workflow](docs/REMEDIATION_WORKFLOW.md) for JSON/SARIF exports, acceptance expiry, GitHub Actions, scan limitations and Cloud comparison behavior. Fix previews never edit source files.
+
 ## Share feedback, get LaraBeacon Pro
 
 Using LaraBeacon in a Laravel project? I'm looking for the first five external projects willing to try it and share 20 minutes of honest feedback about installation, useful findings, and false positives. In return, I'll provide a free LaraBeacon Pro licence for one project per participant.

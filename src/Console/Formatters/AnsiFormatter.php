@@ -78,6 +78,15 @@ class AnsiFormatter implements Formatter
             }
 
             if ($result['status'] === 'failed') {
+                if ($command->option('details')) {
+                    $guidance = \BaerSoftware\LaraBeacon\Findings\Guidance::forAnalyzer($result);
+                    foreach (['confidence', 'risk', 'fix', 'verification', 'allowed_scope'] as $key) {
+                        $command->line(ucfirst(str_replace('_', ' ', $key)).': '.\Symfony\Component\Console\Formatter\OutputFormatter::escape($guidance[$key]));
+                    }
+                    if ($guidance['example']) {
+                        $command->line('Example: '.\Symfony\Component\Console\Formatter\OutputFormatter::escape($guidance['example']));
+                    }
+                }
                 $command->line("<fg=cyan>Documentation URL: <href={$result['docsUrl']}>{$result['docsUrl']}</></fg=cyan>");
             }
         }

@@ -17,7 +17,11 @@ class BaselineCommand extends Command
      * @var string
      */
     protected $signature = 'larabeacon:baseline
-                            {--ci : Run LaraBeacon in CI mode}';
+                            {--ci : Run LaraBeacon in CI mode}
+                            {--output= : Write a finding-level JSON baseline instead of editing config}
+                            {--reason= : Required acceptance reason for JSON baseline entries}
+                            {--expires= : Optional YYYY-MM-DD expiry}
+                            {--profile= : local, ci or production}';
 
     /**
      * The console command description.
@@ -30,6 +34,8 @@ class BaselineCommand extends Command
      * @var array
      */
     protected $dont_report = [];
+
+    protected $results = [];
 
     /**
      * @var array
@@ -49,6 +55,29 @@ class BaselineCommand extends Command
      */
     public function handle()
     {
+        $config = config('larabeacon');
+        $filter = LaraBeacon::$filterCallback;
+
+        try {
+            return $this->generate();
+        } catch (\InvalidArgumentException|\JsonException $exception) {
+            $this->error($exception->getMessage());
+
+            return 2;
+        } finally {
+            config()->set('larabeacon', $config);
+            LaraBeacon::$filterCallback = $filter;
+        }
+    }
+
+    protected function generate(): int
+    {
+        if ($this->option('output') && trim((string) $this->option('reason')) === '') {
+            throw new \InvalidArgumentException('A JSON baseline requires --reason.');
+        }
+        \BaerSoftware\LaraBeacon\Findings\Baseline::validateExpiry($this->option('expires'));
+        \BaerSoftware\LaraBeacon\Findings\ScanProfile::apply($this->option('profile'), (bool) $this->option('ci'));
+        $this->results = $this->dont_report = $this->ignore_errors = [];
         $this->setColors();
         $this->line(require __DIR__.DIRECTORY_SEPARATOR.'logo.php');
         $this->output->newLine();
@@ -57,6 +86,7 @@ class BaselineCommand extends Command
 
         // Reset ignored errors to establish a complete baseline.
         config()->set('larabeacon.ignore_errors', []);
+        config()->set('larabeacon.dont_report', []);
 
         if ($this->option('ci')) {
             LaraBeacon::filterAnalyzersForCI();
@@ -72,7 +102,39 @@ class BaselineCommand extends Command
         $this->progressbar->finish();
         $this->output->newLine();
 
-        $this->updateConfig();
+        if ($path = $this->option('output')) {
+            $report = \BaerSoftware\LaraBeacon\Findings\Report::build($this->results);
+            if (collect($this->results)->contains(fn ($result) => $result['status'] === 'error')) {
+                $this->error('Baseline was not written because at least one check could not complete.');
+
+                return 2;
+            }
+            $old = is_file($path) ? \BaerSoftware\LaraBeacon\Findings\Baseline::load($path) : [];
+            $old = array_column($old, null, 'fingerprint');
+            $entries = [];
+            foreach ($report['findings'] as $finding) {
+                $entries[] = $old[$finding['fingerprint']] ?? [
+                    'fingerprint' => $finding['fingerprint'], 'analyzer' => $finding['analyzer'],
+                    'location' => $finding['location'], 'reason' => $this->option('reason'),
+                    'expires_at' => $this->option('expires'),
+                ];
+                unset($old[$finding['fingerprint']]);
+            }
+            // Prune only findings of checks that actually completed in this scan.
+            $completed = array_column(array_filter($this->results, fn ($result) => in_array($result['status'], ['passed', 'failed'], true)), 'class');
+            foreach ($old as $entry) {
+                if (! in_array($entry['analyzer'] ?? null, $completed, true)) {
+                    $entries[] = $entry;
+                }
+            }
+            $json = json_encode(['schema_version' => 1, 'entries' => $entries], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n";
+            if (@file_put_contents($path, $json) === false) {
+                throw new \InvalidArgumentException('Could not write baseline: '.$path);
+            }
+            $this->info('Finding baseline written; existing reasons and expiry dates retained.');
+        } else {
+            $this->updateConfig();
+        }
 
         return 0;
     }
@@ -85,6 +147,7 @@ class BaselineCommand extends Command
      */
     public function parseAnalyzerResult(array $info)
     {
+        $this->results[] = $info;
         if ($info['status'] === 'failed' && empty($info['traces'])) {
             $this->dont_report[] = $info['class'];
         }

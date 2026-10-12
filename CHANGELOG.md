@@ -1,5 +1,18 @@
 # Release Notes
 
+## 3.1.0 - 2026-10-12
+
+### Added
+- Local JSON, Markdown and SARIF reports with per-occurrence identities and remediation guidance.
+- Local, CI and production scan profiles and a preflight description of the actual application environment.
+- Finding-level JSON acceptance baselines with reasons, expiry, safe pruning and severity-based gates for new findings.
+- Reviewable, non-writing fix previews for literal production debug settings and unambiguous environment-to-configuration lookups.
+- Optional Cloud branch metadata, source evidence hashes and remediation guidance without source snippets or stack traces by default.
+
+### Compatibility
+- Existing unprofiled scans, `--ci`, legacy config baselines and explicit reporting exclusions remain supported.
+- Core remains independently usable offline; Cloud occurrence history is released separately in the website.
+
 ## 3.0.4 - 2026-09-25
 
 ### Fixed

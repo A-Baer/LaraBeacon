@@ -40,6 +40,33 @@ class Trace implements JsonSerializable
         $this->details = $details;
     }
 
+    /** A hash of the source line distinguishes otherwise identical locations without exporting source. */
+    public function evidenceKey(): ?string
+    {
+        if ($this->details !== null || $this->lineNumber < 1 || ! is_file($this->absolutePath())) {
+            return null;
+        }
+        $file = new \SplFileObject($this->absolutePath());
+        $file->seek($this->lineNumber - 1);
+        $line = $file->current();
+        if (! is_string($line) || trim($line) === '') {
+            return null;
+        }
+        $tokens = token_get_all('<?php '.$line);
+        $normalized = '';
+        foreach ($tokens as $token) {
+            if (is_array($token)) {
+                if (! in_array($token[0], [T_WHITESPACE, T_OPEN_TAG, T_COMMENT, T_DOC_COMMENT], true)) {
+                    $normalized .= $token[1];
+                }
+            } else {
+                $normalized .= $token;
+            }
+        }
+
+        return hash('sha256', $normalized);
+    }
+
     /**
      * @return array
      */
