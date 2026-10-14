@@ -86,6 +86,8 @@ The public package stays at the repository root so Composer and Packagist can in
 
 Cloud reporting is disabled by default and only runs with `--report`. Report payloads contain project metadata and analyzer findings; source snippets and exception stack traces are excluded unless they are enabled through separate explicit configuration flags. The public analyzer remains fully usable offline. See [Product architecture](docs/PRODUCT_ARCHITECTURE.md) for the intended boundaries.
 
+Optional Claude-powered AI work plans turn supported Cloud findings into prioritized actions with verification guidance. One new plan per team per UTC day is shared across projects and members; AI is enabled by default and can be disabled in Team settings; data is sent only for a requested plan, and source code and diagnostic messages are excluded. See [AI work plan documentation](https://larabeacon.com/docs/ai-work-plans).
+
 LaraBeacon Pro is released separately as a private Composer package and requires LaraBeacon Core `^3.0`.
 
 ## Website
