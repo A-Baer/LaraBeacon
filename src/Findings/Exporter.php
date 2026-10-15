@@ -68,6 +68,10 @@ final class Exporter
                     $location['region'] = ['startLine' => (int) $trace['lineNumber']];
                 }
                 $result['locations'] = [['physicalLocation' => $location]];
+            } else {
+                // Code scanning requires a location; project-wide findings point at the manifest.
+                $result['locations'] = [['physicalLocation' => ['artifactLocation' => ['uri' => 'composer.json']]]];
+                $result['properties']['projectLevel'] = true;
             }
             if (! $finding['reportable'] || ($finding['accepted'] ?? false)) {
                 $result['suppressions'] = [['kind' => 'external', 'justification' => $finding['acceptance_reason'] ?? 'Excluded by project policy']];

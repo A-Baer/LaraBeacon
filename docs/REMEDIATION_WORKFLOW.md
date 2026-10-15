@@ -56,6 +56,24 @@ The first supported fixes are literal `debug => true` in the returned app config
 
 ## GitHub Actions
 
+The repository root contains a composite action that runs the CI profile, writes SARIF, uploads it to GitHub code scanning and then applies the scan's exit status:
+
+```yaml
+permissions:
+  contents: read
+  security-events: write
+
+steps:
+  - uses: actions/checkout@v7
+  - run: composer install --no-interaction --prefer-dist
+  - uses: A-Baer/LaraBeacon@v3
+    with:
+      fail-on: major
+      baseline: larabeacon-baseline.json
+```
+
+Inputs are `working-directory`, `profile`, `fail-on`, `baseline` (enables `--only-new`), `sarif-file`, `upload-sarif` and `args`. `args` is split on whitespace and `sarif-file` must be a relative path. Code scanning resolves SARIF paths from the repository root, so file annotations are exact only when the Laravel application is at the root; project-wide findings without a file are attached to `composer.json`. The manual equivalent is:
+
 ```yaml
 - run: composer install --no-interaction --prefer-dist
 - name: LaraBeacon gate

@@ -15,16 +15,23 @@ use Symfony\Component\Console\Output\BufferedOutput;
 class LaraBeaconCommandTest extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\Test]
-    public function feedback_invitation_only_appears_in_interactive_non_ci_output()
+    public function invitations_only_appear_in_interactive_terminal_non_ci_output()
     {
-        foreach (['interactive', 'ci', 'non-interactive', 'quiet'] as $mode) {
+        foreach (['interactive', 'ci', 'ci-profile', 'non-interactive', 'quiet', 'json', 'markdown', 'sarif', 'preflight'] as $mode) {
             $this->app->config->set('larabeacon.analyzers', AppDebugAnalyzer::class);
             $this->app->config->set('app.env', 'production');
             $this->app->config->set('app.debug', false);
 
             $command = new LaraBeaconCommand;
             $command->setLaravel($this->app);
-            $input = new ArrayInput($mode === 'ci' ? ['--ci' => true] : []);
+            $options = match ($mode) {
+                'ci' => ['--ci' => true],
+                'ci-profile' => ['--profile' => 'ci'],
+                'json', 'markdown', 'sarif' => ['--format' => $mode],
+                'preflight' => ['--preflight' => true],
+                default => [],
+            };
+            $input = new ArrayInput($options);
             $input->setInteractive($mode !== 'non-interactive');
             $output = new BufferedOutput($mode === 'quiet' ? BufferedOutput::VERBOSITY_QUIET : BufferedOutput::VERBOSITY_NORMAL);
 
@@ -32,9 +39,15 @@ class LaraBeaconCommandTest extends TestCase
             $text = $output->fetch();
 
             if ($mode === 'interactive') {
+                $this->assertStringContainsString('https://larabeacon.com/pro', $text);
+                $this->assertStringContainsString('LaraBeacon Cloud: report history and team access.', $text);
+                $this->assertStringContainsString('https://larabeacon.com/early-access', $text);
+                $this->assertStringContainsString('Cloud uploads require --report and configured credentials.', $text);
                 $this->assertStringContainsString('first five external projects', $text);
                 $this->assertStringContainsString('anthony.baer@baer-software.com', $text);
             } else {
+                $this->assertStringNotContainsString('https://larabeacon.com/early-access', $text, $mode);
+                $this->assertStringNotContainsString('https://larabeacon.com/pro', $text, $mode);
                 $this->assertStringNotContainsString('free Pro licence', $text, $mode);
             }
         }

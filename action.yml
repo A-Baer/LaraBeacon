@@ -1,0 +1,99 @@
+name: LaraBeacon Laravel Scan
+description: Check a Laravel application for performance, security, and reliability risks and report findings to GitHub code scanning.
+author: Bär Softwareentwicklung UG (haftungsbeschränkt)
+
+branding:
+  icon: shield
+  color: orange
+
+inputs:
+  working-directory:
+    description: Directory containing the Laravel application.
+    required: false
+    default: '.'
+  profile:
+    description: LaraBeacon scan profile.
+    required: false
+    default: ci
+  fail-on:
+    description: Lowest severity that fails the step (critical, major, minor, or info).
+    required: false
+    default: major
+  baseline:
+    description: Optional baseline file. When set, only new findings fail the step.
+    required: false
+    default: ''
+  sarif-file:
+    description: Relative path of the SARIF report inside the working directory.
+    required: false
+    default: larabeacon.sarif
+  upload-sarif:
+    description: Upload the SARIF report to GitHub code scanning. Requires the security-events write permission.
+    required: false
+    default: 'true'
+  args:
+    description: Additional arguments passed to php artisan larabeacon, split on whitespace (quotes are not interpreted).
+    required: false
+    default: ''
+
+outputs:
+  sarif-file:
+    description: Path of the generated SARIF report.
+    value: ${{ steps.scan.outputs.sarif-file }}
+  exit-code:
+    description: Exit code of the LaraBeacon scan.
+    value: ${{ steps.scan.outputs.exit-code }}
+
+runs:
+  using: composite
+  steps:
+    - id: scan
+      name: Run LaraBeacon
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        LARABEACON_PROFILE: ${{ inputs.profile }}
+        LARABEACON_FAIL_ON: ${{ inputs.fail-on }}
+        LARABEACON_BASELINE: ${{ inputs.baseline }}
+        LARABEACON_SARIF: ${{ inputs.sarif-file }}
+        LARABEACON_ARGS: ${{ inputs.args }}
+        LARABEACON_WORKING_DIRECTORY: ${{ inputs.working-directory }}
+      run: |
+        if [ ! -f artisan ]; then
+          echo "::error::No artisan file found in $LARABEACON_WORKING_DIRECTORY. Install dependencies and point working-directory at the Laravel application."
+          exit 1
+        fi
+
+        case "$LARABEACON_SARIF" in
+          /*|*..*)
+            echo "::error::sarif-file must be a relative path inside the working directory."
+            exit 1
+            ;;
+        esac
+
+        options=(--profile="$LARABEACON_PROFILE" --fail-on="$LARABEACON_FAIL_ON" --format=sarif --output="$LARABEACON_SARIF")
+
+        if [ -n "$LARABEACON_BASELINE" ]; then
+          options+=(--baseline="$LARABEACON_BASELINE" --only-new)
+        fi
+
+        read -r -a extra <<< "$LARABEACON_ARGS"
+
+        set +e
+        php artisan larabeacon "${options[@]}" "${extra[@]}"
+        status=$?
+        set -e
+
+        echo "exit-code=$status" >> "$GITHUB_OUTPUT"
+        echo "sarif-file=$LARABEACON_WORKING_DIRECTORY/$LARABEACON_SARIF" >> "$GITHUB_OUTPUT"
+
+    - name: Upload SARIF to code scanning
+      if: ${{ inputs.upload-sarif == 'true' && hashFiles(steps.scan.outputs.sarif-file) != '' }}
+      uses: github/codeql-action/upload-sarif@v4
+      with:
+        sarif_file: ${{ steps.scan.outputs.sarif-file }}
+        category: larabeacon
+
+    - name: Apply LaraBeacon result
+      shell: bash
+      run: exit "${{ steps.scan.outputs.exit-code }}"

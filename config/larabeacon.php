@@ -81,6 +81,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Support Window
+    |--------------------------------------------------------------------------
+    |
+    | The framework and PHP support checks fail when security support for the
+    | installed release ends within this number of days, so upgrades can be
+    | planned before they become urgent.
+    |
+    */
+    'support_warning_days' => env('LARABEACON_SUPPORT_WARNING_DAYS', 180),
+
+    /*
+    |--------------------------------------------------------------------------
     | Exclusions From Reporting
     |--------------------------------------------------------------------------
     |

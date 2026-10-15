@@ -50,6 +50,23 @@ class RemediationWorkflowTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
+    public function sarif_results_always_have_a_location(): void
+    {
+        $finding = ['fingerprint' => 'abc', 'analyzer' => 'A', 'title' => 'T', 'category' => 'reliability', 'severity' => 'major', 'status' => 'failed', 'reportable' => true, 'message' => 'M', 'documentation' => null, 'guidance' => ['fix' => 'F', 'verification' => 'V']];
+        $report = ['findings' => [
+            $finding + ['location' => null],
+            ['location' => ['path' => '/abs/config/app.php', 'lineNumber' => 3]] + $finding,
+            ['location' => ['path' => 'config/app.php', 'lineNumber' => 3]] + $finding,
+        ]];
+        $results = json_decode(Exporter::render($report, 'sarif'), true, 512, JSON_THROW_ON_ERROR)['runs'][0]['results'];
+        $this->assertSame('composer.json', $results[0]['locations'][0]['physicalLocation']['artifactLocation']['uri']);
+        $this->assertTrue($results[0]['properties']['projectLevel']);
+        $this->assertSame('composer.json', $results[1]['locations'][0]['physicalLocation']['artifactLocation']['uri']);
+        $this->assertSame('config/app.php', $results[2]['locations'][0]['physicalLocation']['artifactLocation']['uri']);
+        $this->assertSame(3, $results[2]['locations'][0]['physicalLocation']['region']['startLine']);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function per_occurrence_identity_survives_line_shifts_and_distinguishes_findings(): void
     {
         $a = ['path' => 'app/Foo.php', 'lineNumber' => 10, 'details' => 'env(APP_NAME)'];

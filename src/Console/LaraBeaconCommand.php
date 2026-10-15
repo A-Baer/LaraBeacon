@@ -216,6 +216,14 @@ class LaraBeaconCommand extends Command
         }
 
         if ($format === 'terminal' && ! $this->option('ci') && $this->option('profile') !== 'ci' && $this->input->isInteractive() && ! $this->getOutput()->isQuiet()) {
+            if (! class_exists('BaerSoftware\\LaraBeaconPro\\LaraBeaconProServiceProvider')) {
+                $this->newLine();
+                $this->line('LaraBeacon Pro adds deeper runtime, infrastructure, and security checks for one-time project pricing: https://larabeacon.com/pro');
+            }
+
+            $this->newLine();
+            $this->line('LaraBeacon Cloud: report history and team access. Request an invitation: https://larabeacon.com/early-access');
+            $this->line('Core works offline. Cloud uploads require --report and configured credentials.');
             $this->newLine();
             $this->line('Using LaraBeacon? The first five external projects can get a free Pro licence for one project in return for 20 minutes of honest feedback.');
             $this->line('Share installation feedback, useful findings, and false positives: anthony.baer@baer-software.com');

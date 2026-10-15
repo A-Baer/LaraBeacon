@@ -46,6 +46,8 @@ Run an individual analyzer by passing its fully qualified class name:
 php artisan larabeacon 'BaerSoftware\LaraBeacon\Analyzers\Security\CSRFAnalyzer'
 ```
 
+The framework and PHP support checks fail when security support for the installed Laravel or PHP release ends within `support_warning_days` (default: 180 days), so upgrades can be planned early. They run in default and `--profile=production` scans, not in CI mode or the `local`/`ci` profiles, because CI runtimes rarely match production.
+
 Some analyzers inspect runtime-specific configuration. Run LaraBeacon in a production-like environment for a complete result. Use `--ci` for checks that are safe and deterministic in continuous integration.
 
 To inspect headers on a deployed application while running LaraBeacon locally, provide a full guest URL:
@@ -55,6 +57,10 @@ LARABEACON_GUEST_URL=https://example.com/login php artisan larabeacon
 ```
 
 License findings identify packages that need project-specific review; they do not prove a violation. Add licensed proprietary packages to `commercial_packages` in the published configuration instead of globally allowing the `proprietary` license label.
+
+## AI coding agents
+
+LaraBeacon ships [Laravel Boost](https://laravel.com/docs/boost) guidelines and a `larabeacon-release-check` agent skill. After installing LaraBeacon, run `php artisan boost:update` (or `boost:install`) so Claude Code, Codex, Cursor and other Boost-supported agents run LaraBeacon, read its JSON findings and fix only confirmed issues within scope.
 
 ## Remediation and CI workflows
 
@@ -66,6 +72,14 @@ php artisan larabeacon --profile=ci --format=markdown --output=larabeacon.md
 php artisan larabeacon:baseline --profile=ci --output=larabeacon-baseline.json --reason="Scheduled remediation"
 php artisan larabeacon --profile=ci --baseline=larabeacon-baseline.json --only-new --fail-on=major
 php artisan larabeacon --details --fix-preview
+```
+
+GitHub projects can use the bundled action to show findings in GitHub code scanning:
+
+```yaml
+- uses: A-Baer/LaraBeacon@v3
+  with:
+    fail-on: major
 ```
 
 See [the remediation workflow](docs/REMEDIATION_WORKFLOW.md) for JSON/SARIF exports, acceptance expiry, GitHub Actions, scan limitations and Cloud comparison behavior. Fix previews never edit source files.
@@ -87,6 +101,8 @@ The public package stays at the repository root so Composer and Packagist can in
 Cloud reporting is disabled by default and only runs with `--report`. Report payloads contain project metadata and analyzer findings; source snippets and exception stack traces are excluded unless they are enabled through separate explicit configuration flags. The public analyzer remains fully usable offline. See [Product architecture](docs/PRODUCT_ARCHITECTURE.md) for the intended boundaries.
 
 Optional Claude-powered AI work plans turn supported Cloud findings into prioritized actions with verification guidance. One new plan per team per UTC day is shared across projects and members; AI is enabled by default and can be disabled in Team settings; data is sent only for a requested plan, and source code and diagnostic messages are excluded. See [AI work plan documentation](https://larabeacon.com/docs/ai-work-plans).
+
+For shared report history and team access, [request a LaraBeacon Cloud invitation](https://larabeacon.com/early-access). Interactive terminal scans display a short Cloud invitation; CI runs, non-interactive or quiet runs, preflight output, and JSON/Markdown/SARIF exports omit it.
 
 LaraBeacon Pro is released separately as a private Composer package and requires LaraBeacon Core `^3.0`.
 
