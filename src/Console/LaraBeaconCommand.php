@@ -222,7 +222,7 @@ class LaraBeaconCommand extends Command
             }
 
             $this->newLine();
-            $this->line('LaraBeacon Cloud: report history and team access. Request an invitation: https://larabeacon.com/early-access');
+            $this->line('LaraBeacon Cloud: report history and team access. Create an account: https://larabeacon.com/register');
             $this->line('Core works offline. Cloud uploads require --report and configured credentials.');
             $this->newLine();
             $this->line('Using LaraBeacon? The first five external projects can get a free Pro licence for one project in return for 20 minutes of honest feedback.');

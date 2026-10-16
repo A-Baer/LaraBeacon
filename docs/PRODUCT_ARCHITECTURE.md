@@ -25,7 +25,7 @@ Pro must remain a separate private repository. Proprietary analyzer code must no
 
 ## LaraBeacon Cloud
 
-The invitation-only SaaS is implemented as a module of the private `website/` Laravel application and is deployed from that application's independent repository. This public package owns only the client-side report contract and transport. The Cloud endpoint and credentials are optional `LARABEACON_CLOUD_*` environment variables; the client accepts only absolute HTTPS endpoints and follows redirects only over HTTPS.
+The self-service SaaS is implemented as a module of the private `website/` Laravel application and is deployed from that application's independent repository. This public package owns only the client-side report contract and transport. The Cloud endpoint and credentials are optional `LARABEACON_CLOUD_*` environment variables; the client accepts only absolute HTTPS endpoints and follows redirects only over HTTPS.
 
 The report contract includes project metadata, analyzer results, paths, line numbers, and finding details. Source snippets and exception stack traces are removed before transport by default and require separate explicit opt-ins through `LARABEACON_CLOUD_INCLUDE_CODE_SNIPPETS` and `LARABEACON_CLOUD_INCLUDE_EXCEPTION_STACK_TRACES`.
 

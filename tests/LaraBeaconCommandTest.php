@@ -41,12 +41,12 @@ class LaraBeaconCommandTest extends TestCase
             if ($mode === 'interactive') {
                 $this->assertStringContainsString('https://larabeacon.com/pro', $text);
                 $this->assertStringContainsString('LaraBeacon Cloud: report history and team access.', $text);
-                $this->assertStringContainsString('https://larabeacon.com/early-access', $text);
+                $this->assertStringContainsString('https://larabeacon.com/register', $text);
                 $this->assertStringContainsString('Cloud uploads require --report and configured credentials.', $text);
                 $this->assertStringContainsString('first five external projects', $text);
                 $this->assertStringContainsString('anthony.baer@baer-software.com', $text);
             } else {
-                $this->assertStringNotContainsString('https://larabeacon.com/early-access', $text, $mode);
+                $this->assertStringNotContainsString('https://larabeacon.com/register', $text, $mode);
                 $this->assertStringNotContainsString('https://larabeacon.com/pro', $text, $mode);
                 $this->assertStringNotContainsString('free Pro licence', $text, $mode);
             }
