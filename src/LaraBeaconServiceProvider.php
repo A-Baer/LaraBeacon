@@ -33,6 +33,7 @@ class LaraBeaconServiceProvider extends ServiceProvider
         $this->commands([
             Console\LaraBeaconCommand::class,
             Console\BaselineCommand::class,
+            Console\CloudCommand::class,
         ]);
 
         $this->mergeConfigFrom(__DIR__.'/../config/larabeacon.php', 'larabeacon');

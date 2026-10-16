@@ -7,7 +7,9 @@
 *.php diff=php
 
 # Keep public package archives limited to the Core package.
+/.claude-plugin     export-ignore
 /.github            export-ignore
+/claude-plugin      export-ignore
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
 /.travis.yml        export-ignore

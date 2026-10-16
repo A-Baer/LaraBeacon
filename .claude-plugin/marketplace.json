@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "larabeacon",
+  "description": "LaraBeacon plugins for Claude Code.",
+  "owner": {
+    "name": "Bär Softwareentwicklung UG (haftungsbeschränkt)",
+    "email": "anthony.baer@baer-software.com",
+    "url": "https://larabeacon.com"
+  },
+  "plugins": [
+    {
+      "name": "larabeacon",
+      "source": "./claude-plugin",
+      "description": "Run LaraBeacon production-readiness scans for Laravel from Claude Code, fix findings within scope and read LaraBeacon Cloud report history.",
+      "category": "development",
+      "tags": ["laravel", "php", "security", "performance", "reliability"]
+    }
+  ]
+}

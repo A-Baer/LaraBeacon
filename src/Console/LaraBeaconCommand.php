@@ -212,6 +212,9 @@ class LaraBeaconCommand extends Command
             if (! is_null($url) && $format === 'terminal') {
                 $this->getOutput()->newLine();
                 $this->comment("Your report can be viewed at <href={$url}>{$url}</>");
+            } elseif (! is_null($url) && $this->option('output')) {
+                // The report went to a file, so stdout can carry the Cloud link for agents and scripts.
+                $this->line('LaraBeacon Cloud report: '.$url);
             }
         }
 

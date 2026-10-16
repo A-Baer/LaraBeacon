@@ -60,6 +60,21 @@ License findings identify packages that need project-specific review; they do no
 
 ## AI coding agents
 
+### Claude Code plugin
+
+Install the LaraBeacon plugin in Claude Code:
+
+```text
+/plugin marketplace add A-Baer/LaraBeacon
+/plugin install larabeacon@larabeacon
+```
+
+The plugin adds a local MCP server (`larabeacon_scan`, `larabeacon_status`, `larabeacon_checks`, `larabeacon_baseline` and read-only Cloud history tools) and the skills `/larabeacon:scan`, `/larabeacon:setup` and `/larabeacon:cloud`. It needs PHP 8.2+ on the `PATH`, runs every scan through the project's own `php artisan`, never reads Cloud credentials and uploads only when you ask. See [claude-plugin/README.md](claude-plugin/README.md) and the [Claude Code documentation](https://larabeacon.com/docs/claude-code).
+
+Read Cloud history from scripts as JSON with `php artisan larabeacon:cloud status|reports|report [number|latest]`.
+
+### Laravel Boost
+
 LaraBeacon ships [Laravel Boost](https://laravel.com/docs/boost) guidelines and a `larabeacon-release-check` agent skill. After installing LaraBeacon, run `php artisan boost:update` (or `boost:install`) so Claude Code, Codex, Cursor and other Boost-supported agents run LaraBeacon, read its JSON findings and fix only confirmed issues within scope.
 
 ## Remediation and CI workflows

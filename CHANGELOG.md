@@ -1,5 +1,15 @@
 # Release Notes
 
+## Unreleased (3.3.0)
+
+### Added
+- A Claude Code plugin with a dependency-free local MCP server, `/larabeacon:scan`, `/larabeacon:setup` and `/larabeacon:cloud` skills and a Laravel-only session hint. Install with `/plugin marketplace add A-Baer/LaraBeacon`.
+- `php artisan larabeacon:cloud status|reports|report` prints Cloud configuration, report history and one report with new and resolved findings as JSON, without exposing credentials.
+- File exports with `--report` print `LaraBeacon Cloud report: <url>` on stdout.
+
+### Changed
+- Cloud `GET` requests send their parameters as a query string instead of a JSON body.
+
 ## 3.2.0 - 2026-10-16
 
 ### Added

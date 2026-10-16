@@ -1,0 +1,1652 @@
+{
+    "generated_at": "2026-10-16",
+    "checks": [
+        {
+            "slug": "autoloader-optimization",
+            "name": "Autoloader Optimization",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application has the Composer autoloader optimization configured in production.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\AutoloaderOptimizationAnalyzer",
+            "url": "https://larabeacon.com/checks/autoloader-optimization"
+        },
+        {
+            "slug": "cache-driver",
+            "name": "Cache Driver",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 60,
+            "summary": "A proper cache driver is configured.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\CacheDriverAnalyzer",
+            "url": "https://larabeacon.com/checks/cache-driver"
+        },
+        {
+            "slug": "cache-header",
+            "name": "Cache Header",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 15,
+            "summary": "Your application caches compiled assets for improved performance.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\CacheHeaderAnalyzer",
+            "url": "https://larabeacon.com/checks/cache-header"
+        },
+        {
+            "slug": "collection-call",
+            "name": "Collection Call",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 10,
+            "summary": "Aggregation is done at the database query level rather than at the Laravel Collection level.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\CollectionCallAnalyzer",
+            "url": "https://larabeacon.com/checks/collection-call"
+        },
+        {
+            "slug": "config-caching",
+            "name": "Config Caching",
+            "tier": "free",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Application config caching is configured properly.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\ConfigCachingAnalyzer",
+            "url": "https://larabeacon.com/checks/config-caching"
+        },
+        {
+            "slug": "debug-log",
+            "name": "Debug Log",
+            "tier": "free",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 1,
+            "summary": "Your application does not use the debug log level in production.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\DebugLogAnalyzer",
+            "url": "https://larabeacon.com/checks/debug-log"
+        },
+        {
+            "slug": "dev-dependency",
+            "name": "Dev Dependency",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 1,
+            "summary": "Dev dependencies are not installed in production.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\DevDependencyAnalyzer",
+            "url": "https://larabeacon.com/checks/dev-dependency"
+        },
+        {
+            "slug": "env-call",
+            "name": "Env Call",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 10,
+            "summary": "Your application does not contain env function calls outside of your config files.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\EnvCallAnalyzer",
+            "url": "https://larabeacon.com/checks/env-call"
+        },
+        {
+            "slug": "horizon-suggestion",
+            "name": "Horizon Suggestion",
+            "tier": "free",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 15,
+            "summary": "Your application uses Horizon when using the Redis queue driver.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\HorizonSuggestionAnalyzer",
+            "url": "https://larabeacon.com/checks/horizon-suggestion",
+            "relevant_when": {
+                "packages": [
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "minification",
+            "name": "Minification",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application minifies assets in production.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\MinificationAnalyzer",
+            "url": "https://larabeacon.com/checks/minification"
+        },
+        {
+            "slug": "mysql-single-server",
+            "name": "MySQL Single Server",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "MySQL is configured properly on single server setups.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\MysqlSingleServerAnalyzer",
+            "url": "https://larabeacon.com/checks/mysql-single-server"
+        },
+        {
+            "slug": "opcache",
+            "name": "OPcache",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 10,
+            "summary": "OPcache is enabled.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\OpcacheAnalyzer",
+            "url": "https://larabeacon.com/checks/opcache"
+        },
+        {
+            "slug": "queue-driver",
+            "name": "Queue Driver",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 60,
+            "summary": "A proper queue driver is configured.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\QueueDriverAnalyzer",
+            "url": "https://larabeacon.com/checks/queue-driver"
+        },
+        {
+            "slug": "route-caching",
+            "name": "Route Caching",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Application route caching is configured properly.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\RouteCachingAnalyzer",
+            "url": "https://larabeacon.com/checks/route-caching"
+        },
+        {
+            "slug": "session-driver",
+            "name": "Session Driver",
+            "tier": "free",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 60,
+            "summary": "A proper session driver is configured.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\SessionDriverAnalyzer",
+            "url": "https://larabeacon.com/checks/session-driver"
+        },
+        {
+            "slug": "shared-cache-lock",
+            "name": "Shared Cache Lock",
+            "tier": "free",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Your application does not use locks on your default cache store.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\SharedCacheLockAnalyzer",
+            "url": "https://larabeacon.com/checks/shared-cache-lock"
+        },
+        {
+            "slug": "unused-global-middleware",
+            "name": "Unused Global Middleware",
+            "tier": "free",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Your application does not contain unused global HTTP middleware.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\UnusedGlobalMiddlewareAnalyzer",
+            "url": "https://larabeacon.com/checks/unused-global-middleware"
+        },
+        {
+            "slug": "view-caching",
+            "name": "View Caching",
+            "tier": "free",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "View caching is configured properly.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Performance\\ViewCachingAnalyzer",
+            "url": "https://larabeacon.com/checks/view-caching"
+        },
+        {
+            "slug": "app-debug",
+            "name": "App Debug",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 1,
+            "summary": "Your application hides technical errors in production.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\AppDebugAnalyzer",
+            "url": "https://larabeacon.com/checks/app-debug"
+        },
+        {
+            "slug": "app-debug-hide",
+            "name": "App Debug Hide",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 5,
+            "summary": "Sensitive environment variables are hidden in non-local environments.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\AppDebugHideAnalyzer",
+            "url": "https://larabeacon.com/checks/app-debug-hide"
+        },
+        {
+            "slug": "app-key",
+            "name": "App Key",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 1,
+            "summary": "Application key is set.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\AppKeyAnalyzer",
+            "url": "https://larabeacon.com/checks/app-key"
+        },
+        {
+            "slug": "csrf",
+            "name": "CSRF",
+            "tier": "free",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application includes middleware to protect against CSRF attacks.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\CSRFAnalyzer",
+            "url": "https://larabeacon.com/checks/csrf"
+        },
+        {
+            "slug": "encrypted-cookies",
+            "name": "Encrypted Cookies",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 5,
+            "summary": "Your application encrypts its cookies.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\EncryptedCookiesAnalyzer",
+            "url": "https://larabeacon.com/checks/encrypted-cookies"
+        },
+        {
+            "slug": "env-access",
+            "name": "Env Access",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 5,
+            "summary": "Your .env is not publicly accessible.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\EnvAccessAnalyzer",
+            "url": "https://larabeacon.com/checks/env-access"
+        },
+        {
+            "slug": "file-permissions",
+            "name": "File Permissions",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 60,
+            "summary": "Your project files and directories use safe permissions.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\FilePermissionsAnalyzer",
+            "url": "https://larabeacon.com/checks/file-permissions"
+        },
+        {
+            "slug": "fillable-foreign-key",
+            "name": "Fillable Foreign Key",
+            "tier": "free",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 10,
+            "summary": "Models do not declare potential foreign keys as fillable.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\FillableForeignKeyAnalyzer",
+            "url": "https://larabeacon.com/checks/fillable-foreign-key"
+        },
+        {
+            "slug": "frontend-vulnerable-dependency",
+            "name": "Frontend Vulnerable Dependency",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 60,
+            "summary": "Your application does not rely on frontend dependencies with known security issues.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\FrontendVulnerableDependencyAnalyzer",
+            "url": "https://larabeacon.com/checks/frontend-vulnerable-dependency"
+        },
+        {
+            "slug": "hsts-header",
+            "name": "HSTS Header",
+            "tier": "free",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "The configured HTTPS target sends the HSTS header.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\HSTSHeaderAnalyzer",
+            "url": "https://larabeacon.com/checks/hsts-header"
+        },
+        {
+            "slug": "http-only-cookie",
+            "name": "HTTP Only Cookie",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 1,
+            "summary": "Cookies are secured as HttpOnly.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\HttpOnlyCookieAnalyzer",
+            "url": "https://larabeacon.com/checks/http-only-cookie"
+        },
+        {
+            "slug": "hashing-strength",
+            "name": "Hashing Strength",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 1,
+            "summary": "A secure hashing strength is configured.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\HashingStrengthAnalyzer",
+            "url": "https://larabeacon.com/checks/hashing-strength"
+        },
+        {
+            "slug": "license",
+            "name": "License",
+            "tier": "free",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 60,
+            "summary": "Dependency licenses are approved for this application.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\LicenseAnalyzer",
+            "url": "https://larabeacon.com/checks/license"
+        },
+        {
+            "slug": "login-throttling",
+            "name": "Login Throttling",
+            "tier": "free",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application includes login throttling for protection against brute force attacks.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\LoginThrottlingAnalyzer",
+            "url": "https://larabeacon.com/checks/login-throttling"
+        },
+        {
+            "slug": "mass-assignment",
+            "name": "Mass Assignment",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "Your application is not exposed to mass assignment vulnerabilities.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\MassAssignmentAnalyzer",
+            "url": "https://larabeacon.com/checks/mass-assignment"
+        },
+        {
+            "slug": "php-ini",
+            "name": "PHP Ini",
+            "tier": "free",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your PHP configuration is secure.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\PHPIniAnalyzer",
+            "url": "https://larabeacon.com/checks/php-ini"
+        },
+        {
+            "slug": "stable-dependency",
+            "name": "Stable Dependency",
+            "tier": "free",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 1,
+            "summary": "No dependency updates are available within the current Composer constraints.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\StableDependencyAnalyzer",
+            "url": "https://larabeacon.com/checks/stable-dependency"
+        },
+        {
+            "slug": "unguarded-models",
+            "name": "Unguarded Models",
+            "tier": "free",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "Your application does not un-guard models.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\UnguardedModelsAnalyzer",
+            "url": "https://larabeacon.com/checks/unguarded-models"
+        },
+        {
+            "slug": "up-to-date-dependency",
+            "name": "Up To Date Dependency",
+            "tier": "free",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 1,
+            "summary": "Installed dependencies match composer.lock.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\UpToDateDependencyAnalyzer",
+            "url": "https://larabeacon.com/checks/up-to-date-dependency"
+        },
+        {
+            "slug": "vulnerable-dependency",
+            "name": "Vulnerable Dependency",
+            "tier": "free",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 60,
+            "summary": "Your application does not rely on backend dependencies with known security issues.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\VulnerableDependencyAnalyzer",
+            "url": "https://larabeacon.com/checks/vulnerable-dependency"
+        },
+        {
+            "slug": "xss",
+            "name": "XSS",
+            "tier": "free",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application sets appropriate HTTP headers to protect against XSS attacks.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\XSSAnalyzer",
+            "url": "https://larabeacon.com/checks/xss"
+        },
+        {
+            "slug": "cache-prefix",
+            "name": "Cache Prefix",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 1,
+            "summary": "Cache prefix is set to avoid collisions with other apps.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\CachePrefixAnalyzer",
+            "url": "https://larabeacon.com/checks/cache-prefix"
+        },
+        {
+            "slug": "cache-status",
+            "name": "Cache Status",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application cache is working.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\CacheStatusAnalyzer",
+            "url": "https://larabeacon.com/checks/cache-status"
+        },
+        {
+            "slug": "composer-validation",
+            "name": "Composer Validation",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "Your application's composer.json file is valid.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\ComposerValidationAnalyzer",
+            "url": "https://larabeacon.com/checks/composer-validation"
+        },
+        {
+            "slug": "custom-error-page",
+            "name": "Custom Error Page",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "minor",
+            "time_to_fix": 60,
+            "summary": "Your application defines custom error page views.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\CustomErrorPageAnalyzer",
+            "url": "https://larabeacon.com/checks/custom-error-page"
+        },
+        {
+            "slug": "database-status",
+            "name": "Database Status",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Database is accessible.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\DatabaseStatusAnalyzer",
+            "url": "https://larabeacon.com/checks/database-status"
+        },
+        {
+            "slug": "dead-code",
+            "name": "Dead Code",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "minor",
+            "time_to_fix": 10,
+            "summary": "Your application does not contain any dead or unreachable code.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\DeadCodeAnalyzer",
+            "url": "https://larabeacon.com/checks/dead-code"
+        },
+        {
+            "slug": "deprecated-code",
+            "name": "Deprecated Code",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "minor",
+            "time_to_fix": 10,
+            "summary": "Your application does not use any deprecated code.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\DeprecatedCodeAnalyzer",
+            "url": "https://larabeacon.com/checks/deprecated-code"
+        },
+        {
+            "slug": "directory-write-permissions",
+            "name": "Directory Write Permissions",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "critical",
+            "time_to_fix": 5,
+            "summary": "Your storage and cache directories are writable.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\DirectoryWritePermissionsAnalyzer",
+            "url": "https://larabeacon.com/checks/directory-write-permissions"
+        },
+        {
+            "slug": "env-example",
+            "name": "Env Example",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "minor",
+            "time_to_fix": 10,
+            "summary": "All env variables used in your .env file are defined in your .env.example file.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\EnvExampleAnalyzer",
+            "url": "https://larabeacon.com/checks/env-example"
+        },
+        {
+            "slug": "env-file",
+            "name": "Env File",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "A .env file exists for your application.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\EnvFileAnalyzer",
+            "url": "https://larabeacon.com/checks/env-file"
+        },
+        {
+            "slug": "env-variable",
+            "name": "Env Variable",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 10,
+            "summary": "All env variables defined in your example file are set in your .env file.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\EnvVariableAnalyzer",
+            "url": "https://larabeacon.com/checks/env-variable"
+        },
+        {
+            "slug": "foreach-iterable",
+            "name": "Foreach Iterable",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application only uses iterable types in foreach loops.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\ForeachIterableAnalyzer",
+            "url": "https://larabeacon.com/checks/foreach-iterable"
+        },
+        {
+            "slug": "framework-support",
+            "name": "Framework Support",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 240,
+            "summary": "Your Laravel version receives security fixes for the foreseeable future.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\FrameworkSupportAnalyzer",
+            "url": "https://larabeacon.com/checks/framework-support"
+        },
+        {
+            "slug": "invalid-function-call",
+            "name": "Invalid Function Call",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not contain invalid function calls.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\InvalidFunctionCallAnalyzer",
+            "url": "https://larabeacon.com/checks/invalid-function-call"
+        },
+        {
+            "slug": "invalid-import",
+            "name": "Invalid Import",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not contain invalid imports.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\InvalidImportAnalyzer",
+            "url": "https://larabeacon.com/checks/invalid-import"
+        },
+        {
+            "slug": "invalid-method-call",
+            "name": "Invalid Method Call",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not contain invalid method calls.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\InvalidMethodCallAnalyzer",
+            "url": "https://larabeacon.com/checks/invalid-method-call"
+        },
+        {
+            "slug": "invalid-method-override",
+            "name": "Invalid Method Override",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not contain invalid method overrides.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\InvalidMethodOverrideAnalyzer",
+            "url": "https://larabeacon.com/checks/invalid-method-override"
+        },
+        {
+            "slug": "invalid-offset",
+            "name": "Invalid Offset",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not use invalid offsets.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\InvalidOffsetAnalyzer",
+            "url": "https://larabeacon.com/checks/invalid-offset"
+        },
+        {
+            "slug": "invalid-property-access",
+            "name": "Invalid Property Access",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not access class properties in an invalid manner.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\InvalidPropertyAccessAnalyzer",
+            "url": "https://larabeacon.com/checks/invalid-property-access"
+        },
+        {
+            "slug": "invalid-return-type",
+            "name": "Invalid Return Type",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not use invalid return types.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\InvalidReturnTypeAnalyzer",
+            "url": "https://larabeacon.com/checks/invalid-return-type"
+        },
+        {
+            "slug": "maintenance-mode",
+            "name": "Maintenance Mode",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "critical",
+            "time_to_fix": 1,
+            "summary": "Your application is not currently in maintenance mode.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\MaintenanceModeAnalyzer",
+            "url": "https://larabeacon.com/checks/maintenance-mode"
+        },
+        {
+            "slug": "missing-model-relation",
+            "name": "Missing Model Relation",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 10,
+            "summary": "Your application does not refer to model relations that do not exist.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\MissingModelRelationAnalyzer",
+            "url": "https://larabeacon.com/checks/missing-model-relation"
+        },
+        {
+            "slug": "missing-return-statement",
+            "name": "Missing Return Statement",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not contain missing return statements.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\MissingReturnStatementAnalyzer",
+            "url": "https://larabeacon.com/checks/missing-return-statement"
+        },
+        {
+            "slug": "php-support",
+            "name": "PHP Support",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 120,
+            "summary": "Your PHP version receives security fixes for the foreseeable future.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\PhpSupportAnalyzer",
+            "url": "https://larabeacon.com/checks/php-support"
+        },
+        {
+            "slug": "queue-timeout",
+            "name": "Queue Timeout",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "critical",
+            "time_to_fix": 2,
+            "summary": "An appropriate timeout and retry after is set for queues.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\QueueTimeoutAnalyzer",
+            "url": "https://larabeacon.com/checks/queue-timeout"
+        },
+        {
+            "slug": "syntax-error",
+            "name": "Syntax Error",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "critical",
+            "time_to_fix": 5,
+            "summary": "There are no syntax errors in your application code.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\SyntaxErrorAnalyzer",
+            "url": "https://larabeacon.com/checks/syntax-error"
+        },
+        {
+            "slug": "undefined-constant",
+            "name": "Undefined Constant",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not rely on undefined constants.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\UndefinedConstantAnalyzer",
+            "url": "https://larabeacon.com/checks/undefined-constant"
+        },
+        {
+            "slug": "undefined-variable",
+            "name": "Undefined Variable",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not reference undefined variables.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\UndefinedVariableAnalyzer",
+            "url": "https://larabeacon.com/checks/undefined-variable"
+        },
+        {
+            "slug": "unset",
+            "name": "Unset",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Your application does not try to unset undefined variables.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\UnsetAnalyzer",
+            "url": "https://larabeacon.com/checks/unset"
+        },
+        {
+            "slug": "up-to-date-migrations",
+            "name": "Up To Date Migrations",
+            "tier": "free",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Migrations are up-to date.",
+            "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Reliability\\UpToDateMigrationsAnalyzer",
+            "url": "https://larabeacon.com/checks/up-to-date-migrations"
+        },
+        {
+            "slug": "cdn",
+            "name": "CDN",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 30,
+            "summary": "Production assets are served from the configured CDN.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\CdnAnalyzer",
+            "url": "https://larabeacon.com/checks/cdn"
+        },
+        {
+            "slug": "command-constructor-injection",
+            "name": "Command Constructor Injection",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 10,
+            "summary": "Artisan commands avoid constructor dependency injection.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\CommandConstructorInjectionAnalyzer",
+            "url": "https://larabeacon.com/checks/command-constructor-injection"
+        },
+        {
+            "slug": "compression-header",
+            "name": "Compression Header",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "HTTP responses use content compression.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\CompressionHeaderAnalyzer",
+            "url": "https://larabeacon.com/checks/compression-header"
+        },
+        {
+            "slug": "event-caching",
+            "name": "Event Caching",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Event discovery is cached appropriately for the current environment.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\EventCachingAnalyzer",
+            "url": "https://larabeacon.com/checks/event-caching"
+        },
+        {
+            "slug": "fallback-route",
+            "name": "Fallback Route",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 10,
+            "summary": "The application avoids catch-all fallback routes.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\FallbackRouteAnalyzer",
+            "url": "https://larabeacon.com/checks/fallback-route"
+        },
+        {
+            "slug": "http-two",
+            "name": "HTTP Two",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 10,
+            "summary": "The production endpoint negotiates HTTP/2 or newer.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\HttpTwoAnalyzer",
+            "url": "https://larabeacon.com/checks/http-two"
+        },
+        {
+            "slug": "redis-cache-hit-ratio",
+            "name": "Redis Cache Hit Ratio",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "The Redis cache hit ratio meets the configured target.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\RedisCacheHitRatioAnalyzer",
+            "url": "https://larabeacon.com/checks/redis-cache-hit-ratio",
+            "relevant_when": {
+                "packages": [
+                    "predis/predis",
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "redis-rate-limiting",
+            "name": "Redis Rate Limiting",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Redis-backed queues use Redis-specific rate limiting.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\RedisRateLimitingAnalyzer",
+            "url": "https://larabeacon.com/checks/redis-rate-limiting",
+            "relevant_when": {
+                "packages": [
+                    "predis/predis",
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "redis-single-server",
+            "name": "Redis Single Server",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "Single-server Redis connections use Unix sockets.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\RedisSingleServerAnalyzer",
+            "url": "https://larabeacon.com/checks/redis-single-server",
+            "relevant_when": {
+                "packages": [
+                    "predis/predis",
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "redis-throttling",
+            "name": "Redis Throttling",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Redis-backed applications use Redis-specific request throttling.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\RedisThrottlingAnalyzer",
+            "url": "https://larabeacon.com/checks/redis-throttling",
+            "relevant_when": {
+                "packages": [
+                    "predis/predis",
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "telescope-cache-hit-ratio",
+            "name": "Telescope Cache Hit Ratio",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "The Telescope cache hit ratio meets the configured target.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\TelescopeCacheHitRatioAnalyzer",
+            "url": "https://larabeacon.com/checks/telescope-cache-hit-ratio",
+            "relevant_when": {
+                "packages": [
+                    "laravel/telescope"
+                ]
+            }
+        },
+        {
+            "slug": "telescope-duplicate-query",
+            "name": "Telescope Duplicate Query",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "Telescope has not recorded duplicate queries within a request.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\TelescopeDuplicateQueryAnalyzer",
+            "url": "https://larabeacon.com/checks/telescope-duplicate-query",
+            "relevant_when": {
+                "packages": [
+                    "laravel/telescope"
+                ]
+            }
+        },
+        {
+            "slug": "telescope-memory-intensive-request",
+            "name": "Telescope Memory Intensive Request",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "Requests stay below the configured memory threshold.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\TelescopeMemoryIntensiveRequestAnalyzer",
+            "url": "https://larabeacon.com/checks/telescope-memory-intensive-request",
+            "relevant_when": {
+                "packages": [
+                    "laravel/telescope"
+                ]
+            }
+        },
+        {
+            "slug": "telescope-model-hydration",
+            "name": "Telescope Model Hydration",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "Requests do not hydrate excessive numbers of Eloquent models.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\TelescopeModelHydrationAnalyzer",
+            "url": "https://larabeacon.com/checks/telescope-model-hydration",
+            "relevant_when": {
+                "packages": [
+                    "laravel/telescope"
+                ]
+            }
+        },
+        {
+            "slug": "telescope-n-plus-one-query",
+            "name": "Telescope N Plus One Query",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "Telescope has not recorded N+1 query patterns.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\TelescopeNPlusOneQueryAnalyzer",
+            "url": "https://larabeacon.com/checks/telescope-n-plus-one-query",
+            "relevant_when": {
+                "packages": [
+                    "laravel/telescope"
+                ]
+            }
+        },
+        {
+            "slug": "telescope-non-queued-notification",
+            "name": "Telescope Non Queued Notification",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "Notifications recorded by Telescope are queued.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\TelescopeNonQueuedNotificationAnalyzer",
+            "url": "https://larabeacon.com/checks/telescope-non-queued-notification",
+            "relevant_when": {
+                "packages": [
+                    "laravel/telescope"
+                ]
+            }
+        },
+        {
+            "slug": "telescope-slow-query",
+            "name": "Telescope Slow Query",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "Telescope has not recorded slow database queries.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\TelescopeSlowQueryAnalyzer",
+            "url": "https://larabeacon.com/checks/telescope-slow-query",
+            "relevant_when": {
+                "packages": [
+                    "laravel/telescope"
+                ]
+            }
+        },
+        {
+            "slug": "telescope-slow-response",
+            "name": "Telescope Slow Response",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "major",
+            "time_to_fix": 30,
+            "summary": "Responses stay below the configured duration threshold.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\TelescopeSlowResponseAnalyzer",
+            "url": "https://larabeacon.com/checks/telescope-slow-response",
+            "relevant_when": {
+                "packages": [
+                    "laravel/telescope"
+                ]
+            }
+        },
+        {
+            "slug": "xdebug",
+            "name": "Xdebug",
+            "tier": "pro",
+            "category": "performance",
+            "severity": "critical",
+            "time_to_fix": 5,
+            "summary": "Xdebug is not loaded in production.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Performance\\XdebugAnalyzer",
+            "url": "https://larabeacon.com/checks/xdebug"
+        },
+        {
+            "slug": "arbitrary-file-upload",
+            "name": "Arbitrary File Upload",
+            "tier": "pro",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Uploaded files have explicit type restrictions.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\ArbitraryFileUploadAnalyzer",
+            "url": "https://larabeacon.com/checks/arbitrary-file-upload"
+        },
+        {
+            "slug": "clickjacking",
+            "name": "Clickjacking",
+            "tier": "pro",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "HTTP responses prevent clickjacking.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\ClickjackingAnalyzer",
+            "url": "https://larabeacon.com/checks/clickjacking"
+        },
+        {
+            "slug": "column-name-sql-injection",
+            "name": "Column Name SQL Injection",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "User input is not used as a database column or ordering expression.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\ColumnNameSQLInjectionAnalyzer",
+            "url": "https://larabeacon.com/checks/column-name-sql-injection"
+        },
+        {
+            "slug": "command-injection",
+            "name": "Command Injection",
+            "tier": "pro",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "User input is not interpolated into operating-system commands.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\CommandInjectionAnalyzer",
+            "url": "https://larabeacon.com/checks/command-injection"
+        },
+        {
+            "slug": "cookie-domain",
+            "name": "Cookie Domain",
+            "tier": "pro",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 1,
+            "summary": "Session cookies use a narrowly scoped domain.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\CookieDomainAnalyzer",
+            "url": "https://larabeacon.com/checks/cookie-domain"
+        },
+        {
+            "slug": "debug-statement",
+            "name": "Debug Statement",
+            "tier": "pro",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 10,
+            "summary": "Application code does not contain debug statements.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\DebugStatementAnalyzer",
+            "url": "https://larabeacon.com/checks/debug-statement"
+        },
+        {
+            "slug": "directory-traversal",
+            "name": "Directory Traversal",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "User input is not used directly in filesystem paths.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\DirectoryTraversalAnalyzer",
+            "url": "https://larabeacon.com/checks/directory-traversal"
+        },
+        {
+            "slug": "eval",
+            "name": "Eval",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 30,
+            "summary": "Application code does not use eval.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\EvalAnalyzer",
+            "url": "https://larabeacon.com/checks/eval"
+        },
+        {
+            "slug": "extract",
+            "name": "Extract",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 5,
+            "summary": "Application code does not import untrusted array keys as variables.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\ExtractAnalyzer",
+            "url": "https://larabeacon.com/checks/extract"
+        },
+        {
+            "slug": "file-bomb-validation",
+            "name": "File Bomb Validation",
+            "tier": "pro",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Archive and XML uploads include file-bomb safeguards.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\FileBombValidationAnalyzer",
+            "url": "https://larabeacon.com/checks/file-bomb-validation"
+        },
+        {
+            "slug": "file-size-validation",
+            "name": "File Size Validation",
+            "tier": "pro",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Uploaded files have explicit size limits.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\FileSizeValidationAnalyzer",
+            "url": "https://larabeacon.com/checks/file-size-validation"
+        },
+        {
+            "slug": "hard-coded-credentials",
+            "name": "Hard Coded Credentials",
+            "tier": "pro",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Application code does not contain hard-coded credentials.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\HardCodedCredentialsAnalyzer",
+            "url": "https://larabeacon.com/checks/hard-coded-credentials"
+        },
+        {
+            "slug": "horizon-security",
+            "name": "Horizon Security",
+            "tier": "pro",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Horizon is isolated on a dedicated host.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\HorizonSecurityAnalyzer",
+            "url": "https://larabeacon.com/checks/horizon-security",
+            "relevant_when": {
+                "packages": [
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "host-injection",
+            "name": "Host Injection",
+            "tier": "pro",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "The application restricts trusted host names.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\HostInjectionAnalyzer",
+            "url": "https://larabeacon.com/checks/host-injection"
+        },
+        {
+            "slug": "mime-sniffing",
+            "name": "Mime Sniffing",
+            "tier": "pro",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "HTTP responses disable MIME sniffing.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\MimeSniffingAnalyzer",
+            "url": "https://larabeacon.com/checks/mime-sniffing"
+        },
+        {
+            "slug": "nova-security",
+            "name": "Nova Security",
+            "tier": "pro",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Nova is isolated on a dedicated host.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\NovaSecurityAnalyzer",
+            "url": "https://larabeacon.com/checks/nova-security",
+            "relevant_when": {
+                "packages": [
+                    "laravel/nova"
+                ]
+            }
+        },
+        {
+            "slug": "object-injection",
+            "name": "Object Injection",
+            "tier": "pro",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Untrusted input is not passed to PHP deserialization.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\ObjectInjectionAnalyzer",
+            "url": "https://larabeacon.com/checks/object-injection"
+        },
+        {
+            "slug": "open-redirection",
+            "name": "Open Redirection",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "Redirect destinations are not controlled by user input.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\OpenRedirectionAnalyzer",
+            "url": "https://larabeacon.com/checks/open-redirection"
+        },
+        {
+            "slug": "raw-sql-injection",
+            "name": "Raw SQL Injection",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "Raw query expressions do not interpolate user input.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\RawSQLInjectionAnalyzer",
+            "url": "https://larabeacon.com/checks/raw-sql-injection"
+        },
+        {
+            "slug": "regex-dos",
+            "name": "Regex Dos",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "Regular-expression patterns are not controlled by users.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\RegexDosAnalyzer",
+            "url": "https://larabeacon.com/checks/regex-dos"
+        },
+        {
+            "slug": "sql-injection",
+            "name": "SQL Injection",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 30,
+            "summary": "Native SQL execution does not receive user-controlled statements.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\SqlInjectionAnalyzer",
+            "url": "https://larabeacon.com/checks/sql-injection"
+        },
+        {
+            "slug": "same-site-cookie",
+            "name": "Same Site Cookie",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 1,
+            "summary": "Session cookies use a safe SameSite policy.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\SameSiteCookieAnalyzer",
+            "url": "https://larabeacon.com/checks/same-site-cookie"
+        },
+        {
+            "slug": "secure-cookie",
+            "name": "Secure Cookie",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 1,
+            "summary": "Session cookies are marked secure on HTTPS applications.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\SecureCookieAnalyzer",
+            "url": "https://larabeacon.com/checks/secure-cookie"
+        },
+        {
+            "slug": "session-timeout",
+            "name": "Session Timeout",
+            "tier": "pro",
+            "category": "security",
+            "severity": "major",
+            "time_to_fix": 2,
+            "summary": "Session lifetime does not exceed the configured maximum.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\SessionTimeoutAnalyzer",
+            "url": "https://larabeacon.com/checks/session-timeout"
+        },
+        {
+            "slug": "telescope-security",
+            "name": "Telescope Security",
+            "tier": "pro",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Telescope is isolated on a dedicated host.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\TelescopeSecurityAnalyzer",
+            "url": "https://larabeacon.com/checks/telescope-security",
+            "relevant_when": {
+                "packages": [
+                    "laravel/telescope"
+                ]
+            }
+        },
+        {
+            "slug": "unrestricted-file-upload",
+            "name": "Unrestricted File Upload",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "Uploaded files are not stored under user-controlled names.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\UnrestrictedFileUploadAnalyzer",
+            "url": "https://larabeacon.com/checks/unrestricted-file-upload"
+        },
+        {
+            "slug": "validation-sql-injection",
+            "name": "Validation SQL Injection",
+            "tier": "pro",
+            "category": "security",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "Database validation rules do not use user-controlled identifiers.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\ValidationSQLInjectionAnalyzer",
+            "url": "https://larabeacon.com/checks/validation-sql-injection"
+        },
+        {
+            "slug": "vite-subresource-integrity",
+            "name": "Vite Subresource Integrity",
+            "tier": "pro",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 10,
+            "summary": "Vite assets include Subresource Integrity hashes.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\ViteSubresourceIntegrityAnalyzer",
+            "url": "https://larabeacon.com/checks/vite-subresource-integrity",
+            "relevant_when": {
+                "files": [
+                    "vite.config.js",
+                    "vite.config.ts",
+                    "vite.config.mjs"
+                ]
+            }
+        },
+        {
+            "slug": "web-server-fingerprinting",
+            "name": "Web Server Fingerprinting",
+            "tier": "pro",
+            "category": "security",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "HTTP responses do not expose server implementation details.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Security\\WebServerFingerprintingAnalyzer",
+            "url": "https://larabeacon.com/checks/web-server-fingerprinting"
+        },
+        {
+            "slug": "cache-busting",
+            "name": "Cache Busting",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Frontend assets use cache-busting URLs.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\CacheBustingAnalyzer",
+            "url": "https://larabeacon.com/checks/cache-busting",
+            "relevant_when": {
+                "files": [
+                    "vite.config.js",
+                    "vite.config.ts",
+                    "vite.config.mjs",
+                    "webpack.mix.js"
+                ]
+            }
+        },
+        {
+            "slug": "composer-package-publish",
+            "name": "Composer Package Publish",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "minor",
+            "time_to_fix": 10,
+            "summary": "Composer republishes vendor assets after package updates.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\ComposerPackagePublishAnalyzer",
+            "url": "https://larabeacon.com/checks/composer-package-publish"
+        },
+        {
+            "slug": "dead-route",
+            "name": "Dead Route",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 10,
+            "summary": "All registered routes reference invokable actions.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\DeadRouteAnalyzer",
+            "url": "https://larabeacon.com/checks/dead-route"
+        },
+        {
+            "slug": "disk-space",
+            "name": "Disk Space",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "The application filesystem has sufficient free space.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\DiskSpaceAnalyzer",
+            "url": "https://larabeacon.com/checks/disk-space"
+        },
+        {
+            "slug": "failed-job-timeout",
+            "name": "Failed Job Timeout",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Failed jobs do not show timeout failures.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\FailedJobTimeoutAnalyzer",
+            "url": "https://larabeacon.com/checks/failed-job-timeout"
+        },
+        {
+            "slug": "global-variable",
+            "name": "Global Variable",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "minor",
+            "time_to_fix": 10,
+            "summary": "Application code avoids globals, superglobals, and unsafe native APIs.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\GlobalVariableAnalyzer",
+            "url": "https://larabeacon.com/checks/global-variable"
+        },
+        {
+            "slug": "horizon-prefix",
+            "name": "Horizon Prefix",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 1,
+            "summary": "Horizon uses an application-specific Redis prefix.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\HorizonPrefixAnalyzer",
+            "url": "https://larabeacon.com/checks/horizon-prefix",
+            "relevant_when": {
+                "packages": [
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "horizon-provisioning-plan",
+            "name": "Horizon Provisioning Plan",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "critical",
+            "time_to_fix": 10,
+            "summary": "Horizon has a provisioning plan for the current environment.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\HorizonProvisioningPlanAnalyzer",
+            "url": "https://larabeacon.com/checks/horizon-provisioning-plan",
+            "relevant_when": {
+                "packages": [
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "horizon-status",
+            "name": "Horizon Status",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Laravel Horizon is running.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\HorizonStatusAnalyzer",
+            "url": "https://larabeacon.com/checks/horizon-status",
+            "relevant_when": {
+                "packages": [
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "pcntl",
+            "name": "PCNTL",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 2,
+            "summary": "Asynchronous queue workers have PCNTL support.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\PcntlAnalyzer",
+            "url": "https://larabeacon.com/checks/pcntl"
+        },
+        {
+            "slug": "production-health-route",
+            "name": "Production Health Route",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Production exposes Laravel's health route for orchestration and monitoring.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\ProductionHealthRouteAnalyzer",
+            "url": "https://larabeacon.com/checks/production-health-route"
+        },
+        {
+            "slug": "queue-blocking",
+            "name": "Queue Blocking",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 1,
+            "summary": "Redis queue workers do not block indefinitely.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\QueueBlockingAnalyzer",
+            "url": "https://larabeacon.com/checks/queue-blocking",
+            "relevant_when": {
+                "packages": [
+                    "predis/predis",
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "redis-eviction-policy",
+            "name": "Redis Eviction Policy",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 10,
+            "summary": "Redis eviction policies match each connection workload.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\RedisEvictionPolicyAnalyzer",
+            "url": "https://larabeacon.com/checks/redis-eviction-policy",
+            "relevant_when": {
+                "packages": [
+                    "predis/predis",
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "redis-prefix",
+            "name": "Redis Prefix",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 1,
+            "summary": "Redis uses an application-specific key prefix.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\RedisPrefixAnalyzer",
+            "url": "https://larabeacon.com/checks/redis-prefix",
+            "relevant_when": {
+                "packages": [
+                    "predis/predis",
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "redis-shared-database",
+            "name": "Redis Shared Database",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 2,
+            "summary": "Cache data is isolated from persistent Redis workloads.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\RedisSharedDatabaseAnalyzer",
+            "url": "https://larabeacon.com/checks/redis-shared-database",
+            "relevant_when": {
+                "packages": [
+                    "predis/predis",
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "redis-status",
+            "name": "Redis Status",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Configured Redis connections are reachable.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\RedisStatusAnalyzer",
+            "url": "https://larabeacon.com/checks/redis-status",
+            "relevant_when": {
+                "packages": [
+                    "predis/predis",
+                    "laravel/horizon"
+                ]
+            }
+        },
+        {
+            "slug": "script-terminating-function",
+            "name": "Script Terminating Function",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "minor",
+            "time_to_fix": 5,
+            "summary": "Application code avoids script-terminating constructs.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\ScriptTerminatingFunctionAnalyzer",
+            "url": "https://larabeacon.com/checks/script-terminating-function"
+        },
+        {
+            "slug": "storage-link",
+            "name": "Storage Link",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "major",
+            "time_to_fix": 5,
+            "summary": "Configured public storage links exist and target the right paths.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\StorageLinkAnalyzer",
+            "url": "https://larabeacon.com/checks/storage-link"
+        },
+        {
+            "slug": "vite-production-build",
+            "name": "Vite Production Build",
+            "tier": "pro",
+            "category": "reliability",
+            "severity": "critical",
+            "time_to_fix": 5,
+            "summary": "Production uses a complete Vite build and not the development server.",
+            "analyzer": "BaerSoftware\\LaraBeaconPro\\Analyzers\\Reliability\\ViteProductionBuildAnalyzer",
+            "url": "https://larabeacon.com/checks/vite-production-build",
+            "relevant_when": {
+                "files": [
+                    "vite.config.js",
+                    "vite.config.ts",
+                    "vite.config.mjs"
+                ]
+            }
+        }
+    ]
+}

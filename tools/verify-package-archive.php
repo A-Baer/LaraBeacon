@@ -33,7 +33,9 @@ try {
     }
 
     $forbiddenPrefixes = [
+        '.claude-plugin/',
         '.phpunit.cache/',
+        'claude-plugin/',
         'apps/',
         'node_modules/',
         'packages/',

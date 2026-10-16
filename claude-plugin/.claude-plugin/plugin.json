@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "larabeacon",
+  "displayName": "LaraBeacon",
+  "version": "1.0.0",
+  "description": "Production-readiness, security, performance and reliability checks for Laravel apps: run LaraBeacon scans, fix findings within scope, gate new findings and read LaraBeacon Cloud report history.",
+  "author": {
+    "name": "Bär Softwareentwicklung UG (haftungsbeschränkt)",
+    "email": "anthony.baer@baer-software.com",
+    "url": "https://baer-software.com"
+  },
+  "homepage": "https://larabeacon.com/docs/claude-code",
+  "repository": "https://github.com/A-Baer/LaraBeacon",
+  "license": "LGPL-3.0-or-later",
+  "keywords": ["laravel", "php", "security", "performance", "reliability", "static-analysis", "production-readiness", "mcp"]
+}

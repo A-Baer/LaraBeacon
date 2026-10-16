@@ -96,9 +96,9 @@ class Client
      */
     public function request(string $httpVerb, string $url, array $data = [])
     {
-        $response = $this->client->request($httpVerb, $url, [
-            'json' => $data,
-        ]);
+        $response = $this->client->request($httpVerb, $url, $httpVerb === 'GET'
+            ? ['query' => $data]
+            : ['json' => $data]);
 
         $statusCode = $response->getStatusCode();
 
