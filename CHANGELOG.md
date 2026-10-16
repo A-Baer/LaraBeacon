@@ -1,6 +1,6 @@
 # Release Notes
 
-## Unreleased (3.3.0)
+## 3.3.0 - 2026-10-16
 
 ### Added
 - A Claude Code plugin with a dependency-free local MCP server, `/larabeacon:scan`, `/larabeacon:setup` and `/larabeacon:cloud` skills and a Laravel-only session hint. Install with `/plugin marketplace add A-Baer/LaraBeacon`.

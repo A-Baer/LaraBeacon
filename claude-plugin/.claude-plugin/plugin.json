@@ -9,7 +9,7 @@
     "email": "anthony.baer@baer-software.com",
     "url": "https://baer-software.com"
   },
-  "homepage": "https://larabeacon.com/docs/claude-code",
+  "homepage": "https://larabeacon.com/claude-code",
   "repository": "https://github.com/A-Baer/LaraBeacon",
   "license": "LGPL-3.0-or-later",
   "keywords": ["laravel", "php", "security", "performance", "reliability", "static-analysis", "production-readiness", "mcp"]
