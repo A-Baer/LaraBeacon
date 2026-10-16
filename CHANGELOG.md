@@ -1,5 +1,17 @@
 # Release Notes
 
+## 3.2.0 - 2026-10-16
+
+### Added
+- Framework and PHP support checks that fail when security support for the installed Laravel or PHP release ends within `support_warning_days` (default 180 days) or has ended. They run in default and production scans, not in CI mode or the `local`/`ci` profiles.
+- A composite GitHub Action (`uses: A-Baer/LaraBeacon@v3`) that runs the CI profile, uploads SARIF to GitHub code scanning and keeps the scan's exit status.
+- Laravel Boost guidelines and a `larabeacon-release-check` agent skill for AI coding agents.
+- A one-line LaraBeacon Pro hint in interactive terminal scans when Pro is not installed.
+
+### Changed
+- SARIF results without a file location are attached to `composer.json`, because code scanning requires a location.
+- The interactive Cloud hint points to self-service registration instead of an invitation request.
+
 ## 3.1.0 - 2026-10-12
 
 ### Added
