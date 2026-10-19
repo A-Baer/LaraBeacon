@@ -65,4 +65,25 @@ class InvalidMethodCallAnalyzerTest extends AnalyzerTestCase
 
         $this->assertPassed(InvalidMethodCallAnalyzer::class);
     }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function leaves_invalid_function_calls_to_the_function_analyzer()
+    {
+        $this->setBasePathFrom(\BaerSoftware\LaraBeacon\Tests\Stubs\InvalidFunctionCallStub::class);
+
+        $this->runLaraBeacon();
+
+        $this->assertPassed(InvalidMethodCallAnalyzer::class);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function leaves_function_argument_type_errors_to_the_function_analyzer()
+    {
+        // This stub produces "Parameter #1 $string of function rtrim expects string, ... given." messages.
+        $this->app->config->set('larabeacon.base_path', dirname(__DIR__, 2).'/Stubs/SkeletonConfig/config/filesystems.php');
+
+        $this->runLaraBeacon();
+
+        $this->assertPassed(InvalidMethodCallAnalyzer::class);
+    }
 }

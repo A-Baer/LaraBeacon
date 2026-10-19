@@ -7,6 +7,18 @@ ini_set('display_errors', 'stderr');
 
 // Adds one line of context in Laravel projects; prints nothing elsewhere.
 
+// Keep this check above any require: older PHP versions must reach it without parsing the server classes.
+if (PHP_VERSION_ID < 80200) {
+    $projectDirectory = getenv('CLAUDE_PROJECT_DIR') ?: getcwd();
+
+    if (is_string($projectDirectory) && is_file($projectDirectory.'/artisan')) {
+        echo 'The LaraBeacon plugin found PHP '.PHP_VERSION.', but its MCP server needs PHP 8.2 or newer, so the LaraBeacon tools are unavailable in this session. '
+            .'If LaraBeacon comes up, tell the user to put PHP 8.2+ first on the PATH or set LARABEACON_PHP to a PHP 8.2+ binary in the env block of the Claude Code settings, then restart Claude Code.'."\n";
+    }
+
+    exit(0);
+}
+
 require dirname(__DIR__).'/server/src/Project.php';
 require dirname(__DIR__).'/server/src/Artisan.php';
 require dirname(__DIR__).'/server/src/Updates.php';

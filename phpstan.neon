@@ -6,6 +6,14 @@ parameters:
     noUnnecessaryCollectionCall: true
     noUnnecessaryCollectionCallOnly: []
     noUnnecessaryCollectionCallExcept: []
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Larastan types env() with a string default as bool|string because "true"/"false" become booleans. Configuration
+        # files pass such values to string functions by design (for example the Laravel skeleton's
+        # rtrim(env('APP_URL', ...))). Other types, such as string|false or a possible null, stay reported.
+        -
+            message: '#^Parameter \#\d+ \$\w+ of function \w+ expects string, bool\|string given\.$#'
+            path: '*/config/*'
 rules:
     - BaerSoftware\LaraBeacon\PHPStan\FillableForeignKeyModelRule
     - BaerSoftware\LaraBeacon\PHPStan\MassAssignmentModelInstanceRule

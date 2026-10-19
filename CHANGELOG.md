@@ -7,6 +7,9 @@
 - Claude Code plugin 1.1.0: `larabeacon_status` and the session hint report a newer Core release (Packagist, cached for a day); the new `larabeacon_update` tool runs `composer update` for Core and Pro within the `composer.json` constraints after the user agrees and lists the changed lock entries. `LARABEACON_AUTO_UPDATE=1` applies same-major updates without asking.
 
 ### Fixed
+- `env()` values passed to string functions in `config/` files (for example the Laravel 12 skeleton's `rtrim(env('APP_URL', ...))` in `config/filesystems.php`) are no longer reported as invalid function calls.
+- Invalid function calls are no longer reported a second time by the invalid method call check.
+- Claude Code plugin 1.1.3: the session hint explains when the PHP on the `PATH` is older than 8.2.
 - Claude Code plugin 1.1.2: the skills keep the tracking parameters of larabeacon.com links instead of shortening them.
 - Claude Code plugin 1.1.1: LaraBeacon installed with `composer require` during a session is detected without restarting Claude Code; `larabeacon_update` starts Composer through `cmd.exe` on Windows.
 

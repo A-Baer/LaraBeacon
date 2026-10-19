@@ -360,6 +360,21 @@ class ClaudePluginTest extends BaseTestCase
     }
 
     #[Test]
+    public function the_session_hook_explains_an_outdated_php_version()
+    {
+        $old = '/opt/homebrew/opt/php@8.1/bin/php';
+
+        if (! is_executable($old)) {
+            $this->markTestSkipped('PHP 8.1 is not installed at '.$old);
+        }
+
+        $hook = escapeshellarg($this->plugin.'/hooks/session-start.php');
+
+        $this->assertStringContainsString('needs PHP 8.2 or newer', (string) shell_exec('CLAUDE_PROJECT_DIR='.escapeshellarg($this->project).' '.$old.' '.$hook));
+        $this->assertSame('', (string) shell_exec('cd '.escapeshellarg(sys_get_temp_dir()).' && CLAUDE_PROJECT_DIR= '.$old.' '.$hook));
+    }
+
+    #[Test]
     public function the_session_hook_mentions_a_cached_update()
     {
         $this->requireCore('v3.2.0');

@@ -29,6 +29,20 @@ class InvalidFunctionCallAnalyzerTest extends AnalyzerTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
+    public function ignores_env_values_passed_to_string_functions_in_configuration_files()
+    {
+        $path = dirname(__DIR__, 2).'/Stubs/SkeletonConfig/config/filesystems.php';
+        $this->app->config->set('larabeacon.base_path', $path);
+
+        $this->runLaraBeacon();
+
+        // Line 5 is the Laravel skeleton's rtrim(env('APP_URL', ...)); lines 8 and 11 stay reported.
+        $this->assertFailedAt(InvalidFunctionCallAnalyzer::class, $path, 8);
+        $this->assertFailedAt(InvalidFunctionCallAnalyzer::class, $path, 11);
+        $this->assertHasErrors(InvalidFunctionCallAnalyzer::class, 2);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_with_no_invalid_function_calls()
     {
         $this->setBasePathFrom(DummyStub::class);
