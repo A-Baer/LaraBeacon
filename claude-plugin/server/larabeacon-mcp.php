@@ -24,6 +24,7 @@ require __DIR__.'/src/Project.php';
 require __DIR__.'/src/Artisan.php';
 require __DIR__.'/src/Catalog.php';
 require __DIR__.'/src/Tools.php';
+require __DIR__.'/src/Updates.php';
 
 $projectArgument = null;
 foreach (array_slice($argv, 1) as $argument) {
@@ -36,6 +37,7 @@ $project = LaraBeaconMcp\Project::resolve($projectArgument, getenv('CLAUDE_PROJE
 $catalog = LaraBeaconMcp\Catalog::load(dirname(__DIR__).'/data/checks.json');
 $timeout = (int) (getenv('LARABEACON_MCP_TIMEOUT') ?: 600);
 $artisan = new LaraBeaconMcp\Artisan($project, PHP_BINARY, max(30, $timeout));
-$tools = new LaraBeaconMcp\Tools($project, $artisan, $catalog);
+$updates = new LaraBeaconMcp\Updates($project, $artisan, LaraBeaconMcp\Updates::cacheFile(), PHP_BINARY, getenv('LARABEACON_UPDATE_CHECK') !== '0');
+$tools = new LaraBeaconMcp\Tools($project, $artisan, $catalog, $updates, getenv('LARABEACON_AUTO_UPDATE') === '1');
 
 (new LaraBeaconMcp\Server($tools))->serve(STDIN, STDOUT);

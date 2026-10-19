@@ -1,5 +1,10 @@
 # Release Notes
 
+## Unreleased
+
+### Added
+- Claude Code plugin 1.1.0: `larabeacon_status` and the session hint report a newer Core release (Packagist, cached for a day); the new `larabeacon_update` tool runs `composer update` for Core and Pro within the `composer.json` constraints after the user agrees and lists the changed lock entries. `LARABEACON_AUTO_UPDATE=1` applies same-major updates without asking.
+
 ## 3.3.0 - 2026-10-16
 
 ### Added

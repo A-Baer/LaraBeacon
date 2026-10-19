@@ -21,6 +21,17 @@ final class Artisan
      */
     public function run(array $arguments): array
     {
+        return $this->process([$this->php, 'artisan', ...$arguments, '--no-interaction', '--no-ansi']);
+    }
+
+    /**
+     * Run any command in the project root as a separate process without a shell.
+     *
+     * @param list<string> $command
+     * @return array{exit: int, stdout: string, stderr: string, timed_out: bool}
+     */
+    public function process(array $command): array
+    {
         $stdout = tmpfile();
         $stderr = tmpfile();
 
@@ -28,11 +39,10 @@ final class Artisan
             throw new ToolError('Could not create temporary files for the Artisan process.');
         }
 
-        $command = [$this->php, 'artisan', ...$arguments, '--no-interaction', '--no-ansi'];
         $process = proc_open($command, [0 => ['pipe', 'r'], 1 => $stdout, 2 => $stderr], $pipes, $this->project->root);
 
         if (! is_resource($process)) {
-            throw new ToolError('Could not start php artisan in '.$this->project->root.'.');
+            throw new ToolError('Could not start '.basename($command[0]).' in '.$this->project->root.'.');
         }
 
         fclose($pipes[0]);
@@ -81,12 +91,12 @@ final class Artisan
     public function failureMessage(array $result): string
     {
         if ($result['timed_out']) {
-            return 'php artisan did not finish within '.$this->timeout.' seconds. Set LARABEACON_MCP_TIMEOUT to allow longer scans.';
+            return 'The command did not finish within '.$this->timeout.' seconds. Set LARABEACON_MCP_TIMEOUT to allow longer runs.';
         }
 
         $output = trim($result['stderr']."\n".$result['stdout']);
 
-        return 'php artisan exited with code '.$result['exit'].($output === '' ? '.' : ': '.mb_substr($output, 0, 2000));
+        return 'The command exited with code '.$result['exit'].($output === '' ? '.' : ': '.mb_substr($output, 0, 2000));
     }
 
     /** @param resource $handle */

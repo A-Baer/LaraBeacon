@@ -28,6 +28,7 @@ Requirements: PHP 8.2+ on the `PATH`, a Laravel 12 or 13 application, and [LaraB
 | `larabeacon_preflight` | – | – |
 | `larabeacon_checks` | – | – |
 | `larabeacon_baseline` | one JSON file | – |
+| `larabeacon_update` | `composer.lock`, `vendor/` | Packagist / Composer repositories |
 | `larabeacon_cloud_upload` | – | LaraBeacon Cloud |
 | `larabeacon_cloud_reports` | – | LaraBeacon Cloud |
 | `larabeacon_cloud_report` | – | LaraBeacon Cloud |
@@ -40,7 +41,16 @@ When LaraBeacon Pro or Cloud is not set up, scan and status results include a sh
 
 ## Configuration
 
-- `LARABEACON_MCP_TIMEOUT`: maximum seconds per Artisan run (default 600).
+- `LARABEACON_MCP_TIMEOUT`: maximum seconds per Artisan or Composer run (default 600).
+- `LARABEACON_AUTO_UPDATE=1`: update Core (and Pro) within the `composer.json` constraint once per session before the first status or scan, without asking. Off by default.
+- `LARABEACON_UPDATE_CHECK=0`: never contact Packagist for the newest version.
+- `LARABEACON_COMPOSER`: path to Composer when `composer` is not on the `PATH`.
+
+Set them in the `env` block of `~/.claude/settings.json` or the project's `.claude/settings.json`.
+
+## Updates
+
+`larabeacon_status` compares the installed Core version with the newest release on Packagist (cached for one day) and the session hint mentions an available update. Claude asks before calling `larabeacon_update`, which runs `composer update baer-software/larabeacon [baer-software/larabeacon-pro] --with-dependencies` and lists every package that changed in `composer.lock`. New major versions are reported but never applied.
 
 ## Development
 

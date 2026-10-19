@@ -7,6 +7,7 @@ use LaraBeaconMcp\Catalog;
 use LaraBeaconMcp\Project;
 use LaraBeaconMcp\Server;
 use LaraBeaconMcp\Tools;
+use LaraBeaconMcp\Updates;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
@@ -20,7 +21,7 @@ class ClaudePluginTest extends BaseTestCase
     {
         $this->plugin = dirname(__DIR__).'/claude-plugin';
 
-        foreach (['Server', 'Project', 'Artisan', 'Catalog', 'Tools'] as $file) {
+        foreach (['Server', 'Project', 'Artisan', 'Catalog', 'Tools', 'Updates'] as $file) {
             require_once $this->plugin.'/server/src/'.$file.'.php';
         }
 
@@ -38,6 +39,7 @@ class ClaudePluginTest extends BaseTestCase
 
     protected function tearDown(): void
     {
+        putenv('LARABEACON_COMPOSER');
         exec('rm -rf '.escapeshellarg($this->project));
     }
 
@@ -213,6 +215,175 @@ class ClaudePluginTest extends BaseTestCase
         $this->assertStringContainsString('/larabeacon:setup', shell_exec('CLAUDE_PROJECT_DIR='.escapeshellarg($this->project).' php '.$hook));
     }
 
+    #[Test]
+    public function updates_compare_with_the_cached_release_list_and_separate_major_versions()
+    {
+        $this->installCore('v3.2.0');
+        $check = $this->updates(['4.0.0', '3.3.1', '3.2.0'])->check();
+
+        $this->assertTrue($check['update_available']);
+        $this->assertSame('3.3.1', $check['latest_compatible']);
+        $this->assertSame('4.0.0', $check['major_available']);
+
+        $this->installCore('v3.3.1');
+        $current = $this->updates(['3.3.1', '3.2.0'])->check();
+        $this->assertFalse($current['update_available']);
+        $this->assertNull($current['major_available']);
+    }
+
+    #[Test]
+    public function cores_older_than_3_1_get_update_guidance_instead_of_an_artisan_error()
+    {
+        $this->requireCore('v3.0.2');
+        $tools = $this->tools($this->updates(['3.3.0', '3.0.2']));
+
+        $scan = $tools->call('larabeacon_scan', []);
+        $this->assertTrue($scan['isError']);
+        $this->assertStringContainsString('scans need 3.1.0 or newer', $scan['content'][0]['text']);
+        $this->assertStringContainsString('larabeacon_update', $scan['content'][0]['text']);
+
+        $status = $tools->call('larabeacon_status', [])['structuredContent'];
+        $this->assertFalse($status['larabeacon']['scan_tools_supported']);
+        $this->assertStringContainsString('larabeacon_scan and the Cloud tools need', implode(' ', $status['next_steps']));
+        $this->assertStringNotContainsString('Run larabeacon_scan', implode(' ', $status['next_steps']));
+    }
+
+    #[Test]
+    public function the_update_tool_runs_composer_and_lists_changed_lock_entries()
+    {
+        $this->requireCore('v3.2.0');
+        $this->fakeComposer('3.3.0');
+        $tools = $this->tools($this->updates(['3.3.0', '3.2.0']));
+
+        $status = $tools->call('larabeacon_status', [])['structuredContent'];
+        $this->assertTrue($status['updates']['update_available']);
+        $this->assertStringContainsString('call larabeacon_update', implode(' ', $status['next_steps']));
+
+        $result = $tools->call('larabeacon_update', [])['structuredContent'];
+
+        $this->assertSame(['from' => 'v3.2.0', 'to' => 'v3.3.0'], $result['core']);
+        $this->assertSame([['package' => 'baer-software/larabeacon', 'from' => 'v3.2.0', 'to' => 'v3.3.0']], $result['changed_packages']);
+        $this->assertSame(['update', 'baer-software/larabeacon', '--with-dependencies'], array_slice(file($this->project.'/composer-args.txt', FILE_IGNORE_NEW_LINES), 0, 3));
+    }
+
+    #[Test]
+    public function pro_only_projects_can_update_and_a_blocking_constraint_stops_the_suggestion()
+    {
+        $this->requireCore('v3.2.0');
+        file_put_contents($this->project.'/composer.json', json_encode(['require' => ['laravel/framework' => '^13.0'], 'require-dev' => ['baer-software/larabeacon-pro' => '^1.0']]));
+        $this->fakeComposer('3.2.0'); // Composer resolves nothing newer: the constraint blocks 3.3.0.
+        $updates = $this->updates(['3.3.0', '3.2.0']);
+        $tools = $this->tools($updates);
+
+        $result = $tools->call('larabeacon_update', [])['structuredContent'];
+
+        $this->assertFalse($result['core_updated']);
+        $this->assertStringContainsString('does not allow LaraBeacon 3.3.0', $result['next_step']);
+
+        $check = $updates->check();
+        $this->assertFalse($check['update_available']);
+        $this->assertSame('3.3.0', $check['blocked_by_constraint']);
+        $this->assertStringNotContainsString('call larabeacon_update', implode(' ', $tools->call('larabeacon_status', [])['structuredContent']['next_steps']));
+    }
+
+    #[Test]
+    public function auto_update_marks_scan_and_status_as_writing_tools()
+    {
+        $project = new Project(realpath($this->project));
+        $artisan = new Artisan($project, PHP_BINARY, 30);
+        $tools = array_column((new Tools($project, $artisan, Catalog::load($this->plugin.'/data/checks.json'), null, true))->definitions(), null, 'name');
+
+        $this->assertFalse($tools['larabeacon_status']['annotations']['readOnlyHint']);
+        $this->assertFalse($tools['larabeacon_scan']['annotations']['readOnlyHint']);
+        $this->assertTrue($tools['larabeacon_checks']['annotations']['readOnlyHint']);
+    }
+
+    #[Test]
+    public function a_failed_composer_update_is_reported_as_an_error()
+    {
+        $this->requireCore('v3.2.0');
+        $this->fakeComposer('3.3.0', exit: 2);
+
+        $result = $this->tools($this->updates(['3.3.0']))->call('larabeacon_update', []);
+
+        $this->assertTrue($result['isError']);
+        $this->assertStringContainsString('composer update failed', $result['content'][0]['text']);
+    }
+
+    #[Test]
+    public function auto_update_applies_once_per_session_only_when_enabled()
+    {
+        $this->requireCore('v3.2.0');
+        $this->fakeComposer('3.2.1');
+        $project = new Project(realpath($this->project));
+        $artisan = new Artisan($project, PHP_BINARY, 30);
+        $updates = new Updates($project, $artisan, $this->cache(['3.2.1', '3.2.0']), PHP_BINARY, false);
+        $tools = new Tools($project, $artisan, Catalog::load($this->plugin.'/data/checks.json'), $updates, true);
+
+        $status = $tools->call('larabeacon_status', [])['structuredContent'];
+
+        $this->assertTrue($status['auto_update']['applied']);
+        $this->assertSame('v3.2.1', $status['larabeacon']['version']);
+        $this->assertArrayNotHasKey('auto_update', $tools->call('larabeacon_status', [])['structuredContent']);
+
+        $this->requireCore('v3.2.0');
+        $this->assertArrayNotHasKey('auto_update', $this->tools($this->updates(['3.2.1']))->call('larabeacon_status', [])['structuredContent']);
+    }
+
+    #[Test]
+    public function the_session_hook_mentions_a_cached_update()
+    {
+        $this->requireCore('v3.2.0');
+        $data = $this->project.'/plugin-data';
+        mkdir($data);
+        file_put_contents($data.'/core-versions.json', json_encode(['checked_at' => time(), 'versions' => ['3.3.0', '3.2.0']]));
+
+        $output = shell_exec('CLAUDE_PLUGIN_DATA='.escapeshellarg($data).' CLAUDE_PROJECT_DIR='.escapeshellarg($this->project).' php '.escapeshellarg($this->plugin.'/hooks/session-start.php'));
+
+        $this->assertStringContainsString('LaraBeacon 3.3.0 is available (installed: v3.2.0)', $output);
+    }
+
+    private function requireCore(string $version): void
+    {
+        file_put_contents($this->project.'/composer.json', json_encode(['require' => ['laravel/framework' => '^13.0'], 'require-dev' => ['baer-software/larabeacon' => '^3.0']]));
+        file_put_contents($this->project.'/composer.lock', json_encode(['packages' => [], 'packages-dev' => [['name' => 'baer-software/larabeacon', 'version' => $version]]]));
+        file_put_contents($this->project.'/vendor/composer/installed.json', json_encode(['packages' => [
+            ['name' => 'laravel/framework', 'version' => 'v13.1.0'],
+            ['name' => 'baer-software/larabeacon', 'version' => $version],
+        ]]));
+    }
+
+    /**
+     * A stand-in for Composer that records its arguments and writes the "updated" lock and installed files.
+     */
+    private function fakeComposer(string $to, int $exit = 0): void
+    {
+        $script = $this->project.'/fake-composer.php';
+        file_put_contents($script, '<?php
+file_put_contents("composer-args.txt", implode("\n", array_slice($argv, 1)));
+if ('.$exit.' !== 0) { fwrite(STDERR, "Your requirements could not be resolved."); exit('.$exit.'); }
+file_put_contents("composer.lock", json_encode(["packages" => [], "packages-dev" => [["name" => "baer-software/larabeacon", "version" => "v'.$to.'"]]]));
+file_put_contents("vendor/composer/installed.json", json_encode(["packages" => [["name" => "laravel/framework", "version" => "v13.1.0"], ["name" => "baer-software/larabeacon", "version" => "v'.$to.'"]]]));
+');
+        putenv('LARABEACON_COMPOSER='.$script.'.phar');
+        rename($script, $script.'.phar');
+    }
+
+    private function cache(array $versions): string
+    {
+        $file = $this->project.'/versions-'.bin2hex(random_bytes(3)).'.json';
+        file_put_contents($file, json_encode(['checked_at' => time(), 'versions' => $versions]));
+
+        return $file;
+    }
+
+    private function updates(array $versions): Updates
+    {
+        $project = new Project(realpath($this->project));
+
+        return new Updates($project, new Artisan($project, PHP_BINARY, 30), $this->cache($versions), PHP_BINARY, false);
+    }
+
     private function installCore(string $version): void
     {
         $installed = json_decode(file_get_contents($this->project.'/vendor/composer/installed.json'), true);
@@ -220,11 +391,11 @@ class ClaudePluginTest extends BaseTestCase
         file_put_contents($this->project.'/vendor/composer/installed.json', json_encode($installed));
     }
 
-    private function tools(): Tools
+    private function tools(?Updates $updates = null): Tools
     {
         $project = new Project(realpath($this->project));
 
-        return new Tools($project, new Artisan($project, PHP_BINARY, 30), Catalog::load($this->plugin.'/data/checks.json'));
+        return new Tools($project, new Artisan($project, PHP_BINARY, 30), Catalog::load($this->plugin.'/data/checks.json'), $updates);
     }
 
     private function server(): Server

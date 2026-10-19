@@ -110,6 +110,33 @@ final class Project
         return version_compare($match[0], $minimum, '>=');
     }
 
+    /**
+     * Forget cached package versions after Composer changed vendor/.
+     */
+    public function refresh(): void
+    {
+        $this->installed = null;
+    }
+
+    /**
+     * Package name => version from composer.lock (packages and packages-dev).
+     *
+     * @return array<string, string>
+     */
+    public function lockedVersions(): array
+    {
+        $lock = $this->json('composer.lock');
+        $versions = [];
+
+        foreach ([...($lock['packages'] ?? []), ...($lock['packages-dev'] ?? [])] as $package) {
+            if (is_array($package) && is_string($package['name'] ?? null)) {
+                $versions[$package['name']] = (string) ($package['version'] ?? '');
+            }
+        }
+
+        return $versions;
+    }
+
     public function hasFile(string $relativePath): bool
     {
         return is_file($this->root.'/'.$relativePath);
