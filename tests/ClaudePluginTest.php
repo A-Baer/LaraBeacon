@@ -53,7 +53,7 @@ class ClaudePluginTest extends BaseTestCase
 
         $this->assertSame('larabeacon', $plugin['name']);
         $this->assertSame(Server::VERSION, $plugin['version']);
-        $this->assertSame([['name' => 'larabeacon', 'source' => './claude-plugin']], array_map(fn ($entry) => array_intersect_key($entry, ['name' => 1, 'source' => 1]), $marketplace['plugins']));
+        $this->assertSame([['name' => 'larabeacon', 'source' => ['source' => 'github', 'repo' => 'Baer-Software/larabeacon-claude-plugin']]], array_map(fn ($entry) => array_intersect_key($entry, ['name' => 1, 'source' => 1]), $marketplace['plugins']));
         $this->assertSame(['php'], [$mcp['mcpServers']['larabeacon']['command']]);
         $this->assertSame(['${CLAUDE_PLUGIN_ROOT}/server/larabeacon-mcp.php'], $mcp['mcpServers']['larabeacon']['args']);
 

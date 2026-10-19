@@ -10,10 +10,19 @@
   "plugins": [
     {
       "name": "larabeacon",
-      "source": "./claude-plugin",
+      "source": {
+        "source": "github",
+        "repo": "Baer-Software/larabeacon-claude-plugin"
+      },
       "description": "Run LaraBeacon production-readiness scans for Laravel from Claude Code, fix findings within scope and read LaraBeacon Cloud report history.",
       "category": "development",
-      "tags": ["laravel", "php", "security", "performance", "reliability"]
+      "tags": [
+        "laravel",
+        "php",
+        "security",
+        "performance",
+        "reliability"
+      ]
     }
   ]
 }
