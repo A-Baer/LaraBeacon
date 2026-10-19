@@ -13,7 +13,7 @@ if (PHP_VERSION_ID < 80200) {
 
     if (is_string($projectDirectory) && is_file($projectDirectory.'/artisan')) {
         echo 'The LaraBeacon plugin found PHP '.PHP_VERSION.', but its MCP server needs PHP 8.2 or newer, so the LaraBeacon tools are unavailable in this session. '
-            .'If LaraBeacon comes up, tell the user to put PHP 8.2+ first on the PATH or set LARABEACON_PHP to a PHP 8.2+ binary in the env block of the Claude Code settings, then restart Claude Code.'."\n";
+            .'If LaraBeacon comes up, tell the user to put PHP 8.2+ first on the PATH Claude Code starts with, then restart Claude Code.'."\n";
     }
 
     exit(0);

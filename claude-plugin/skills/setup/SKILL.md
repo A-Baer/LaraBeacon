@@ -10,7 +10,7 @@ Arguments: $ARGUMENTS
 
 Start with `larabeacon_status`. It reports the Laravel and LaraBeacon versions, whether Pro is installed, whether Cloud is configured and the next steps.
 
-## Core (free, LGPL, works offline)
+## Core (free, LGPL, runs locally)
 
 1. Ask the user before changing dependencies, then run:
 

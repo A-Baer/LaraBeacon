@@ -65,11 +65,13 @@ License findings identify packages that need project-specific review; they do no
 Install the LaraBeacon plugin in Claude Code:
 
 ```text
-/plugin marketplace add A-Baer/LaraBeacon
+/plugin marketplace add Baer-Software/larabeacon-claude-plugin
 /plugin install larabeacon@larabeacon
 ```
 
 The plugin adds a local MCP server (`larabeacon_scan`, `larabeacon_status`, `larabeacon_checks`, `larabeacon_baseline` and read-only Cloud history tools) and the skills `/larabeacon:scan`, `/larabeacon:setup` and `/larabeacon:cloud`. It needs PHP 8.2+ on the `PATH`, runs every scan through the project's own `php artisan`, never reads Cloud credentials and uploads only when you ask. See [claude-plugin/README.md](claude-plugin/README.md) and the [Claude Code documentation](https://larabeacon.com/docs/claude-code).
+
+The plugin source lives in `claude-plugin/` and is tested here (`vendor/bin/phpunit tests/ClaudePluginTest.php`, `claude plugin validate ./claude-plugin --strict`). After pushing a version bump of `claude-plugin/.claude-plugin/plugin.json` (keep `Server::VERSION` in sync), publish it to [Baer-Software/larabeacon-claude-plugin](https://github.com/Baer-Software/larabeacon-claude-plugin) with `tools/publish-claude-plugin.sh`. Regenerate `claude-plugin/data/checks.json` from the website catalogue with `php tools/build-plugin-catalog.php website/config/checks.php`.
 
 Read Cloud history from scripts as JSON with `php artisan larabeacon:cloud status|reports|report [number|latest]`.
 

@@ -36,7 +36,7 @@ final class Tools
 
         return [
             $this->tool('larabeacon_status', 'LaraBeacon status', 'Show whether this is a Laravel project, which LaraBeacon Core and Pro versions are installed, whether a newer release exists, whether LaraBeacon Cloud is configured, and the next setup steps. Call this first when LaraBeacon may not be installed.'.($this->autoUpdate ? ' LARABEACON_AUTO_UPDATE is enabled, so the first call may run composer update.' : ''), [], readOnly: ! $this->autoUpdate),
-            $this->tool('larabeacon_scan', 'Run a LaraBeacon scan', 'Run LaraBeacon locally (php artisan larabeacon) and return structured findings with remediation guidance, sorted by severity. Nothing is uploaded.', [
+            $this->tool('larabeacon_scan', 'Run a LaraBeacon scan', 'Run LaraBeacon locally (php artisan larabeacon) and return structured findings with remediation guidance, sorted by severity. No code or results are uploaded; the dependency audits send package names and versions to Packagist and the npm or Yarn registry.', [
                 'profile' => $profile,
                 'analyzers' => ['type' => 'array', 'items' => ['type' => 'string'], 'maxItems' => 50, 'description' => 'Only run these checks. Accepts check slugs (e.g. "app-debug"), class names or fully qualified analyzer classes. Omit to run all checks of the profile.'],
                 'baseline' => ['type' => 'string', 'description' => 'Relative path of a JSON acceptance baseline, e.g. larabeacon-baseline.json.'],
@@ -568,7 +568,7 @@ final class Tools
         $free = $this->catalog->tier('free');
 
         return [
-            'summary' => 'LaraBeacon Core runs '.count($free).' free performance, security and reliability checks locally through Artisan, with JSON/SARIF reports, baselines and CI profiles. It never uploads code.',
+            'summary' => 'LaraBeacon Core runs '.count($free).' free performance, security and reliability checks locally through Artisan, with JSON/SARIF reports, baselines and CI profiles. It never uploads code; its dependency audits query package registries.',
             'documentation' => $this->link('/docs/installation', 'install'),
         ];
     }
@@ -606,7 +606,7 @@ final class Tools
         }
 
         if (! $this->project->installed(Project::CORE_PACKAGE)) {
-            throw new ToolError('LaraBeacon is not installed in this project. Install it with: composer require --dev baer-software/larabeacon (free, works offline). See '.$this->link('/docs/installation', 'install'));
+            throw new ToolError('LaraBeacon is not installed in this project. Install it with: composer require --dev baer-software/larabeacon (free, runs locally). See '.$this->link('/docs/installation', 'install'));
         }
     }
 

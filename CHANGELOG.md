@@ -1,5 +1,10 @@
 # Release Notes
 
+## Unreleased
+
+### Changed
+- Claude Code plugin 1.2.0: published from the standalone repository `Baer-Software/larabeacon-claude-plugin` for the Claude directory (`/plugin marketplace add Baer-Software/larabeacon-claude-plugin`; the `A-Baer/LaraBeacon` marketplace now points there). The MCP server starts with `php` from the `PATH` and the session hint runs as its own shell script, as the directory requires; `LARABEACON_PHP` is no longer used. The plugin adds an icon, documentation, support and privacy links and a data and network disclosure.
+
 ## 3.3.1 - 2026-10-19
 
 ### Added

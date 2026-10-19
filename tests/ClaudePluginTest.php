@@ -54,8 +54,8 @@ class ClaudePluginTest extends BaseTestCase
         $this->assertSame('larabeacon', $plugin['name']);
         $this->assertSame(Server::VERSION, $plugin['version']);
         $this->assertSame([['name' => 'larabeacon', 'source' => './claude-plugin']], array_map(fn ($entry) => array_intersect_key($entry, ['name' => 1, 'source' => 1]), $marketplace['plugins']));
-        $this->assertSame('${CLAUDE_PLUGIN_ROOT}/server/larabeacon-mcp.php', $mcp['mcpServers']['larabeacon']['args'][0]);
-        $this->assertSame('${LARABEACON_PHP:-php}', $mcp['mcpServers']['larabeacon']['command']);
+        $this->assertSame(['php'], [$mcp['mcpServers']['larabeacon']['command']]);
+        $this->assertSame(['${CLAUDE_PLUGIN_ROOT}/server/larabeacon-mcp.php'], $mcp['mcpServers']['larabeacon']['args']);
 
         foreach (['scan', 'setup', 'cloud'] as $skill) {
             $this->assertMatchesRegularExpression("/\\A---\nname: {$skill}\ndescription: .+\n/", file_get_contents($this->plugin."/skills/{$skill}/SKILL.md"));
@@ -350,13 +350,51 @@ class ClaudePluginTest extends BaseTestCase
     public function the_hook_command_explains_missing_php_only_in_laravel_projects()
     {
         $command = json_decode(file_get_contents($this->plugin.'/hooks/hooks.json'), true)['hooks']['SessionStart'][0]['hooks'][0]['command'];
-        $run = fn (string $dir): string => (string) shell_exec('cd '.escapeshellarg($dir).' && env -i PATH=/usr/bin:/bin LARABEACON_PHP=php-missing CLAUDE_PLUGIN_ROOT='.escapeshellarg($this->plugin).' CLAUDE_PROJECT_DIR='.escapeshellarg($dir).' /bin/sh -c '.escapeshellarg($command).' 2>&1');
+        $run = fn (string $dir, string $path): string => (string) shell_exec('cd '.escapeshellarg($dir).' && env -i PATH='.escapeshellarg($path).' CLAUDE_PLUGIN_ROOT='.escapeshellarg($this->plugin).' CLAUDE_PROJECT_DIR='.escapeshellarg($dir).' /bin/sh -c '.escapeshellarg($command).' 2>&1; echo "exit=$?"');
+        $withoutPhp = '/usr/bin:/bin';
+        $withPhp = dirname(PHP_BINARY).':/usr/bin:/bin';
 
-        $this->assertStringContainsString('could not find PHP (php-missing)', $run($this->project));
-        $this->assertSame('', $run(sys_get_temp_dir()));
-        // A direct path (as on Windows, where command -v cannot resolve C:\php\php.exe) counts as present.
-        $this->assertStringNotContainsString('could not find PHP', (string) shell_exec('cd '.escapeshellarg($this->project).' && env -i PATH=/usr/bin:/bin LARABEACON_PHP='.escapeshellarg($this->project.'/artisan').' CLAUDE_PLUGIN_ROOT='.escapeshellarg($this->plugin).' CLAUDE_PROJECT_DIR='.escapeshellarg($this->project).' /bin/sh -c '.escapeshellarg($command).' 2>&1'));
-        $this->assertStringContainsString('LaraBeacon', (string) shell_exec('cd '.escapeshellarg($this->project).' && LARABEACON_PHP='.escapeshellarg(PHP_BINARY).' CLAUDE_PLUGIN_ROOT='.escapeshellarg($this->plugin).' CLAUDE_PROJECT_DIR='.escapeshellarg($this->project).' /bin/sh -c '.escapeshellarg($command)));
+        if (is_executable('/usr/bin/php')) {
+            $this->markTestSkipped('This machine has /usr/bin/php, so PHP cannot be hidden from the PATH.');
+        }
+
+        $this->assertStringContainsString('could not find PHP on the PATH', $run($this->project, $withoutPhp));
+        $this->assertStringEndsWith("exit=0\n", $run($this->project, $withoutPhp));
+        $this->assertSame("exit=0\n", $run(sys_get_temp_dir(), $withoutPhp));
+        $this->assertStringContainsString('The LaraBeacon plugin is enabled', $run($this->project, $withPhp));
+    }
+
+    #[Test]
+    public function launch_commands_follow_the_directory_rules()
+    {
+        $hook = json_decode(file_get_contents($this->plugin.'/hooks/hooks.json'), true)['hooks']['SessionStart'][0]['hooks'][0]['command'];
+        $mcp = json_decode(file_get_contents($this->plugin.'/.mcp.json'), true)['mcpServers']['larabeacon'];
+
+        // Only ${CLAUDE_PLUGIN_ROOT}, no other variables, defaults or inline programs.
+        $this->assertSame('"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh"', $hook);
+        $this->assertTrue(is_executable($this->plugin.'/hooks/session-start.sh'));
+        $this->assertStringStartsWith("#!/bin/sh\n", file_get_contents($this->plugin.'/hooks/session-start.sh'));
+        $this->assertDoesNotMatchRegularExpression('/\$\{(?!CLAUDE_PLUGIN_ROOT\})/', json_encode($mcp, JSON_UNESCAPED_SLASHES));
+
+        $manifest = json_decode(file_get_contents($this->plugin.'/.claude-plugin/plugin.json'), true);
+        $this->assertFileExists($this->plugin.'/'.$manifest['icon']);
+        $this->assertFileExists($this->plugin.'/LICENSE.md');
+        $this->assertGreaterThanOrEqual(40, str_word_count(file_get_contents($this->plugin.'/README.md')));
+
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->plugin, \FilesystemIterator::SKIP_DOTS));
+        $count = 0;
+
+        foreach ($files as $file) {
+            $count++;
+            $this->assertFalse($file->isLink(), $file->getPathname());
+            $this->assertNotSame('.DS_Store', $file->getFilename());
+
+            if (! in_array(strtolower($file->getExtension()), ['png', 'svg'], true)) {
+                $this->assertLessThan(256 * 1024, $file->getSize(), $file->getPathname());
+            }
+        }
+
+        $this->assertLessThan(512, $count);
     }
 
     #[Test]

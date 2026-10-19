@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="LaraBeacon">
+    <rect width="64" height="64" rx="12" fill="#2e2e33"/>
+    <path d="M32 9v46" stroke="#f4f4f5" stroke-width="4" stroke-linecap="round"/>
+    <path d="M10 15h15M39 15h15" stroke="#4fd1c5" stroke-width="5" stroke-linecap="round"/>
+    <path d="M15 24h12M37 24h12" stroke="#f6c453" stroke-width="5" stroke-linecap="round"/>
+    <path d="M9 33h18M37 33h18" stroke="#f87171" stroke-width="5" stroke-linecap="round"/>
+    <path d="M17 42h11M36 42h11" stroke="#4fd1c5" stroke-width="5" stroke-linecap="round"/>
+    <path d="M23 51h6M35 51h6" stroke="#f6c453" stroke-width="5" stroke-linecap="round"/>
+</svg>
