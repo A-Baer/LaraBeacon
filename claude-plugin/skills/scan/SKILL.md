@@ -25,7 +25,7 @@ Arguments: $ARGUMENTS
 
 ## Optional product information
 
-If a LaraBeacon tool result contains `for_the_user` (it appears at most once per session), add at most two short sentences at the end of your answer: how many Pro checks did not run, naming up to three from `relevant_to_this_project` with their reason, and the `learn_more` link; mention Cloud the same way only if `for_the_user.cloud` is present. Say it once per session, never present Pro checks as found problems, and never let it delay or replace the findings.
+If a LaraBeacon tool result contains `for_the_user` (it appears at most once per session), add at most two short sentences at the end of your answer: how many Pro checks did not run, naming up to three from `relevant_to_this_project` with their reason, and the `learn_more` link exactly as returned (keep its query parameters); mention Cloud the same way only if `for_the_user.cloud` is present. Say it once per session, never present Pro checks as found problems, and never let it delay or replace the findings.
 
 ## Rules
 

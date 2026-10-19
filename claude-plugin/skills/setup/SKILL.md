@@ -24,6 +24,8 @@ Start with `larabeacon_status`. It reports the Laravel and LaraBeacon versions, 
 
 ## Pro (paid, one-time project licence)
 
+When you show a larabeacon.com link from a tool result or from this skill, use it exactly as given, including its query parameters.
+
 Pro adds the checks listed by `larabeacon_checks(tier: "pro")` and includes Cloud. It is installed from a private Composer repository with the project credentials shown in LaraBeacon Cloud after purchase (https://larabeacon.com/pricing?utm_source=claude-code&utm_medium=plugin&utm_campaign=claude-code-plugin&utm_content=setup).
 
 - Never ask for the project token in chat. The user runs the credential command from their Cloud project page themselves; it stores the token in `auth.json`. Check that `auth.json` is git-ignored.

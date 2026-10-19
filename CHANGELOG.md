@@ -7,6 +7,7 @@
 - Claude Code plugin 1.1.0: `larabeacon_status` and the session hint report a newer Core release (Packagist, cached for a day); the new `larabeacon_update` tool runs `composer update` for Core and Pro within the `composer.json` constraints after the user agrees and lists the changed lock entries. `LARABEACON_AUTO_UPDATE=1` applies same-major updates without asking.
 
 ### Fixed
+- Claude Code plugin 1.1.2: the skills keep the tracking parameters of larabeacon.com links instead of shortening them.
 - Claude Code plugin 1.1.1: LaraBeacon installed with `composer require` during a session is detected without restarting Claude Code; `larabeacon_update` starts Composer through `cmd.exe` on Windows.
 
 
