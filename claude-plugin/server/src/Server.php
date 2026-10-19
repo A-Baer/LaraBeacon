@@ -11,7 +11,7 @@ final class Server
 {
     public const NAME = 'larabeacon';
 
-    public const VERSION = '1.1.0';
+    public const VERSION = '1.1.1';
 
     private const PROTOCOL_VERSIONS = ['2025-06-18', '2025-03-26', '2024-11-05'];
 

@@ -55,6 +55,7 @@ class ClaudePluginTest extends BaseTestCase
         $this->assertSame(Server::VERSION, $plugin['version']);
         $this->assertSame([['name' => 'larabeacon', 'source' => './claude-plugin']], array_map(fn ($entry) => array_intersect_key($entry, ['name' => 1, 'source' => 1]), $marketplace['plugins']));
         $this->assertSame('${CLAUDE_PLUGIN_ROOT}/server/larabeacon-mcp.php', $mcp['mcpServers']['larabeacon']['args'][0]);
+        $this->assertSame('${LARABEACON_PHP:-php}', $mcp['mcpServers']['larabeacon']['command']);
 
         foreach (['scan', 'setup', 'cloud'] as $skill) {
             $this->assertMatchesRegularExpression("/\\A---\nname: {$skill}\ndescription: .+\n/", file_get_contents($this->plugin."/skills/{$skill}/SKILL.md"));
@@ -216,6 +217,21 @@ class ClaudePluginTest extends BaseTestCase
     }
 
     #[Test]
+    public function a_package_installed_during_the_session_is_detected_without_restarting_the_server()
+    {
+        $project = new Project(realpath($this->project));
+        $this->assertFalse($project->installed('baer-software/larabeacon'));
+
+        // composer require writes a new installed.json while the MCP server keeps running.
+        $installed = json_decode(file_get_contents($this->project.'/vendor/composer/installed.json'), true);
+        $installed['packages'][] = ['name' => 'baer-software/larabeacon', 'version' => 'v3.3.0'];
+        file_put_contents($this->project.'/vendor/composer/installed.json.tmp', json_encode($installed));
+        rename($this->project.'/vendor/composer/installed.json.tmp', $this->project.'/vendor/composer/installed.json');
+
+        $this->assertSame('v3.3.0', $project->version('baer-software/larabeacon'));
+    }
+
+    #[Test]
     public function updates_compare_with_the_cached_release_list_and_separate_major_versions()
     {
         $this->installCore('v3.2.0');
@@ -328,6 +344,19 @@ class ClaudePluginTest extends BaseTestCase
 
         $this->requireCore('v3.2.0');
         $this->assertArrayNotHasKey('auto_update', $this->tools($this->updates(['3.2.1']))->call('larabeacon_status', [])['structuredContent']);
+    }
+
+    #[Test]
+    public function the_hook_command_explains_missing_php_only_in_laravel_projects()
+    {
+        $command = json_decode(file_get_contents($this->plugin.'/hooks/hooks.json'), true)['hooks']['SessionStart'][0]['hooks'][0]['command'];
+        $run = fn (string $dir): string => (string) shell_exec('cd '.escapeshellarg($dir).' && env -i PATH=/usr/bin:/bin LARABEACON_PHP=php-missing CLAUDE_PLUGIN_ROOT='.escapeshellarg($this->plugin).' CLAUDE_PROJECT_DIR='.escapeshellarg($dir).' /bin/sh -c '.escapeshellarg($command).' 2>&1');
+
+        $this->assertStringContainsString('could not find PHP (php-missing)', $run($this->project));
+        $this->assertSame('', $run(sys_get_temp_dir()));
+        // A direct path (as on Windows, where command -v cannot resolve C:\php\php.exe) counts as present.
+        $this->assertStringNotContainsString('could not find PHP', (string) shell_exec('cd '.escapeshellarg($this->project).' && env -i PATH=/usr/bin:/bin LARABEACON_PHP='.escapeshellarg($this->project.'/artisan').' CLAUDE_PLUGIN_ROOT='.escapeshellarg($this->plugin).' CLAUDE_PROJECT_DIR='.escapeshellarg($this->project).' /bin/sh -c '.escapeshellarg($command).' 2>&1'));
+        $this->assertStringContainsString('LaraBeacon', (string) shell_exec('cd '.escapeshellarg($this->project).' && LARABEACON_PHP='.escapeshellarg(PHP_BINARY).' CLAUDE_PLUGIN_ROOT='.escapeshellarg($this->plugin).' CLAUDE_PROJECT_DIR='.escapeshellarg($this->project).' /bin/sh -c '.escapeshellarg($command)));
     }
 
     #[Test]

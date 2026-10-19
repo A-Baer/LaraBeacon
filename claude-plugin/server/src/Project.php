@@ -16,6 +16,9 @@ final class Project
     /** @var array<string, string>|null */
     private ?array $installed = null;
 
+    /** Fingerprint of vendor/composer/installed.json when $installed was read. */
+    private ?string $installedFingerprint = null;
+
     public function __construct(public readonly string $root) {}
 
     public static function resolve(?string $argument, ?string $environment, string $cwd): self
@@ -163,10 +166,16 @@ final class Project
     /** @return array<string, string> */
     private function installedPackages(): array
     {
-        if ($this->installed !== null) {
+        // Composer may change vendor/ during the session (composer require/update), so re-read on every change.
+        $file = $this->root.'/vendor/composer/installed.json';
+        clearstatcache(true, $file);
+        $fingerprint = is_file($file) ? filemtime($file).':'.filesize($file).':'.fileinode($file) : 'missing';
+
+        if ($this->installed !== null && $this->installedFingerprint === $fingerprint) {
             return $this->installed;
         }
 
+        $this->installedFingerprint = $fingerprint;
         $this->installed = [];
         $data = $this->json('vendor/composer/installed.json');
         $packages = $data['packages'] ?? $data;

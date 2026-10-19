@@ -215,7 +215,8 @@ final class Updates
             return [$this->php, 'composer.phar'];
         }
 
-        return ['composer'];
+        // On Windows Composer is installed as composer.bat, which CreateProcess cannot start without cmd.exe.
+        return PHP_OS_FAMILY === 'Windows' ? ['cmd.exe', '/d', '/c', 'composer'] : ['composer'];
     }
 
     private static function number(?string $version): ?string

@@ -51,6 +51,11 @@ final class Artisan
 
         while (($status = proc_get_status($process))['running']) {
             if (microtime(true) > $deadline) {
+                if (PHP_OS_FAMILY === 'Windows') {
+                    // proc_terminate() ends only cmd.exe there; take Composer or PHP children down with it.
+                    exec('taskkill /F /T /PID '.(int) $status['pid'].' 2>NUL');
+                }
+
                 proc_terminate($process, 9);
                 $timedOut = true;
                 break;

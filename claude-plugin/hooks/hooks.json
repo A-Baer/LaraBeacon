@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "php \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.php\" || true",
+            "command": "PHP_BIN=\"${LARABEACON_PHP:-php}\"; if command -v \"$PHP_BIN\" >/dev/null 2>&1 || [ -f \"$PHP_BIN\" ]; then \"$PHP_BIN\" \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.php\" || true; elif [ -f \"${CLAUDE_PROJECT_DIR:-.}/artisan\" ]; then echo \"The LaraBeacon plugin could not find PHP (${PHP_BIN}) on the PATH, so its MCP tools are unavailable in this session. If LaraBeacon comes up, tell the user to put PHP 8.2+ on the PATH or set LARABEACON_PHP to the PHP binary in the env block of the Claude Code settings, then restart Claude Code.\"; fi",
             "timeout": 10
           }
         ]

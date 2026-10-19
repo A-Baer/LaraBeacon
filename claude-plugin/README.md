@@ -9,7 +9,7 @@ Production-readiness, security, performance and reliability checks for Laravel a
 /plugin install larabeacon@larabeacon
 ```
 
-Requirements: PHP 8.2+ on the `PATH`, a Laravel 12 or 13 application, and [LaraBeacon Core](https://github.com/A-Baer/LaraBeacon) (`composer require --dev baer-software/larabeacon`). Without Core, the server still starts and `/larabeacon:setup` guides the installation. The Cloud tools need Core 3.3+.
+Requirements: PHP 8.2+ on the `PATH` (or `LARABEACON_PHP`), a Laravel 12 or 13 application, and [LaraBeacon Core](https://github.com/A-Baer/LaraBeacon) (`composer require --dev baer-software/larabeacon`). Without Core, the server still starts and `/larabeacon:setup` guides the installation. The Cloud tools need Core 3.3+.
 
 ## Skills
 
@@ -44,6 +44,7 @@ When LaraBeacon Pro or Cloud is not set up, scan and status results include a sh
 - `LARABEACON_MCP_TIMEOUT`: maximum seconds per Artisan or Composer run (default 600).
 - `LARABEACON_AUTO_UPDATE=1`: update Core (and Pro) within the `composer.json` constraint once per session before the first status or scan, without asking. Off by default.
 - `LARABEACON_UPDATE_CHECK=0`: never contact Packagist for the newest version.
+- `LARABEACON_PHP`: PHP binary for the MCP server and the session hint when `php` on the `PATH` is missing or too old (for example a Herd or Homebrew path).
 - `LARABEACON_COMPOSER`: path to Composer when `composer` is not on the `PATH`.
 
 Set them in the `env` block of `~/.claude/settings.json` or the project's `.claude/settings.json`.
@@ -51,6 +52,10 @@ Set them in the `env` block of `~/.claude/settings.json` or the project's `.clau
 ## Updates
 
 `larabeacon_status` compares the installed Core version with the newest release on Packagist (cached for one day) and the session hint mentions an available update. Claude asks before calling `larabeacon_update`, which runs `composer update baer-software/larabeacon [baer-software/larabeacon-pro] --with-dependencies` and lists every package that changed in `composer.lock`. New major versions are reported but never applied.
+
+## Platforms
+
+Tested on macOS with PHP 8.2, 8.4 and 8.5, Laravel 12 and 13. Windows is supported by design but not yet tested: hooks run through Git Bash, Composer is started through `cmd.exe`, and paths with drive letters are rejected as absolute in tool arguments.
 
 ## Development
 

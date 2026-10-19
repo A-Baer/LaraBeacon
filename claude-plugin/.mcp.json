@@ -1,8 +1,11 @@
 {
   "mcpServers": {
     "larabeacon": {
-      "command": "php",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/server/larabeacon-mcp.php", "--project=${CLAUDE_PROJECT_DIR:-}"]
+      "command": "${LARABEACON_PHP:-php}",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/larabeacon-mcp.php",
+        "--project=${CLAUDE_PROJECT_DIR:-}"
+      ]
     }
   }
 }

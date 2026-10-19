@@ -18,7 +18,7 @@ Start with `larabeacon_status`. It reports the Laravel and LaraBeacon versions, 
    composer require --dev baer-software/larabeacon
    ```
 
-2. Optional: `php artisan vendor:publish --tag=larabeacon` to publish `config/larabeacon.php`.
+2. Call `larabeacon_status` again; it must now report the installed version. Optional: `php artisan vendor:publish --tag=larabeacon` to publish `config/larabeacon.php`.
 3. Run `larabeacon_preflight` and then `larabeacon_scan` and summarize the result as in `/larabeacon:scan`.
 4. Suggest CI gating when the project has CI: `php artisan larabeacon --profile=ci --format=sarif --output=larabeacon.sarif`, or the GitHub Action `uses: A-Baer/LaraBeacon@v3`. For an existing codebase, offer `larabeacon_baseline` so CI fails only on new findings.
 

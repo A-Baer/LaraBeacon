@@ -3,7 +3,12 @@
 ## Unreleased
 
 ### Added
+- Claude Code plugin 1.1.1: `LARABEACON_PHP` selects the PHP binary for the MCP server and the session hint; the session hint explains a missing PHP in Laravel projects instead of printing a shell error.
 - Claude Code plugin 1.1.0: `larabeacon_status` and the session hint report a newer Core release (Packagist, cached for a day); the new `larabeacon_update` tool runs `composer update` for Core and Pro within the `composer.json` constraints after the user agrees and lists the changed lock entries. `LARABEACON_AUTO_UPDATE=1` applies same-major updates without asking.
+
+### Fixed
+- Claude Code plugin 1.1.1: LaraBeacon installed with `composer require` during a session is detected without restarting Claude Code; `larabeacon_update` starts Composer through `cmd.exe` on Windows.
+
 
 ## 3.3.0 - 2026-10-16
 
