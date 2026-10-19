@@ -1,6 +1,6 @@
 # Release Notes
 
-## Unreleased
+## 3.3.1 - 2026-10-19
 
 ### Added
 - Claude Code plugin 1.1.1: `LARABEACON_PHP` selects the PHP binary for the MCP server and the session hint; the session hint explains a missing PHP in Laravel projects instead of printing a shell error.
