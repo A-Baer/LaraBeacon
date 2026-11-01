@@ -17,6 +17,26 @@ Requirements:
 - A Laravel 12 or 13 application
 - [LaraBeacon Core](https://github.com/A-Baer/LaraBeacon), the free LGPL package: `composer require --dev baer-software/larabeacon`. Without it the plugin still starts and `/larabeacon:setup` guides the installation. The Cloud tools need Core 3.3 or newer.
 
+## Use with Codex
+
+The MCP server also works in OpenAI Codex. Clone this repository to a permanent location and add the server to `~/.codex/config.toml` (use the absolute path; Codex stops tools after 60 seconds by default, a full scan can take longer):
+
+```bash
+git clone https://github.com/Baer-Software/larabeacon-claude-plugin.git ~/.codex/larabeacon
+```
+
+```toml
+[mcp_servers.larabeacon]
+command = "php"
+args = ["/Users/you/.codex/larabeacon/server/larabeacon-mcp.php"]
+tool_timeout_sec = 660
+
+[mcp_servers.larabeacon.env]
+LARABEACON_UPDATE_CHECK = "0"  # optional: Codex does not pass your shell environment
+```
+
+Start Codex in the Laravel project root (or add `"--project=/absolute/path"` to `args`). The skills and the session hint are Claude Code features; in Codex the tool descriptions and the server instructions guide the model. Update with `git -C ~/.codex/larabeacon pull`. Details: [larabeacon.com/docs/codex](https://larabeacon.com/docs/codex).
+
 ## Skills
 
 | Skill | Purpose |

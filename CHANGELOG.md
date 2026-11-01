@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- Claude Code plugin 1.2.1: the MCP server also works in OpenAI Codex (`[mcp_servers.larabeacon]` in `~/.codex/config.toml`); it detects the connected agent to name it in hints and to attribute larabeacon.com links (`utm_source=codex`).
+
 ### Changed
 - Claude Code plugin 1.2.0: published from the standalone repository `Baer-Software/larabeacon-claude-plugin` for the Claude directory (`/plugin marketplace add Baer-Software/larabeacon-claude-plugin`; the `A-Baer/LaraBeacon` marketplace now points there). The MCP server starts with `php` from the `PATH` and the session hint runs as its own shell script, as the directory requires; `LARABEACON_PHP` is no longer used. The plugin adds an icon, documentation, support and privacy links and a data and network disclosure.
 

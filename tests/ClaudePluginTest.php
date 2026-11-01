@@ -80,6 +80,45 @@ class ClaudePluginTest extends BaseTestCase
     }
 
     #[Test]
+    public function hints_and_links_follow_the_connected_agent()
+    {
+        $this->installCore('v3.3.0');
+
+        foreach ([
+            'codex-mcp-client' => ['utm_source=codex', 'utm_campaign=codex-mcp', false],
+            'claude-code' => ['utm_source=claude-code', 'utm_campaign=claude-code-plugin', true],
+            'cursor' => ['utm_source=mcp', 'utm_campaign=mcp&', false],
+            'claude-ai' => ['utm_source=claude&', 'utm_campaign=claude-mcp', false],
+            '' => ['utm_source=claude-code', 'utm_campaign=claude-code-plugin', true],
+        ] as $client => [$source, $campaign, $slashCommand]) {
+            $server = $this->server();
+            $server->handleLine(json_encode(['jsonrpc' => '2.0', 'id' => 1, 'method' => 'initialize', 'params' => ['protocolVersion' => '2025-06-18', 'clientInfo' => ['name' => $client, 'version' => '1']]]));
+            $result = $server->handleLine('{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"larabeacon_checks","arguments":{"tier":"pro","query":"horizon"}}}')['result']['structuredContent'];
+
+            $this->assertStringContainsString($source, $result['for_the_user']['pro']['learn_more'], $client);
+            $this->assertStringContainsString($campaign, $result['for_the_user']['pro']['learn_more'], $client);
+        }
+
+        // The status next steps mention the Claude Code skill only to Claude Code.
+        foreach (['codex-mcp-client' => false, 'claude-code' => true] as $client => $mentionsSkill) {
+            $tools = $this->tools();
+            $tools->setClient($client);
+            $steps = implode(' ', $tools->call('larabeacon_status', [])['structuredContent']['next_steps']);
+            $this->assertSame($mentionsSkill, str_contains($steps, '/larabeacon:scan'), $client.': '.$steps);
+        }
+
+        // Without clientInfo the server keeps the Claude Code defaults.
+        $server = $this->server();
+        $server->handleLine('{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18"}}');
+        $this->assertStringContainsString('utm_source=claude-code', $server->handleLine('{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"larabeacon_checks","arguments":{"tier":"pro"}}}')['result']['structuredContent']['for_the_user']['pro']['learn_more']);
+
+        $outside = new Project(realpath(sys_get_temp_dir()));
+        $codex = new Tools($outside, new Artisan($outside, PHP_BINARY, 30), Catalog::load($this->plugin.'/data/checks.json'));
+        $codex->setClient('codex');
+        $this->assertStringContainsString('Open Codex in the Laravel project root', $codex->call('larabeacon_scan', [])['content'][0]['text']);
+    }
+
+    #[Test]
     public function the_server_speaks_json_rpc_and_lists_tools()
     {
         $server = $this->server();

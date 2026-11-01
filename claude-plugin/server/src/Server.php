@@ -11,7 +11,7 @@ final class Server
 {
     public const NAME = 'larabeacon';
 
-    public const VERSION = '1.2.0';
+    public const VERSION = '1.2.1';
 
     private const PROTOCOL_VERSIONS = ['2025-06-18', '2025-03-26', '2024-11-05'];
 
@@ -87,6 +87,8 @@ final class Server
 
     private function initialize(array $params): array
     {
+        $this->tools->setClient(is_string($params['clientInfo']['name'] ?? null) ? $params['clientInfo']['name'] : null);
+
         $requested = $params['protocolVersion'] ?? null;
 
         return [

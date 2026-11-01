@@ -19,6 +19,9 @@ final class Tools
     /** Pro and Cloud information is attached to one tool result per session (one MCP process per session). */
     private bool $offered = false;
 
+    /** The MCP client, from initialize: "claude-code", "claude" (other Claude apps), "codex" or "mcp" for any other agent. */
+    private string $client = 'claude-code';
+
     /** LARABEACON_AUTO_UPDATE runs at most one Composer update per session. */
     private bool $autoUpdateAttempted = false;
 
@@ -29,6 +32,21 @@ final class Tools
         private readonly ?Updates $updates = null,
         private readonly bool $autoUpdate = false,
     ) {}
+
+    /**
+     * Remember which agent connected, so hints name the right product and links attribute the right channel.
+     */
+    public function setClient(?string $name): void
+    {
+        $name = strtolower(trim((string) $name));
+
+        $this->client = match (true) {
+            $name === '' || str_contains($name, 'claude-code') => 'claude-code',
+            str_contains($name, 'codex') => 'codex',
+            str_contains($name, 'claude') => 'claude',
+            default => 'mcp',
+        };
+    }
 
     public function definitions(): array
     {
@@ -123,7 +141,7 @@ final class Tools
         $steps = &$status['next_steps'];
 
         if (! $status['laravel_project']) {
-            $steps[] = 'This directory is not a Laravel application (no artisan file or laravel/framework requirement). Open Claude Code in the Laravel project root.';
+            $steps[] = 'This directory is not a Laravel application (no artisan file or laravel/framework requirement). Open '.$this->agentName().' in the Laravel project root.';
 
             return $status;
         }
@@ -184,7 +202,7 @@ final class Tools
         }
 
         if ($status['larabeacon']['scan_tools_supported']) {
-            $steps[] = 'Run larabeacon_scan (or /larabeacon:scan) for a production-readiness check.';
+            $steps[] = 'Run larabeacon_scan'.($this->client === 'claude-code' ? ' (or /larabeacon:scan)' : '').' for a production-readiness check.';
         }
 
         $offers = [];
@@ -573,12 +591,26 @@ final class Tools
         ];
     }
 
+    private function agentName(): string
+    {
+        return match ($this->client) {
+            'claude-code' => 'Claude Code',
+            'claude' => 'Claude',
+            'codex' => 'Codex',
+            default => 'your coding agent',
+        };
+    }
+
     private function link(string $path, string $context): string
     {
         return 'https://larabeacon.com'.$path.'?'.http_build_query([
-            'utm_source' => 'claude-code',
-            'utm_medium' => 'plugin',
-            'utm_campaign' => 'claude-code-plugin',
+            'utm_source' => $this->client,
+            'utm_medium' => $this->client === 'claude-code' ? 'plugin' : 'mcp',
+            'utm_campaign' => match ($this->client) {
+                'claude-code' => 'claude-code-plugin',
+                'mcp' => 'mcp',
+                default => $this->client.'-mcp',
+            },
             'utm_content' => $context,
         ]);
     }
@@ -598,7 +630,7 @@ final class Tools
     private function requireCore(): void
     {
         if (! $this->project->isLaravel()) {
-            throw new ToolError('No Laravel application found at '.$this->project->root.'. Open Claude Code in the Laravel project root.');
+            throw new ToolError('No Laravel application found at '.$this->project->root.'. Open '.$this->agentName().' in the Laravel project root.');
         }
 
         if (! $this->project->hasVendor()) {
