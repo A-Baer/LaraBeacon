@@ -1,6 +1,6 @@
 # Release Notes
 
-## Unreleased
+## 3.4.0 - 2026-11-09
 
 ### Added
 - The GitHub Action sends runs to LaraBeacon Cloud with `report: true`, `cloud-username` and `cloud-api-token`, including the pull request head commit, the branch and the repository. Missing credentials, as in pull requests from forks, skip the upload with a warning. The CI documentation shows how to install LaraBeacon Pro with `COMPOSER_AUTH`.
