@@ -15,6 +15,8 @@ use Illuminate\Console\Command;
 
 class LaraBeaconCommand extends Command
 {
+    use RaisesMemoryLimit;
+
     /**
      * The name and signature of the console command.
      *
@@ -97,6 +99,7 @@ class LaraBeaconCommand extends Command
     {
         $originalConfig = config('larabeacon');
         $originalFilter = LaraBeacon::$filterCallback;
+        $this->raiseMemoryLimit((string) config('larabeacon.memory_limit', '1G'));
 
         try {
             return $this->runAnalysis();

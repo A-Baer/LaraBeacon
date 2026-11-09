@@ -7,6 +7,6 @@ return [
     // A real invalid call in a configuration file must still be reported.
     'prefix' => rtrim(['not', 'a', 'string'], '/'),
 
-    // A possibly missing value without a default (bool|string|null) stays reported.
+    // A possibly missing value without a default (bool|string|null) is a nullable type, which is not checked.
     'separator' => trim(env('LARABEACON_TEST_SEPARATOR')),
 ];

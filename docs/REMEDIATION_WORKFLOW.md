@@ -72,7 +72,21 @@ steps:
       baseline: larabeacon-baseline.json
 ```
 
-Inputs are `working-directory`, `profile`, `fail-on`, `baseline` (enables `--only-new`), `sarif-file`, `upload-sarif` and `args`. `args` is split on whitespace and `sarif-file` must be a relative path. Code scanning resolves SARIF paths from the repository root, so file annotations are exact only when the Laravel application is at the root; project-wide findings without a file are attached to `composer.json`. The manual equivalent is:
+Inputs are `working-directory`, `profile`, `fail-on`, `baseline` (enables `--only-new`), `sarif-file`, `upload-sarif`, `args`, and `report`, `cloud-username`, `cloud-api-token` and `cloud-endpoint` for Cloud reports. `args` is split on whitespace and `sarif-file` must be a relative path. Code scanning resolves SARIF paths from the repository root, so file annotations are exact only when the Laravel application is at the root; project-wide findings without a file are attached to `composer.json`. `report: true` adds `--report` with the pull request head commit (or `github.sha`) and the source branch (or `github.ref_name`) and sets `LARABEACON_GITHUB_REPO` to the repository unless it is set in the job environment. Without credentials, as in pull requests from forks, the upload is skipped with a warning; a rejected or failed upload fails the step with `exit-code` 1. LaraBeacon Pro is installed by the project's own `composer install` step with the same project credential:
+
+```yaml
+- run: composer install --no-interaction --prefer-dist
+  env:
+    COMPOSER_AUTH: '{"http-basic":{"larabeacon.com":{"username":"${{ secrets.LARABEACON_USERNAME }}","password":"${{ secrets.LARABEACON_TOKEN }}"}}}'
+- uses: A-Baer/LaraBeacon@v3
+  with:
+    fail-on: major
+    report: true
+    cloud-username: ${{ secrets.LARABEACON_USERNAME }}
+    cloud-api-token: ${{ secrets.LARABEACON_TOKEN }}
+```
+
+The manual equivalent of the first example is:
 
 ```yaml
 - run: composer install --no-interaction --prefer-dist

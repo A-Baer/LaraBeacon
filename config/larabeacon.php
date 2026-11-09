@@ -209,4 +209,14 @@ return [
         '--no-progress' => true,
         '--memory-limit' => env('LARABEACON_PHPSTAN_MEMORY_LIMIT', '1G'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scan memory limit
+    |--------------------------------------------------------------------------
+    |
+    | The scan parses every analyzed file. A lower PHP memory_limit is raised to
+    | this value for the scan; -1 removes the limit. A higher limit is kept.
+    */
+    'memory_limit' => env('LARABEACON_MEMORY_LIMIT', '1G'),
 ];

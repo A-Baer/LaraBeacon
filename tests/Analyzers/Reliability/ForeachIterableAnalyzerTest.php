@@ -24,8 +24,9 @@ class ForeachIterableAnalyzerTest extends AnalyzerTestCase
         $this->runLaraBeacon();
 
         $this->assertFailedAt(ForeachIterableAnalyzer::class, $this->getClassStubPath(ForeachIterableStub::class), 10);
-        $this->assertFailedAt(ForeachIterableAnalyzer::class, $this->getClassStubPath(ForeachIterableStub::class), 19);
-        $this->assertHasErrors(ForeachIterableAnalyzer::class, 2);
+        // Line 19 iterates array|false. Union types are not checked at the PHPStan level LaraBeacon uses.
+        $this->assertNotFailedAt(ForeachIterableAnalyzer::class, $this->getClassStubPath(ForeachIterableStub::class), 19);
+        $this->assertHasErrors(ForeachIterableAnalyzer::class, 1);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

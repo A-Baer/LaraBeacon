@@ -6,6 +6,7 @@ use BaerSoftware\LaraBeacon\Analyzers\Reliability\InvalidMethodCallAnalyzer;
 use BaerSoftware\LaraBeacon\Tests\Analyzers\AnalyzerTestCase;
 use BaerSoftware\LaraBeacon\Tests\Stubs\DummyStub;
 use BaerSoftware\LaraBeacon\Tests\Stubs\InvalidMethodCallStub;
+use BaerSoftware\LaraBeacon\Tests\Stubs\RequestKeyedInputStub;
 
 class InvalidMethodCallAnalyzerTest extends AnalyzerTestCase
 {
@@ -32,6 +33,16 @@ class InvalidMethodCallAnalyzerTest extends AnalyzerTestCase
         $this->assertFailedAt(InvalidMethodCallAnalyzer::class, $this->getClassStubPath(InvalidMethodCallStub::class), 41);
         $this->assertFailedAt(InvalidMethodCallAnalyzer::class, $this->getClassStubPath(InvalidMethodCallStub::class), 42);
         $this->assertHasErrors(InvalidMethodCallAnalyzer::class, 8);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function accepts_keyed_request_arrays()
+    {
+        $this->setBasePathFrom(RequestKeyedInputStub::class);
+
+        $this->runLaraBeacon();
+
+        $this->assertPassed(InvalidMethodCallAnalyzer::class);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

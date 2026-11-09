@@ -15,6 +15,28 @@ use Symfony\Component\Console\Output\BufferedOutput;
 class LaraBeaconCommandTest extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\Test]
+    public function raises_a_low_memory_limit_but_never_lowers_one()
+    {
+        $original = ini_get('memory_limit');
+
+        try {
+            ini_set('memory_limit', '128M');
+            $this->artisan('larabeacon', ['--preflight' => true])->assertExitCode(0);
+            $this->assertSame('1G', ini_get('memory_limit'));
+
+            ini_set('memory_limit', '-1');
+            $this->artisan('larabeacon', ['--preflight' => true])->assertExitCode(0);
+            $this->assertSame('-1', ini_get('memory_limit'));
+
+            ini_set('memory_limit', '2G');
+            $this->artisan('larabeacon', ['--preflight' => true])->assertExitCode(0);
+            $this->assertSame('2G', ini_get('memory_limit'));
+        } finally {
+            ini_set('memory_limit', $original);
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function invitations_only_appear_in_interactive_terminal_non_ci_output()
     {
         foreach (['interactive', 'ci', 'ci-profile', 'non-interactive', 'quiet', 'json', 'markdown', 'sarif', 'preflight'] as $mode) {

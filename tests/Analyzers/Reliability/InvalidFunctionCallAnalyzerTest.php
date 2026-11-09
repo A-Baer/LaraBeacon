@@ -36,10 +36,11 @@ class InvalidFunctionCallAnalyzerTest extends AnalyzerTestCase
 
         $this->runLaraBeacon();
 
-        // Line 5 is the Laravel skeleton's rtrim(env('APP_URL', ...)); lines 8 and 11 stay reported.
+        // Line 5 is the Laravel skeleton's rtrim(env('APP_URL', ...)); line 8 stays reported. Line 11 passes a
+        // possibly null value, and nullable types are not checked at the PHPStan level LaraBeacon uses.
+        $this->assertNotFailedAt(InvalidFunctionCallAnalyzer::class, $path, 5);
         $this->assertFailedAt(InvalidFunctionCallAnalyzer::class, $path, 8);
-        $this->assertFailedAt(InvalidFunctionCallAnalyzer::class, $path, 11);
-        $this->assertHasErrors(InvalidFunctionCallAnalyzer::class, 2);
+        $this->assertHasErrors(InvalidFunctionCallAnalyzer::class, 1);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

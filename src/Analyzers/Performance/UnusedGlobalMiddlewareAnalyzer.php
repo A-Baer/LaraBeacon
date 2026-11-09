@@ -67,7 +67,7 @@ class UnusedGlobalMiddlewareAnalyzer extends PerformanceAnalyzer
     public function errorMessage()
     {
         return 'Your application contains global middleware that is not currently being used. It is '
-            .'recommended to remove these middleware from your Kernel class to enhance performance '
+            .'recommended to remove these middleware from your HTTP kernel or bootstrap/app.php to enhance performance '
             .'slightly. Your unused middleware include: '.$this->formatUnusedMiddleware();
     }
 
@@ -91,7 +91,7 @@ class UnusedGlobalMiddlewareAnalyzer extends PerformanceAnalyzer
             $middleware = $app->make($middlewareClass);
             $proxies = Reflector::get($middleware, 'proxies');
 
-            if (empty($proxies) && is_null($config->get('trustedproxy.proxies'))) {
+            if (empty($proxies) && is_null($config->get('trustedproxy.proxies')) && ! $this->proxiesReadFromEnvironment()) {
                 $this->unusedMiddleware->push(class_exists(L9TrustProxies::class) ? L9TrustProxies::class : TrustProxies::class);
 
                 if ($this->appUsesGlobalMiddleware(TrustHosts::class)) {
@@ -111,6 +111,18 @@ class UnusedGlobalMiddlewareAnalyzer extends PerformanceAnalyzer
         if ($this->unusedMiddleware->count() > 0) {
             $this->markFailed();
         }
+    }
+
+    /**
+     * Whether the application's own config/trustedproxy.php reads the proxies from an environment variable, so the
+     * middleware is used in the environments that set it, even when the current one does not.
+     */
+    protected function proxiesReadFromEnvironment(): bool
+    {
+        $path = config_path('trustedproxy.php');
+
+        return is_file($path)
+            && preg_match('/[\'"]proxies[\'"]\s*=>\s*env\(/', (string) file_get_contents($path)) === 1;
     }
 
     /**

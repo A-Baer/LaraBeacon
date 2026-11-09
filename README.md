@@ -99,6 +99,8 @@ GitHub projects can use the bundled action to show findings in GitHub code scann
     fail-on: major
 ```
 
+With `report: true`, `cloud-username` and `cloud-api-token` the action also sends each run with its commit and branch to LaraBeacon Cloud. Install Pro in CI by passing the same project credential to `composer install` through `COMPOSER_AUTH`; see [Continuous integration](https://larabeacon.com/docs/continuous-integration).
+
 See [the remediation workflow](docs/REMEDIATION_WORKFLOW.md) for JSON/SARIF exports, acceptance expiry, GitHub Actions, scan limitations and Cloud comparison behavior. Fix previews never edit source files.
 
 ## Share feedback, get LaraBeacon Pro

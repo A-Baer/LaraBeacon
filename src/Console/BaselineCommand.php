@@ -11,6 +11,8 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 class BaselineCommand extends Command
 {
+    use RaisesMemoryLimit;
+
     /**
      * The name and signature of the console command.
      *
@@ -57,6 +59,7 @@ class BaselineCommand extends Command
     {
         $config = config('larabeacon');
         $filter = LaraBeacon::$filterCallback;
+        $this->raiseMemoryLimit((string) config('larabeacon.memory_limit', '1G'));
 
         try {
             return $this->generate();

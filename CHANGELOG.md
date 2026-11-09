@@ -3,10 +3,18 @@
 ## Unreleased
 
 ### Added
+- The GitHub Action sends runs to LaraBeacon Cloud with `report: true`, `cloud-username` and `cloud-api-token`, including the pull request head commit, the branch and the repository. Missing credentials, as in pull requests from forks, skip the upload with a warning. The CI documentation shows how to install LaraBeacon Pro with `COMPOSER_AUTH`.
 - Claude Code plugin 1.2.1: the MCP server also works in OpenAI Codex (`[mcp_servers.larabeacon]` in `~/.codex/config.toml`); it detects the connected agent to name it in hints and to attribute larabeacon.com links (`utm_source=codex`).
 
 ### Changed
+- The static analysis checks (invalid calls, property access, offsets, return types, foreach) run PHPStan at level 5 instead of the maximum level. Union, nullable and `mixed` type strictness that most Laravel applications do not opt into no longer turns a typical project into hundreds of major findings; undefined methods, properties and functions, wrong argument and return types and invalid offsets stay reported.
+- Scans and `larabeacon:baseline` raise a PHP `memory_limit` below 1 GB to 1 GB (`LARABEACON_MEMORY_LIMIT`, `-1` for no limit), so the default 128 MB CLI limit no longer aborts the scan of a larger application. A higher limit is kept.
 - Claude Code plugin 1.2.0: published from the standalone repository `Baer-Software/larabeacon-claude-plugin` for the Claude directory (`/plugin marketplace add Baer-Software/larabeacon-claude-plugin`; the `A-Baer/LaraBeacon` marketplace now points there). The MCP server starts with `php` from the `PATH` and the session hint runs as its own shell script, as the directory requires; `LARABEACON_PHP` is no longer used. The plugin adds an icon, documentation, support and privacy links and a data and network disclosure.
+
+### Fixed
+- Request input arrays are typed with string or integer keys, so passing `(array) $request->input(...)` to a parameter typed `array<string, mixed>` is no longer reported as an invalid method call.
+- Attributes read from a generic `Illuminate\Database\Eloquent\Model`, such as a factory result in a seeder, are no longer reported as undefined properties.
+- `TrustProxies` is no longer reported as unused when the application's `config/trustedproxy.php` reads the proxies from an environment variable that the current environment does not set. The message now refers to `bootstrap/app.php` as well as the HTTP kernel.
 
 ## 3.3.1 - 2026-10-19
 

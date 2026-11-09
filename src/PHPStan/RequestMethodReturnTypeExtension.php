@@ -53,9 +53,10 @@ class RequestMethodReturnTypeExtension implements DynamicMethodReturnTypeExtensi
             return new ArrayType(new StringType(), new RequestDataType());
         }
 
+        // Request arrays can be lists or keyed, for example nested form fields or decoded JSON objects.
         return TypeCombinator::union(
             new RequestDataType(),
-            new ArrayType(new IntegerType(), new RequestDataType()),
+            new ArrayType(new UnionType([new IntegerType(), new StringType()]), new RequestDataType()),
             new NullType()
         );
     }

@@ -1,5 +1,8 @@
 parameters:
-    level: max
+    # Level 5 reports undefined calls, return types, dead code and argument types. Higher levels add union, nullable and
+    # mixed type strictness that most Laravel applications do not opt into, which turned typical projects into
+    # hundreds of findings that are not reliability defects.
+    level: 5
     parallel:
         maximumNumberOfProcesses: 1
     checkModelProperties: false
@@ -10,10 +13,13 @@ parameters:
     ignoreErrors:
         # Larastan types env() with a string default as bool|string because "true"/"false" become booleans. Configuration
         # files pass such values to string functions by design (for example the Laravel skeleton's
-        # rtrim(env('APP_URL', ...))). Other types, such as string|false or a possible null, stay reported.
+        # rtrim(env('APP_URL', ...))). This only matters if union types are checked at a higher level.
         -
             message: '#^Parameter \#\d+ \$\w+ of function \w+ expects string, bool\|string given\.$#'
             path: '*/config/*'
+        # Attributes of a generic Eloquent model (for example a factory result typed as Model) are read through __get.
+        -
+            message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model::\$\w+\.$#'
 rules:
     - BaerSoftware\LaraBeacon\PHPStan\FillableForeignKeyModelRule
     - BaerSoftware\LaraBeacon\PHPStan\MassAssignmentModelInstanceRule

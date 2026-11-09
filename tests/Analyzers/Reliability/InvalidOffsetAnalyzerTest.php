@@ -25,9 +25,10 @@ class InvalidOffsetAnalyzerTest extends AnalyzerTestCase
 
         $this->assertFailedAt(InvalidOffsetAnalyzer::class, $this->getClassStubPath(InvalidOffsetStub::class), 10);
         $this->assertFailedAt(InvalidOffsetAnalyzer::class, $this->getClassStubPath(InvalidOffsetStub::class), 13);
-        $this->assertFailedAt(InvalidOffsetAnalyzer::class, $this->getClassStubPath(InvalidOffsetStub::class), 17);
+        // Line 17 writes to array|int. Union types are not checked at the PHPStan level LaraBeacon uses.
+        $this->assertNotFailedAt(InvalidOffsetAnalyzer::class, $this->getClassStubPath(InvalidOffsetStub::class), 17);
         $this->assertFailedAt(InvalidOffsetAnalyzer::class, $this->getClassStubPath(InvalidOffsetStub::class), 25);
-        $this->assertHasErrors(InvalidOffsetAnalyzer::class, 5);
+        $this->assertHasErrors(InvalidOffsetAnalyzer::class, 4);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

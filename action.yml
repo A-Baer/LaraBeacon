@@ -35,6 +35,22 @@ inputs:
     description: Additional arguments passed to php artisan larabeacon, split on whitespace (quotes are not interpreted).
     required: false
     default: ''
+  report:
+    description: Send the run to LaraBeacon Cloud with the commit and branch. Requires cloud-username and cloud-api-token; without them the upload is skipped with a warning (for example in pull requests from forks).
+    required: false
+    default: 'false'
+  cloud-username:
+    description: LaraBeacon Cloud project username (lbp_...). Pass it from a secret.
+    required: false
+    default: ''
+  cloud-api-token:
+    description: LaraBeacon Cloud project API token. Pass it from a secret.
+    required: false
+    default: ''
+  cloud-endpoint:
+    description: LaraBeacon Cloud API endpoint.
+    required: false
+    default: https://larabeacon.com/api/
 
 outputs:
   sarif-file:
@@ -58,6 +74,13 @@ runs:
         LARABEACON_SARIF: ${{ inputs.sarif-file }}
         LARABEACON_ARGS: ${{ inputs.args }}
         LARABEACON_WORKING_DIRECTORY: ${{ inputs.working-directory }}
+        LARABEACON_REPORT: ${{ inputs.report }}
+        LARABEACON_REPORT_USERNAME: ${{ inputs.cloud-username }}
+        LARABEACON_REPORT_API_TOKEN: ${{ inputs.cloud-api-token }}
+        LARABEACON_REPORT_ENDPOINT: ${{ inputs.cloud-endpoint }}
+        LARABEACON_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        LARABEACON_BRANCH: ${{ github.head_ref || github.ref_name }}
+        LARABEACON_REPOSITORY: ${{ github.repository }}
       run: |
         if [ ! -f artisan ]; then
           echo "::error::No artisan file found in $LARABEACON_WORKING_DIRECTORY. Install dependencies and point working-directory at the Laravel application."
@@ -76,6 +99,25 @@ runs:
         if [ -n "$LARABEACON_BASELINE" ]; then
           options+=(--baseline="$LARABEACON_BASELINE" --only-new)
         fi
+
+        case "$LARABEACON_REPORT" in
+          true)
+            if [ -z "$LARABEACON_REPORT_USERNAME" ] || [ -z "$LARABEACON_REPORT_API_TOKEN" ]; then
+              echo "::warning::LaraBeacon Cloud credentials are not available, so this run is not reported. Secrets are not passed to pull requests from forks."
+            else
+              export LARABEACON_CLOUD_ENDPOINT="$LARABEACON_REPORT_ENDPOINT"
+              export LARABEACON_CLOUD_USERNAME="$LARABEACON_REPORT_USERNAME"
+              export LARABEACON_CLOUD_API_TOKEN="$LARABEACON_REPORT_API_TOKEN"
+              export LARABEACON_GITHUB_REPO="${LARABEACON_GITHUB_REPO:-$LARABEACON_REPOSITORY}"
+              options+=(--report --hash="$LARABEACON_COMMIT" --branch="$LARABEACON_BRANCH")
+            fi
+            ;;
+          false) ;;
+          *)
+            echo "::error::report must be true or false."
+            exit 1
+            ;;
+        esac
 
         read -r -a extra <<< "$LARABEACON_ARGS"
 
