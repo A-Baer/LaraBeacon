@@ -1,6 +1,6 @@
 # Release Notes
 
-## Unreleased
+## 3.5.0 - 2026-11-17
 
 ### Added
 - The terminal output ends with *Findings by severity*: failed checks grouped into critical, major, minor and info, most severe first, each with its documentation link, followed by checks that could not run. Each failed check also shows its severity next to *Failed*.
