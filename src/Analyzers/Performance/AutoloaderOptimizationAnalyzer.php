@@ -76,4 +76,14 @@ class AutoloaderOptimizationAnalyzer extends PerformanceAnalyzer
         // Skip the analyzer if it's a local env.
         return config('app.env') === 'local';
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'APP_ENV is local. The optimized autoloader only matters where the application is deployed: run the scan on the production server with --profile=production.';
+    }
 }

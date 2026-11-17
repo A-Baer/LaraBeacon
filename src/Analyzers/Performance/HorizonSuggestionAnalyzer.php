@@ -64,4 +64,14 @@ class HorizonSuggestionAnalyzer extends PerformanceAnalyzer
         // Skip the analyzer if application does not use the Redis queue driver.
         return config('queue.connections.'.config('queue.default').'.driver') !== 'redis';
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The default queue connection does not use the Redis driver, which Horizon requires.';
+    }
 }

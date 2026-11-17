@@ -1,5 +1,5 @@
 {
-    "generated_at": "2026-10-16",
+    "generated_at": "2026-11-17",
     "checks": [
         {
             "slug": "autoloader-optimization",
@@ -299,7 +299,7 @@
             "category": "security",
             "severity": "critical",
             "time_to_fix": 60,
-            "summary": "Your application does not rely on frontend dependencies with known security issues.",
+            "summary": "Your frontend dependencies have no known security advisories (npm and pnpm audits skip devDependencies).",
             "analyzer": "BaerSoftware\\LaraBeacon\\Analyzers\\Security\\FrontendVulnerableDependencyAnalyzer",
             "url": "https://larabeacon.com/checks/frontend-vulnerable-dependency"
         },

@@ -9,7 +9,16 @@ final class Report
     public static function build(array $results): array
     {
         $findings = [];
+        $notApplicable = [];
         foreach ($results as $result) {
+            if (($result['status'] ?? null) === 'skipped') {
+                $notApplicable[] = [
+                    'analyzer' => $result['class'], 'title' => $result['title'],
+                    'reason' => $result['skipReason'] ?? null, 'documentation' => $result['docsUrl'] ?? null,
+                ];
+
+                continue;
+            }
             if (! in_array($result['status'], ['failed', 'error'], true)) {
                 continue;
             }
@@ -33,6 +42,6 @@ final class Report
             }
         }
 
-        return ['schema_version' => 1, 'findings' => $findings];
+        return ['schema_version' => 1, 'findings' => $findings, 'not_applicable' => $notApplicable];
     }
 }

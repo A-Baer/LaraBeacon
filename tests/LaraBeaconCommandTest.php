@@ -5,6 +5,7 @@ namespace BaerSoftware\LaraBeacon\Tests;
 use BaerSoftware\LaraBeacon\Analyzers\Reliability\CachePrefixAnalyzer;
 use BaerSoftware\LaraBeacon\Analyzers\Security\AppDebugAnalyzer;
 use BaerSoftware\LaraBeacon\Analyzers\Security\AppKeyAnalyzer;
+use BaerSoftware\LaraBeacon\Analyzers\Security\HSTSHeaderAnalyzer;
 use BaerSoftware\LaraBeacon\Console\LaraBeaconCommand;
 use BaerSoftware\LaraBeacon\LaraBeacon;
 use Illuminate\Testing\PendingCommand;
@@ -34,6 +35,95 @@ class LaraBeaconCommandTest extends TestCase
         } finally {
             ini_set('memory_limit', $original);
         }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function failed_checks_are_grouped_by_severity()
+    {
+        $this->app->config->set('larabeacon.analyzers', [AppDebugAnalyzer::class, CachePrefixAnalyzer::class]);
+        $this->app->config->set('app.env', 'production');
+        $this->app->config->set('app.debug', true);
+        $this->app->config->set('cache.prefix', 'laravel_cache');
+
+        $command = new LaraBeaconCommand;
+        $command->setLaravel($this->app);
+        $command->run(new ArrayInput([]), $output = new BufferedOutput);
+        $text = $output->fetch();
+
+        $summary = substr($text, strpos($text, 'Findings by severity'));
+        $this->assertStringContainsString('Critical (1)', $summary);
+        $this->assertStringContainsString('https://larabeacon.com/checks/app-debug', $summary);
+        $this->assertStringContainsString('https://larabeacon.com/checks/cache-prefix', $summary);
+        $this->assertLessThan(strpos($summary, 'cache-prefix'), strpos($summary, 'app-debug'));
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function local_scans_without_a_profile_explain_where_to_run_production_checks()
+    {
+        $this->app->config->set('larabeacon.analyzers', AppDebugAnalyzer::class);
+        $this->app->config->set('app.debug', false);
+
+        foreach ([[[], true], [['--profile' => 'local'], false], [['--ci' => true], false]] as [$options, $hinted]) {
+            $this->app->config->set('app.env', 'local');
+            $command = new LaraBeaconCommand;
+            $command->setLaravel($this->app);
+            $command->run(new ArrayInput($options), $output = new BufferedOutput);
+            $text = $output->fetch();
+
+            $hinted
+                ? $this->assertStringContainsString('APP_ENV is local', $text)
+                : $this->assertStringNotContainsString('APP_ENV is local', $text);
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function a_reason_passed_to_mark_skipped_is_reported()
+    {
+        $this->app->config->set('larabeacon.analyzers', \BaerSoftware\LaraBeacon\Analyzers\Security\HashingStrengthAnalyzer::class);
+        $this->app->config->set('hashing.driver', 'custom');
+
+        $command = new LaraBeaconCommand;
+        $command->setLaravel($this->app);
+        $command->run(new ArrayInput(['--format' => 'json']), $output = new BufferedOutput);
+        $report = json_decode($output->fetch(), true);
+
+        $this->assertStringContainsString('neither bcrypt nor Argon', $report['not_applicable'][0]['reason']);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function failed_checks_without_a_known_severity_are_listed_under_other()
+    {
+        $this->app->config->set('larabeacon.analyzers', NoSeverityFailingAnalyzer::class);
+
+        $command = new LaraBeaconCommand;
+        $command->setLaravel($this->app);
+        $command->run(new ArrayInput([]), $output = new BufferedOutput);
+        $text = $output->fetch();
+
+        $this->assertStringContainsString('Other (1)', substr($text, strpos($text, 'Findings by severity')));
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function not_applicable_checks_explain_why()
+    {
+        $this->app->config->set('larabeacon.analyzers', HSTSHeaderAnalyzer::class);
+        $this->app->config->set('app.url', 'http://localhost');
+        $this->app->config->set('larabeacon.guest_url', null);
+        $this->app->config->set('session.secure', false);
+
+        $command = new LaraBeaconCommand;
+        $command->setLaravel($this->app);
+        $command->run(new ArrayInput([]), $output = new BufferedOutput);
+        $this->assertStringContainsString('Not Applicable', $text = $output->fetch());
+        $this->assertStringContainsString('not configured as HTTPS-only', $text);
+
+        $command = new LaraBeaconCommand;
+        $command->setLaravel($this->app);
+        $command->run(new ArrayInput(['--format' => 'json']), $output = new BufferedOutput);
+        $report = json_decode($output->fetch(), true);
+        $this->assertSame(HSTSHeaderAnalyzer::class, $report['not_applicable'][0]['analyzer']);
+        $this->assertStringContainsString('not configured as HTTPS-only', $report['not_applicable'][0]['reason']);
+        $this->assertSame('https://larabeacon.com/checks/hsts-header', $report['not_applicable'][0]['documentation']);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

@@ -71,7 +71,7 @@ Install the LaraBeacon plugin in Claude Code:
 
 The plugin adds a local MCP server (`larabeacon_scan`, `larabeacon_status`, `larabeacon_checks`, `larabeacon_baseline` and read-only Cloud history tools) and the skills `/larabeacon:scan`, `/larabeacon:setup` and `/larabeacon:cloud`. It needs PHP 8.2+ on the `PATH`, runs every scan through the project's own `php artisan`, never reads Cloud credentials and uploads only when you ask. See [claude-plugin/README.md](claude-plugin/README.md) and the [Claude Code documentation](https://larabeacon.com/docs/claude-code).
 
-The plugin source lives in `claude-plugin/` and is tested here (`vendor/bin/phpunit tests/ClaudePluginTest.php`, `claude plugin validate ./claude-plugin --strict`). After pushing a version bump of `claude-plugin/.claude-plugin/plugin.json` (keep `Server::VERSION` in sync), publish it to [Baer-Software/larabeacon-claude-plugin](https://github.com/Baer-Software/larabeacon-claude-plugin) with `tools/publish-claude-plugin.sh`. Regenerate `claude-plugin/data/checks.json` from the website catalogue with `php tools/build-plugin-catalog.php website/config/checks.php`.
+The plugin source lives in `claude-plugin/` and is tested here (`vendor/bin/phpunit tests/ClaudePluginTest.php`, `claude plugin validate ./claude-plugin --strict`). After pushing a version bump of `claude-plugin/.claude-plugin/plugin.json` (keep `Server::VERSION` in sync), publish it to [Baer-Software/larabeacon-claude-plugin](https://github.com/Baer-Software/larabeacon-claude-plugin) with `tools/publish-claude-plugin.sh`. Maintainers regenerate `claude-plugin/data/checks.json` from the private website catalogue with `php tools/build-plugin-catalog.php <path to config/checks.php>`.
 
 Read Cloud history from scripts as JSON with `php artisan larabeacon:cloud status|reports|report [number|latest]`.
 
@@ -127,9 +127,7 @@ LaraBeacon Pro is released separately as a private Composer package and requires
 
 ## Website
 
-The standalone Laravel application in `website/` contains the LaraBeacon marketing site, documentation, legal notices, complete Free/Pro check catalogue, and self-service Cloud application. It is a modular monolith with one deployment and database, while keeping Core and the private Pro package in their own repositories. The public catalogue still derives metadata from the real analyzers without including proprietary Pro source.
-
-Nothing in this repository deploys or publishes the website automatically. See `website/README.md` and `website/docs/LAUNCH_CHECKLIST.md` before preparing a public launch.
+Documentation, the full check catalogue with remediation guidance, pricing and LaraBeacon Cloud live at [larabeacon.com](https://larabeacon.com). Every finding links to its check page, for example [larabeacon.com/checks/fillable-foreign-key](https://larabeacon.com/checks/fillable-foreign-key).
 
 ## Development
 

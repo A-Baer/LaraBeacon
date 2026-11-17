@@ -115,4 +115,14 @@ class CacheHeaderAnalyzer extends PerformanceAnalyzer
             return "[{$file}]";
         })->join(', ', ' and ');
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'Either environment-specific checks are skipped for APP_ENV=local (the local profile or larabeacon.skip_env_specific), or public/mix-manifest.json does not exist because the application does not use Laravel Mix.';
+    }
 }

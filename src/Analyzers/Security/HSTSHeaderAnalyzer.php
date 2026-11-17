@@ -91,4 +91,14 @@ class HSTSHeaderAnalyzer extends SecurityAnalyzer
         // Skip this analyzer if the app is not an HTTPS only application.
         return ! $this->appIsHttpsOnly();
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The application is not configured as HTTPS-only: neither APP_URL nor larabeacon.guest_url starts with https:// and SESSION_SECURE_COOKIE is not enabled. Run the scan on the production server, or set larabeacon.guest_url to the https:// production URL, to check the header.';
+    }
 }

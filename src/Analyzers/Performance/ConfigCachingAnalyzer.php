@@ -71,4 +71,14 @@ class ConfigCachingAnalyzer extends PerformanceAnalyzer
         // was only introduced in Laravel 7, we will have to check if the interface class exists.
         return class_exists(CachesConfiguration::class) && ! (app() instanceof CachesConfiguration);
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The application container does not support configuration caching.';
+    }
 }

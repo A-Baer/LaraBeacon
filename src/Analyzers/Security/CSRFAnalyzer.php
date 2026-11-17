@@ -205,4 +205,14 @@ class CSRFAnalyzer extends SecurityAnalyzer
     {
         return $this->unprotectedRoutes->join(', ', ' and ');
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The application does not start sessions or does not use cookies (for example an API-only app), so it needs no CSRF protection.';
+    }
 }

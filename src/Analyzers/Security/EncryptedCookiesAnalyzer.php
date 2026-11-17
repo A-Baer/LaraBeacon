@@ -83,4 +83,14 @@ class EncryptedCookiesAnalyzer extends SecurityAnalyzer
         // Skip this analyzer if the app is stateless (e.g. API only apps) or doesn't use cookies.
         return $this->appIsStateless() || ! $this->appUsesCookies();
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The application does not start sessions or does not use cookies (for example an API-only app), so there are no cookies to encrypt.';
+    }
 }

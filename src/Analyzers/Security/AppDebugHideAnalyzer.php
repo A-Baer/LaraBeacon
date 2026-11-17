@@ -66,4 +66,14 @@ class AppDebugHideAnalyzer extends SecurityAnalyzer
     {
         return ! class_exists(\Whoops\Handler\Handler::class);
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'filp/whoops is not installed, so there is no Whoops debug page whose environment output needs hiding.';
+    }
 }

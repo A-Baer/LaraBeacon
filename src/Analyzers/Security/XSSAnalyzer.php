@@ -102,4 +102,14 @@ class XSSAnalyzer extends SecurityAnalyzer
         // Skip this analyzer if the app is stateless (e.g. API only apps).
         return $this->isLocalAndShouldSkip() || $this->appIsStateless();
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'Either environment-specific checks are skipped for APP_ENV=local (the local profile or larabeacon.skip_env_specific), or the application does not start sessions and is treated as API-only.';
+    }
 }

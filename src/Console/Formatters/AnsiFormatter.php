@@ -63,7 +63,12 @@ class AnsiFormatter implements Formatter
         $command->getOutput()->newLine();
         $command->getOutput()->write("<fg=yellow>Check {$current}/{$total}: </fg=yellow>");
         $command->getOutput()->write($result['title']);
-        $command->line(' '.$this->getSymbolForStatus($result['status']));
+        $command->line(' '.$this->getSymbolForStatus($result['status'])
+            .($result['status'] === 'failed' && ! empty($result['severity']) ? ' <fg=yellow>['.$result['severity'].']</fg=yellow>' : ''));
+
+        if ($result['status'] === 'skipped' && ! empty($result['skipReason'])) {
+            $command->line('<fg=cyan>'.\Symfony\Component\Console\Formatter\OutputFormatter::escape($result['skipReason']).'</fg=cyan>');
+        }
 
         if (! in_array($result['status'], ['passed', 'skipped'])) {
             $error = $result['error'] ?? $result['exception'];
@@ -106,6 +111,73 @@ class AnsiFormatter implements Formatter
         if ($allAnalyzers) {
             $this->printReportCard($command);
         }
+
+        if (method_exists($command, 'analyzerInfos')) {
+            $this->printSeveritySummary($command, $command->analyzerInfos());
+        }
+    }
+
+    /**
+     * List the failed checks grouped by severity, most severe first, so the next fix is obvious.
+     *
+     * @param \Illuminate\Console\Command $command
+     * @param array $results
+     * @return void
+     */
+    protected function printSeveritySummary(Command $command, array $results)
+    {
+        $failed = collect($results)->filter(fn ($result) => $result['status'] === 'failed' && ($result['reportable'] ?? true));
+        $errors = collect($results)->filter(fn ($result) => $result['status'] === 'error' && ($result['reportable'] ?? true));
+
+        if ($failed->isEmpty() && $errors->isEmpty()) {
+            return;
+        }
+
+        $command->getOutput()->title('Findings by severity');
+
+        $colors = ['critical' => 'red', 'major' => 'yellow', 'minor' => 'cyan', 'info' => 'default'];
+
+        foreach ($colors as $severity => $color) {
+            $group = $failed->where('severity', $severity);
+
+            if ($group->isEmpty()) {
+                continue;
+            }
+
+            $command->line("<fg={$color};options=bold>".ucfirst($severity)." ({$group->count()})</>");
+
+            $group->each(function ($result) use ($command) {
+                $command->line('  - ['.$result['category'].'] '.\Symfony\Component\Console\Formatter\OutputFormatter::escape($result['title'])
+                    ." <fg=cyan><href={$result['docsUrl']}>{$result['docsUrl']}</></fg=cyan>");
+            });
+
+            $command->getOutput()->newLine();
+        }
+
+        $other = $failed->reject(fn ($result) => array_key_exists($result['severity'] ?? '', $colors));
+
+        if ($other->isNotEmpty()) {
+            $command->line("<options=bold>Other ({$other->count()})</>");
+
+            $other->each(function ($result) use ($command) {
+                $command->line('  - ['.$result['category'].'] '.\Symfony\Component\Console\Formatter\OutputFormatter::escape((string) $result['title'])
+                    ." <fg=cyan><href={$result['docsUrl']}>{$result['docsUrl']}</></fg=cyan>");
+            });
+
+            $command->getOutput()->newLine();
+        }
+
+        if ($errors->isNotEmpty()) {
+            $command->line("<fg=magenta;options=bold>Could not run ({$errors->count()})</>");
+
+            $errors->each(function ($result) use ($command) {
+                $command->line('  - ['.$result['category'].'] '.\Symfony\Component\Console\Formatter\OutputFormatter::escape($result['title']));
+            });
+
+            $command->getOutput()->newLine();
+        }
+
+        $command->line('Start with the most severe group. Use --fail-on=major in CI to block only critical and major findings.');
     }
 
     /**

@@ -71,4 +71,14 @@ class RouteCachingAnalyzer extends PerformanceAnalyzer
         // Skip the analyzer if application does not implement the interface
         return class_exists(CachesRoutes::class) && ! (app() instanceof CachesRoutes);
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The application container does not support route caching.';
+    }
 }

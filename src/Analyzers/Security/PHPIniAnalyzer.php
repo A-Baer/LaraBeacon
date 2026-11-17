@@ -97,4 +97,14 @@ class PHPIniAnalyzer extends SecurityAnalyzer
             return "[{$var}: ".($result ? 'On or 1' : 'Off or 0')."]";
         })->join(', ', ' and ');
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'Environment-specific checks are skipped for APP_ENV=local (the local profile or larabeacon.skip_env_specific). Run the scan on the production server with --profile=production to check its PHP configuration.';
+    }
 }

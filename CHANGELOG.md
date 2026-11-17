@@ -1,5 +1,17 @@
 # Release Notes
 
+## Unreleased
+
+### Added
+- The terminal output ends with *Findings by severity*: failed checks grouped into critical, major, minor and info, most severe first, each with its documentation link, followed by checks that could not run. Each failed check also shows its severity next to *Failed*.
+- *Not Applicable* checks print why they were skipped, for example that `APP_ENV` is local or the application is not configured as HTTPS-only. JSON reports list them under `not_applicable` with the reason and documentation link. Analyzers can pass a reason to `markSkipped()`.
+- A scan without `--profile` in a local environment explains that production checks judge the current machine and points to `--profile=local` and `--profile=production`.
+
+### Changed
+- Documentation links point to the check pages on larabeacon.com (for example `https://larabeacon.com/checks/fillable-foreign-key`) instead of the analyzer source on GitHub.
+- The frontend dependency check title states that npm and pnpm audits skip `devDependencies` (Yarn audits all dependencies).
+- The README no longer describes the private website repository.
+
 ## 3.4.0 - 2026-11-09
 
 ### Added

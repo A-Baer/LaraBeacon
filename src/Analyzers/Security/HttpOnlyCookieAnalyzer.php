@@ -82,4 +82,14 @@ class HttpOnlyCookieAnalyzer extends SecurityAnalyzer
     {
         return $this->appIsStateless();
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The application does not start sessions (no StartSession middleware), so it is treated as stateless and sets no session cookie.';
+    }
 }

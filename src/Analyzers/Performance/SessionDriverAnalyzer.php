@@ -158,4 +158,14 @@ class SessionDriverAnalyzer extends PerformanceAnalyzer
         // Skip this analyzer if the app is stateless and does not use sessions.
         return $this->appIsStateless();
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The application does not start sessions (no StartSession middleware), so no session driver is used.';
+    }
 }

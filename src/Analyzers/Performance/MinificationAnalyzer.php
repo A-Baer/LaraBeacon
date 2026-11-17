@@ -113,4 +113,14 @@ class MinificationAnalyzer extends PerformanceAnalyzer
         // Skip the analyzer if there are no files to be minified (e.g. API only apps).
         return ($this->getFilesThatShouldBeMinified()->count() == 0);
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'No CSS or JavaScript assets that should be minified were found in the build path (larabeacon.build_path, by default the public directory), for example in an API-only app.';
+    }
 }

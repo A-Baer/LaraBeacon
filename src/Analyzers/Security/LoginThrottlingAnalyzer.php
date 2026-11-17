@@ -176,4 +176,14 @@ class LoginThrottlingAnalyzer extends SecurityAnalyzer
     {
         return $this->unprotectedRoutes->join(', ', ' and ');
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return "The application is stateless, has laravel/ui installed (its AuthenticatesUsers trait), or uses Fortify's built-in login rate limiter, which throttle logins without separate middleware.";
+    }
 }

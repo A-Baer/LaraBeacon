@@ -72,7 +72,7 @@ class HashingStrengthAnalyzer extends SecurityAnalyzer
                 $this->markFailed();
             }
         } else {
-            $this->markSkipped();
+            $this->markSkipped('The hashing driver is neither bcrypt nor Argon, so its cost settings cannot be checked.');
         }
     }
 }

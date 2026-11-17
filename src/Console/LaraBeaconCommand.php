@@ -140,6 +140,11 @@ class LaraBeaconCommand extends Command
 
         if ($format === 'terminal') {
             $this->formatter->beforeAnalysis($this);
+
+            if ($this->option('profile') === null && ! $this->option('ci') && config('app.env') === 'local') {
+                $this->line('<fg=yellow>APP_ENV is local: production checks (caching, PHP settings, debug mode, HTTPS) will judge this machine, not your server.</>');
+                $this->line('<fg=yellow>Use --profile=local here and --profile=production on the server or staging: https://larabeacon.com/docs/running-larabeacon#where-to-run</>');
+            }
         }
 
         if ($this->option('ci')) {
@@ -236,6 +241,14 @@ class LaraBeaconCommand extends Command
         }
 
         return Baseline::blocks($localReport, $this->option('fail-on'), (bool) $this->option('only-new')) ? 1 : 0;
+    }
+
+    /**
+     * The results of the analyzers that have run.
+     */
+    public function analyzerInfos(): array
+    {
+        return $this->analyzerInfos;
     }
 
     /**

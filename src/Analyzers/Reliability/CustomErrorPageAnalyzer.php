@@ -103,4 +103,14 @@ class CustomErrorPageAnalyzer extends ReliabilityAnalyzer
         // a web app and therefore, does not need to define any views.
         return $this->appIsStateless();
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The application does not start sessions (no StartSession middleware), so it is treated as an API-only app without HTML error pages.';
+    }
 }

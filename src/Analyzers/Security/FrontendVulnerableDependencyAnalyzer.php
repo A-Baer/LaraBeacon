@@ -11,7 +11,7 @@ class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
      *
      * @var string|null
      */
-    public $title = 'Your application does not rely on frontend dependencies with known security issues.';
+    public $title = 'Your frontend dependencies have no known security advisories (npm and pnpm audits skip devDependencies).';
 
     /**
      * The severity of the analyzer.
@@ -106,5 +106,15 @@ class FrontendVulnerableDependencyAnalyzer extends SecurityAnalyzer
     {
         // Skip the analyzer if package.json or a supported package manager does not exist.
         return empty($this->NPM->findNpmOrYarn());
+    }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'No package.json with a single lock file and an installed npm, pnpm or Yarn was found, so frontend dependencies could not be audited.';
     }
 }

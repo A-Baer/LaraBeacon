@@ -18,7 +18,7 @@ abstract class Analyzer
      *
      * @var string
      */
-    const DOCS_URL = 'https://github.com/A-Baer/LaraBeacon/blob/main/src/Analyzers';
+    const DOCS_URL = 'https://larabeacon.com/checks';
 
     /**
      * The category of the analyzer.
@@ -98,6 +98,13 @@ abstract class Analyzer
     protected $skipped = false;
 
     /**
+     * Why the analyzer does not apply, shown next to "Not Applicable".
+     *
+     * @var string|null
+     */
+    protected $skipReason = null;
+
+    /**
      * Run the analyzer.
      *
      * @param  \Illuminate\Contracts\Foundation\Application  $app
@@ -107,6 +114,7 @@ abstract class Analyzer
     {
         if (method_exists($this, 'skip') && $this->skip()) {
             $this->markSkipped();
+            $this->skipReason = method_exists($this, 'skipReason') ? $this->skipReason() : null;
 
             return;
         }
@@ -215,9 +223,13 @@ abstract class Analyzer
      *
      * @return $this
      */
-    public function markSkipped()
+    public function markSkipped(?string $reason = null)
     {
         $this->skipped = true;
+
+        if ($reason !== null) {
+            $this->skipReason = $reason;
+        }
 
         return $this;
     }
@@ -239,6 +251,9 @@ abstract class Analyzer
             'error' => ($this->getStatus() == 'failed') ? $this->getErrorMessage() : null,
             'traces' => $this->traces,
             'docsUrl' => $this->getDocsUrl(),
+            'skipReason' => $this->getStatus() === 'skipped'
+                ? ($this->skipReason ?? 'This check does not apply to this application or environment.')
+                : null,
             'reportable' => ! in_array(static::class, config('larabeacon.dont_report', [])),
             'class' => static::class,
             'stackTrace' => $this->stackTrace,
@@ -298,7 +313,18 @@ abstract class Analyzer
      */
     public function getDocsUrl()
     {
-        return self::DOCS_URL.'/'.$this->category.'/'.class_basename(get_class($this)).'.php';
+        return self::DOCS_URL.'/'.static::docsSlug(class_basename(get_class($this)));
+    }
+
+    /**
+     * The check page slug, derived from the class name like the larabeacon.com catalogue.
+     */
+    public static function docsSlug(string $class): string
+    {
+        $name = preg_replace('/Analyzer$/', '', $class) ?? $class;
+        $name = preg_replace('/(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/', '-', $name) ?? $name;
+
+        return strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', $name) ?? $name, '-'));
     }
 
     /**

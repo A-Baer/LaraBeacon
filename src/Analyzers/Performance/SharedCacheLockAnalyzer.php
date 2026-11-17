@@ -76,4 +76,14 @@ class SharedCacheLockAnalyzer extends PerformanceAnalyzer
         // Skip this analyzer if the application does not use a Redis cache driver.
         return config('cache.stores.'.config('cache.default').'.driver') !== 'redis';
     }
+
+    /**
+     * Explain why the analyzer was skipped.
+     *
+     * @return string
+     */
+    public function skipReason()
+    {
+        return 'The default cache store does not use the Redis driver.';
+    }
 }
