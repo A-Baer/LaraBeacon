@@ -77,10 +77,11 @@ final class Tools
                 'profile' => $profile,
             ], required: ['reason'], readOnly: false, destructive: false, idempotent: true),
             $this->tool('larabeacon_update', 'Update LaraBeacon', 'Update LaraBeacon Core (and Pro, when installed) with composer update inside the version constraints of composer.json, and report which packages changed in composer.lock. Ask the user before calling it.', [], readOnly: false, destructive: false, idempotent: true, openWorld: true),
-            $this->tool('larabeacon_cloud_upload', 'Upload a scan to LaraBeacon Cloud', 'Run a scan and upload it to LaraBeacon Cloud for report history, new/resolved comparison and team access. Sends project metadata, findings, paths and line numbers (no source snippets or stack traces by default). Only call when the user explicitly asks to upload.', [
+            $this->tool('larabeacon_cloud_upload', 'Upload a scan to LaraBeacon Cloud', 'Run a scan and upload it to LaraBeacon Cloud for report history, new/resolved comparison and team access. Sends project metadata, findings, paths and line numbers (no source snippets or stack traces unless ai is set). Only call when the user explicitly asks to upload.', [
                 'profile' => $profile,
                 'branch' => ['type' => 'string', 'pattern' => '^[A-Za-z0-9._/-]{1,200}$', 'description' => 'Branch name for Cloud history isolation.'],
                 'commit' => ['type' => 'string', 'pattern' => '^[0-9a-fA-F]{7,64}$', 'description' => 'Commit hash to attach.'],
+                'ai' => ['type' => 'boolean', 'description' => 'Ask Cloud for an AI review of each finding (Core 3.6+). Sends code excerpts around findings, redacted for secrets. Only when the user asks for AI review.'],
             ], readOnly: false, destructive: false, openWorld: true),
             $this->tool('larabeacon_cloud_reports', 'List Cloud reports', 'List recent LaraBeacon Cloud reports of this project: number, branch, commit, status, totals and link.', [
                 'limit' => ['type' => 'integer', 'minimum' => 1, 'maximum' => 50, 'description' => 'Number of reports (default 10).'],
@@ -403,6 +404,10 @@ final class Tools
                 throw new ToolError('Invalid commit hash.');
             }
             $command[] = '--hash='.$arguments['commit'];
+        }
+
+        if (! empty($arguments['ai'])) {
+            $command[] = '--ai';
         }
 
         $this->requireCloud();

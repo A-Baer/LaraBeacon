@@ -136,6 +136,7 @@ class ClaudePluginTest extends BaseTestCase
         $this->assertTrue($tools['larabeacon_scan']['annotations']['readOnlyHint']);
         $this->assertFalse($tools['larabeacon_cloud_upload']['annotations']['readOnlyHint']);
         $this->assertTrue($tools['larabeacon_cloud_upload']['annotations']['openWorldHint']);
+        $this->assertSame('boolean', $tools['larabeacon_cloud_upload']['inputSchema']['properties']['ai']['type']);
         $this->assertSame(['reason'], $tools['larabeacon_baseline']['inputSchema']['required']);
     }
 

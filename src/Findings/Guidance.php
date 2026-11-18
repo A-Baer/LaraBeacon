@@ -30,7 +30,8 @@ final class Guidance
             'confidence' => in_array($name, ['AppDebugAnalyzer', 'EnvCallAnalyzer', 'QueueTimeoutAnalyzer'], true) && ! $isError ? 'high' : 'requires-review',
             'risk' => $isError ? 'The check could not complete. This is not evidence that the application passed or has a vulnerability.' : $steps[0],
             'fix' => $isError ? 'Resolve the reported execution error and rerun the check.' : $steps[1],
-            'example' => $isError ? null : $steps[2],
+            // The table above is single-quoted; turn its \n markers into real line breaks.
+            'example' => $isError || $steps[2] === null ? null : str_replace('\n', "\n", $steps[2]),
             'verification' => $steps[3],
             'allowed_scope' => 'Only the reported configuration or call sites and their direct regression tests. Do not change unrelated behavior.',
         ];

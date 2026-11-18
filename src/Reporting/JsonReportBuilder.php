@@ -19,9 +19,12 @@ class JsonReportBuilder implements ReportBuilder
      */
     public function buildReport(array $analyzerResults, array $analyzerStats, array $additionalData = [])
     {
+        $metadata = array_merge($this->metadata(), $additionalData);
+
         return [
-            'metadata' => array_merge($this->metadata(), $additionalData),
-            'analyzer_results' => $this->normalizeAnalyzerResults($analyzerResults),
+            'metadata' => $metadata,
+            // An AI review needs the code around each finding; it is redacted before upload.
+            'analyzer_results' => $this->normalizeAnalyzerResults($analyzerResults, ! empty($metadata['ai_triage'])),
             'analyzer_stats' => $analyzerStats,
         ];
     }
@@ -33,9 +36,9 @@ class JsonReportBuilder implements ReportBuilder
      * @param array $analyzerResults
      * @return array
      */
-    protected function normalizeAnalyzerResults(array $analyzerResults)
+    protected function normalizeAnalyzerResults(array $analyzerResults, bool $aiTriage = false)
     {
-        $includeCodeSnippets = (bool) config('larabeacon.cloud.include_code_snippets', false);
+        $includeCodeSnippets = $aiTriage || (bool) config('larabeacon.cloud.include_code_snippets', false);
         $includeStackTraces = (bool) config('larabeacon.cloud.include_exception_stack_traces', false);
 
         return array_map(function ($result) use ($includeCodeSnippets, $includeStackTraces) {
@@ -81,7 +84,7 @@ class JsonReportBuilder implements ReportBuilder
             ];
 
             if ($includeCodeSnippet) {
-                $normalized['codeSnippet'] = $trace->codeSnippet();
+                $normalized['codeSnippet'] = SnippetRedactor::redact((string) $normalized['path'], $trace->codeSnippet());
             }
 
             return $normalized;
@@ -93,6 +96,8 @@ class JsonReportBuilder implements ReportBuilder
 
         if (is_array($trace) && ! $includeCodeSnippet) {
             unset($trace['codeSnippet']);
+        } elseif (is_array($trace) && isset($trace['codeSnippet']) && is_array($trace['codeSnippet'])) {
+            $trace['codeSnippet'] = SnippetRedactor::redact((string) ($trace['path'] ?? ''), $trace['codeSnippet']);
         }
 
         return $trace;

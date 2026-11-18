@@ -121,6 +121,16 @@ runs:
 
         read -r -a extra <<< "$LARABEACON_ARGS"
 
+        # Without Cloud credentials (for example in pull requests from forks) the upload is skipped, so an AI
+        # review cannot be requested either; drop --ai instead of failing the scan.
+        if [[ " ${options[*]} " != *" --report "* ]]; then
+          filtered=()
+          for argument in "${extra[@]}"; do
+            [ "$argument" = "--ai" ] || filtered+=("$argument")
+          done
+          extra=("${filtered[@]}")
+        fi
+
         set +e
         php artisan larabeacon "${options[@]}" "${extra[@]}"
         status=$?

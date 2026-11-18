@@ -77,6 +77,49 @@ class LaraBeaconCommandTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
+    public function ai_reviews_require_a_cloud_upload()
+    {
+        $this->app->config->set('larabeacon.analyzers', AppDebugAnalyzer::class);
+
+        $command = new LaraBeaconCommand;
+        $command->setLaravel($this->app);
+        $status = $command->run(new ArrayInput(['--ai' => true]), $output = new BufferedOutput);
+
+        $this->assertSame(2, $status);
+        $this->assertStringContainsString('--ai requires --report', $output->fetch());
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function the_ai_triage_setting_requests_reviews_and_explains_uploads_without_code()
+    {
+        $this->app->config->set('larabeacon.analyzers', NoSeverityFailingAnalyzer::class);
+        $this->app->config->set('larabeacon.cloud.ai_triage', true);
+
+        $api = new class extends \BaerSoftware\LaraBeacon\Reporting\API
+        {
+            public array $reports = [];
+
+            public function __construct() {}
+
+            public function sendReport(array $report)
+            {
+                $this->reports[] = $report;
+
+                return 'https://larabeacon.test/report';
+            }
+        };
+        $this->app->instance(\BaerSoftware\LaraBeacon\Reporting\API::class, $api);
+
+        $command = new LaraBeaconCommand;
+        $command->setLaravel($this->app);
+        $command->run(new ArrayInput(['--report' => true, '--branch' => 'release/1.0']), $output = new BufferedOutput);
+
+        $this->assertTrue($api->reports[0]['metadata']['ai_triage']);
+        $this->assertSame('release/1.0', $api->reports[0]['metadata']['branch']);
+        $this->assertStringContainsString('nothing for the AI review to read', $output->fetch());
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function a_reason_passed_to_mark_skipped_is_reported()
     {
         $this->app->config->set('larabeacon.analyzers', \BaerSoftware\LaraBeacon\Analyzers\Security\HashingStrengthAnalyzer::class);
@@ -124,6 +167,25 @@ class LaraBeaconCommandTest extends TestCase
         $this->assertSame(HSTSHeaderAnalyzer::class, $report['not_applicable'][0]['analyzer']);
         $this->assertStringContainsString('not configured as HTTPS-only', $report['not_applicable'][0]['reason']);
         $this->assertSame('https://larabeacon.com/checks/hsts-header', $report['not_applicable'][0]['documentation']);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function customers_with_pro_or_cloud_are_not_invited_again()
+    {
+        $this->app->config->set('larabeacon.analyzers', AppDebugAnalyzer::class);
+        $this->app->config->set('app.env', 'production');
+        $this->app->config->set('app.debug', false);
+        $this->app->config->set('larabeacon.cloud.username', 'lbp_example');
+        $this->app->config->set('larabeacon.cloud.api_token', 'lbct_example');
+
+        $command = new LaraBeaconCommand;
+        $command->setLaravel($this->app);
+        $command->run(new ArrayInput([]), $output = new BufferedOutput);
+        $text = $output->fetch();
+
+        $this->assertStringNotContainsString('https://larabeacon.com/register', $text);
+        $this->assertStringNotContainsString('free Pro licence', $text);
+        $this->assertStringContainsString('https://larabeacon.com/pro', $text);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

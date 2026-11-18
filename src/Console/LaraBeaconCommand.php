@@ -36,6 +36,7 @@ class LaraBeaconCommand extends Command
                             {--ci : Run LaraBeacon in CI mode}
                             {--report : Send this run to LaraBeacon Cloud}
                             {--review : Request a pull request review from LaraBeacon Cloud}
+                            {--ai : Ask LaraBeacon Cloud for an AI review of each finding (with --report; sends redacted code excerpts)}
                             {--show-exceptions : Display the stack trace of exceptions if any}
                             {--issue= : The pull request number for LaraBeacon Cloud}
                             {--branch= : Branch name for Cloud history isolation}
@@ -120,6 +121,9 @@ class LaraBeaconCommand extends Command
             || ! in_array($this->option('fail-on'), ['info', 'minor', 'major', 'critical'], true)) {
             throw new \InvalidArgumentException('Invalid format or severity threshold.');
         }
+        if ($this->option('ai') && ! $this->option('report')) {
+            throw new \InvalidArgumentException('--ai requires --report: the AI review runs in LaraBeacon Cloud.');
+        }
         if ($this->option('only-new') && ! $this->option('baseline')) {
             throw new \InvalidArgumentException('--only-new requires --baseline.');
         }
@@ -203,11 +207,16 @@ class LaraBeaconCommand extends Command
                 $metadata['needs_review'] = true;
             }
 
+            if ($aiTriage = ($this->option('ai') || (bool) config('larabeacon.cloud.ai_triage', false))) {
+                $metadata['ai_triage'] = true;
+            }
+
             if ($this->option('ci') || $this->option('profile') === 'ci') {
                 $metadata['trigger'] = 'ci';
             }
 
-            if ($branch = $this->option('branch')) {
+            // CI passes --branch; local uploads fall back to the checked-out Git branch.
+            if ($branch = $this->option('branch') ?: \BaerSoftware\LaraBeacon\CommitHash::branch()) {
                 $metadata['branch'] = $branch;
             }
 
@@ -220,6 +229,11 @@ class LaraBeaconCommand extends Command
             if (! is_null($url) && $format === 'terminal') {
                 $this->getOutput()->newLine();
                 $this->comment("Your report can be viewed at <href={$url}>{$url}</>");
+                if ($aiTriage) {
+                    $this->line($this->hasLocatedFindings()
+                        ? 'AI reviews of the findings appear on that page within a few minutes.'
+                        : 'No finding points to a line of code, so there is nothing for the AI review to read.');
+                }
             } elseif (! is_null($url) && $this->option('output')) {
                 // The report went to a file, so stdout can carry the Cloud link for agents and scripts.
                 $this->line('LaraBeacon Cloud report: '.$url);
@@ -227,20 +241,52 @@ class LaraBeaconCommand extends Command
         }
 
         if ($format === 'terminal' && ! $this->option('ci') && $this->option('profile') !== 'ci' && $this->input->isInteractive() && ! $this->getOutput()->isQuiet()) {
-            if (! class_exists('BaerSoftware\\LaraBeaconPro\\LaraBeaconProServiceProvider')) {
+            // Customers with Pro or Cloud credentials have already found both; do not advertise to them.
+            $hasPro = class_exists('BaerSoftware\\LaraBeaconPro\\LaraBeaconProServiceProvider');
+            $hasCloud = filled(config('larabeacon.cloud.username')) && filled(config('larabeacon.cloud.api_token'));
+
+            if (! $hasPro) {
                 $this->newLine();
                 $this->line('LaraBeacon Pro adds deeper runtime, infrastructure, and security checks for one-time project pricing: https://larabeacon.com/pro');
             }
 
-            $this->newLine();
-            $this->line('LaraBeacon Cloud: report history and team access. Create an account: https://larabeacon.com/register');
-            $this->line('Core works offline. Cloud uploads require --report and configured credentials.');
-            $this->newLine();
-            $this->line('Using LaraBeacon? The first five external projects can get a free Pro licence for one project in return for 20 minutes of honest feedback.');
-            $this->line('Share installation feedback, useful findings, and false positives: anthony.baer@baer-software.com');
+            // Pro is installed with Cloud project credentials, so Pro users already have an account.
+            if (! $hasPro && ! $hasCloud) {
+                $this->newLine();
+                $this->line('LaraBeacon Cloud: report history and team access. Create an account: https://larabeacon.com/register');
+                $this->line('Core works offline. Cloud uploads require --report and configured credentials.');
+            }
+
+            if (! $hasPro && ! $hasCloud) {
+                $this->newLine();
+                $this->line('Using LaraBeacon? The first five external projects can get a free Pro licence for one project in return for 20 minutes of honest feedback.');
+                $this->line('Share installation feedback, useful findings, and false positives: anthony.baer@baer-software.com');
+            }
         }
 
         return Baseline::blocks($localReport, $this->option('fail-on'), (bool) $this->option('only-new')) ? 1 : 0;
+    }
+
+    /**
+     * Whether any reported finding points to a line of code an AI review can read.
+     */
+    protected function hasLocatedFindings(): bool
+    {
+        foreach ($this->analyzerInfos as $info) {
+            if ($info['status'] !== 'failed' || ! ($info['reportable'] ?? true)) {
+                continue;
+            }
+
+            foreach ($info['traces'] ?? [] as $trace) {
+                // Mirror what the upload sends: a readable, non-.env excerpt.
+                if ($trace instanceof \BaerSoftware\LaraBeacon\Analyzers\Trace
+                    && \BaerSoftware\LaraBeacon\Reporting\SnippetRedactor::redact((string) $trace->relativePath(), $trace->codeSnippet()) !== []) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

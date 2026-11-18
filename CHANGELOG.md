@@ -1,5 +1,21 @@
 # Release Notes
 
+## Unreleased
+
+### Added
+- `--ai` (or `LARABEACON_CLOUD_AI_TRIAGE=true`) asks LaraBeacon Cloud for an AI review of each finding. It requires `--report` and uploads the code excerpts around findings, redacted for secrets on your machine; `.env` files are never sent. The documentation already described this option, but the command did not accept it.
+- Claude Code plugin 1.2.2: the `larabeacon_cloud_upload` tool accepts `ai: true`.
+- Local Cloud uploads send the checked-out Git branch when `--branch` is not given.
+
+### Changed
+- Code excerpts sent with `LARABEACON_CLOUD_INCLUDE_CODE_SNIPPETS=true` are redacted the same way.
+- The terminal no longer invites projects that already use Pro or Cloud to create an account or apply for the free licence.
+- After an upload with `--ai`, the terminal says when no finding points to code and there is nothing to review.
+
+### Fixed
+- Example commands in the remediation guidance contain real line breaks instead of a literal `\n`.
+- The GitHub Action drops `--ai` from `args` when it skips the Cloud upload (for example in pull requests from forks), instead of failing the scan.
+
 ## 3.5.0 - 2026-11-17
 
 ### Added

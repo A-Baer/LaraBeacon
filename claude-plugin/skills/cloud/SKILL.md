@@ -10,7 +10,7 @@ Arguments: $ARGUMENTS
 
 1. Call `larabeacon_status`. If `cloud.configured` is false, explain the Cloud setup from `/larabeacon:setup` and stop.
 2. Depending on the request:
-   - **upload**: only when the user asked for it. Call `larabeacon_cloud_upload` with the current git branch and commit (`git rev-parse --abbrev-ref HEAD`, `git rev-parse HEAD`). Share the `report_url`. Processing is asynchronous.
+   - **upload**: only when the user asked for it. Call `larabeacon_cloud_upload` with the current git branch and commit (`git rev-parse --abbrev-ref HEAD`, `git rev-parse HEAD`). Set `ai: true` only when the user asks for an AI review of the findings; it sends redacted code excerpts and uses one Cloud credit per new finding. Share the `report_url`. Processing is asynchronous.
    - **history**: `larabeacon_cloud_reports` and summarize trends (failed totals per report, branch, commit).
    - **a report** (number or `latest`): `larabeacon_cloud_report`. Lead with `counts` (open, new, resolved), then the new findings with file:line, then resolved ones.
 3. For new findings that relate to the current work, offer to fix them with the `/larabeacon:scan` workflow and verify locally with a targeted scan.

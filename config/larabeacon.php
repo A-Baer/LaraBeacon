@@ -149,6 +149,8 @@ return [
         'username' => env('LARABEACON_CLOUD_USERNAME'),
         'api_token' => env('LARABEACON_CLOUD_API_TOKEN'),
         'include_code_snippets' => env('LARABEACON_CLOUD_INCLUDE_CODE_SNIPPETS', false),
+        // Request an AI review of each finding on every upload (same as --ai). Sends redacted code excerpts.
+        'ai_triage' => env('LARABEACON_CLOUD_AI_TRIAGE', false),
         'include_exception_stack_traces' => env('LARABEACON_CLOUD_INCLUDE_EXCEPTION_STACK_TRACES', false),
     ],
 

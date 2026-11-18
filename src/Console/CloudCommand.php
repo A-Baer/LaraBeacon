@@ -68,6 +68,7 @@ class CloudCommand extends Command
                 'configured' => $endpoint !== '' && ! empty($cloud['username']) && ! empty($cloud['api_token']),
                 'endpoint_host' => $endpoint === '' ? null : parse_url($endpoint, PHP_URL_HOST),
                 'include_code_snippets' => (bool) ($cloud['include_code_snippets'] ?? false),
+                'ai_triage' => (bool) ($cloud['ai_triage'] ?? false),
                 'include_exception_stack_traces' => (bool) ($cloud['include_exception_stack_traces'] ?? false),
             ],
         ];
