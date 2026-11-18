@@ -1,6 +1,6 @@
 # Release Notes
 
-## Unreleased
+## 3.6.0 - 2026-11-18
 
 ### Added
 - `--ai` (or `LARABEACON_CLOUD_AI_TRIAGE=true`) asks LaraBeacon Cloud for an AI review of each finding. It requires `--report` and uploads the code excerpts around findings, redacted for secrets on your machine; `.env` files are never sent. The documentation already described this option, but the command did not accept it.
